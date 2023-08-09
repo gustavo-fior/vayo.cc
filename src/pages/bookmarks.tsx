@@ -59,8 +59,8 @@ export default function Home() {
             </div>
           </form>
           {bookmarks.data?.map((bookmark) => (
-            <div key={bookmark.id} className="flex gap-4">
-              <a className="flex items-center gap-4" href={bookmark.url}>
+            <div key={bookmark.id} className="flex gap-4 ">
+              <a className="flex items-center gap-4 group" href={bookmark.url}>
                 <Image
                   src={String(bookmark.favicon)}
                   alt={bookmark.title}
@@ -69,7 +69,7 @@ export default function Home() {
                 />
                 <p className="text-white">{bookmark.title}</p>
                 <p className="text-gray-500">
-                  <span className="hover:underline">{bookmark.url}</span>
+                  <span className="group-hover:underline">{bookmark.url}</span>
                 </p>
               </a>
               <button
