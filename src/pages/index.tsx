@@ -1,13 +1,7 @@
-import { signIn, signOut, useSession } from "next-auth/react";
-import { api } from "~/utils/api";
+import { type GetServerSideProps } from "next";
+import { getSession, signIn } from "next-auth/react";
 
 export default function Home() {
-
-  function handleBookmark(url: string) {
-    
-    console.log(url)
-  }
-
   return (
     <>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[black] to-[#333131]">
@@ -15,28 +9,19 @@ export default function Home() {
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Bookmarks
           </h1>
-          <form onSubmit={(e) => {
-            e.preventDefault()
-            handleBookmark(e.target.url.value)
-          }}>
-            <div className="flex flex-col items-center gap-4">
-              <input
-                type="text"
-                name="url"
-                id="url"
-                placeholder="https://example.com"
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-              />
-              <button
-                type="submit"
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-              >
-                Bookmark
-              </button>
-            </div>
-          </form>
           <div className="flex flex-col items-center gap-2">
-            <AuthShowcase />
+            <button
+              className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+              onClick={() => signIn("google")}
+            >
+              <p>sign in with google</p>
+            </button>
+            <button
+              className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+              onClick={() => signIn("github")}
+            >
+              <p>sign in with github</p>
+            </button>
           </div>
         </div>
       </main>
@@ -44,20 +29,18 @@ export default function Home() {
   );
 }
 
-function AuthShowcase() {
-  const { data: sessionData } = useSession();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+  if (session) {
+    return {
+      redirect: {
+        destination: "/bookmarks",
+        permanent: false,
+      },
+    };
+  }
 
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-      </p>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-    </div>
-  );
-}
+  return {
+    props: {},
+  };
+};
