@@ -61,7 +61,7 @@ export default function Home() {
 
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[black] to-[#333131]">
+      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <form
             onSubmit={(e) => {
