@@ -11,13 +11,14 @@ export const bookmarksRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { title, faviconImage } = await getBookmarkMetadata(input.url);
+      const { title, faviconImage, ogImage } = await getBookmarkMetadata(input.url);
 
       return await ctx.prisma.bookmark.create({
         data: {
           url: input.url,
           title: title,
           favicon: faviconImage,
+          ogImage: ogImage,
           userId: ctx.session.user.id,
         },
       });
@@ -47,10 +48,14 @@ export const bookmarksRouter = createTRPCRouter({
 
 export type BookmarkMetadata = {
   title: string;
-  faviconImage: string;
+  faviconImage: string | undefined;
+  ogImage: string | undefined;
 };
 
 const getBookmarkMetadata = async (url: string): Promise<BookmarkMetadata> => {
+  let faviconImage: string | undefined;
+  let ogImage: string | undefined;
+
   const response = await ky.get(url);
   const html = await response.text();
 
@@ -62,7 +67,10 @@ const getBookmarkMetadata = async (url: string): Promise<BookmarkMetadata> => {
   const faviconElement = document.querySelector("link[rel='icon']");
   const favicon = faviconElement?.getAttribute("href");
 
-  let faviconImage: string | undefined;
+  const ogImageElement = document.querySelector("meta[property='og:image']");
+  const ogImageUrl = ogImageElement?.getAttribute("content");
+  
+
 
   if (favicon) {
     // Fetch the favicon image link or data here
@@ -77,9 +85,17 @@ const getBookmarkMetadata = async (url: string): Promise<BookmarkMetadata> => {
     }
   }
 
-  console.log("Favicon:", favicon);
-  console.log("Favicon image:", faviconImage);
+  if (ogImageUrl) {
+    try {
+      const ogImageResponse = await ky.get(new URL(ogImageUrl, url).href);
+      // Assuming you want to store the image data
+      const ogImageImageData = await ogImageResponse.arrayBuffer();
+      const ogImageBase64 = Buffer.from(ogImageImageData).toString("base64");
+      ogImage = `data:image/png;base64,${ogImageBase64}`;
+    } catch (error) {
+      console.error("Error fetching favicon:", error);
+    }
+  }
 
-
-  return { title, faviconImage };
+  return { title, faviconImage, ogImage };
 };

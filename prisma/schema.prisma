@@ -10,12 +10,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -68,7 +62,8 @@ model Bookmark {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     url       String
-    favicon   String
+    favicon   String?
+    ogImage   String?
     title     String
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    String

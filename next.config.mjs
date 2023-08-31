@@ -18,6 +18,9 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    domains: ["media0.giphy.com"],
+  },
 };
 
 export default config;

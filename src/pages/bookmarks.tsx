@@ -28,7 +28,8 @@ export default function Home() {
       userId: String(session.data?.user.id),
       url,
       title: "Loading...",
-      favicon: "",
+      favicon: "https://media0.giphy.com/media/3o7bu3XilJ5BOiSGic/giphy.gif",
+      ogImage: "",
     };
 
     utils.bookmarks.findByUserId.setData(undefined, (prev) => {
@@ -36,15 +37,12 @@ export default function Home() {
       return prev;
     });
 
-    create.mutate(
-      {
-        url,
-      },
-    );
+    create.mutate({
+      url,
+    });
   };
 
   const handleDeleteBookmark = (id: string) => {
-    
     // remove from cache
     utils.bookmarks.findByUserId.setData(undefined, (prev) => {
       prev?.filter((bookmark) => bookmark.id !== id);
@@ -58,6 +56,8 @@ export default function Home() {
   };
 
   const { data: bookmarks, isLoading } = api.bookmarks.findByUserId.useQuery();
+
+  console.log(bookmarks);
 
   return (
     <>
@@ -91,16 +91,27 @@ export default function Home() {
             bookmarks?.map((bookmark) => (
               <div key={bookmark.id} className="flex gap-4 ">
                 <a
-                  className="group flex items-center gap-4"
+                  className="group flex items-center gap-6"
                   href={bookmark.url}
                 >
+                  {bookmark.favicon && (
                   <Image
                     src={String(bookmark.favicon)}
                     alt={bookmark.title}
-                    width={16}
-                    height={16}
-                  />
-                  <p className="text-white">{bookmark.title}</p>
+                    width={24}
+                    height={24}
+                  />)}
+                  {bookmark.ogImage && (
+                  <Image
+                    src={String(bookmark.ogImage)}
+                    alt={bookmark.title}
+                    width={300}
+                    height={300}
+                  />)}
+                  <p className="text-xl font-bold text-white">
+                    {bookmark.title}
+                  </p>
+                  <p className="text-gray-500">•</p>
                   <p className="text-gray-500">
                     <span className="group-hover:underline">
                       {bookmark.url}
