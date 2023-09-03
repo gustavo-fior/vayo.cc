@@ -1,15 +1,18 @@
 import { type GetServerSideProps } from "next";
 import { getSession, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { api } from "~/utils/api";
-import { IoMdAdd } from "react-icons/io";
 import { useState } from "react";
-import { set } from "zod";
+import { IoMdAdd } from "react-icons/io";
+import { api } from "~/utils/api";
 
 export default function Home() {
   const utils = api.useContext();
   const session = useSession();
   const [url, setUrl] = useState("");
+
+  const handleSignOut = () => {
+    signOut().catch((err) => console.error(err));
+  };
 
   const create = api.bookmarks.create.useMutation({
     async onSuccess() {
@@ -61,8 +64,6 @@ export default function Home() {
 
   const { data: bookmarks, isLoading } = api.bookmarks.findByUserId.useQuery();
 
-  console.log(bookmarks);
-
   return (
     <>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black] pt-32">
@@ -82,11 +83,11 @@ export default function Home() {
                   id="url"
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://..."
-                  className="rounded-full w-96 bg-white/10 px-8 py-3 text-xl font-semibold text-white no-underline placeholder-slate-600 duration-300 transition hover:bg-white/20"
+                  className="w-96 rounded-full bg-white/10 px-8 py-3 text-xl font-semibold text-white no-underline placeholder-slate-600 transition duration-300 hover:bg-white/20"
                 />
                 <button
                   type="submit"
-                  className="rounded-full bg-white/10 p-3 duration-300 transition hover:bg-white/20"
+                  className="rounded-full bg-white/10 p-3 transition duration-300 hover:bg-white/20"
                 >
                   <IoMdAdd color="white" size={24} strokeWidth={20} />
                 </button>
@@ -94,7 +95,7 @@ export default function Home() {
             </form>
             <button
               className="rounded-full bg-white/10 px-10 py-3 text-xl font-semibold text-white no-underline transition hover:bg-white/20"
-              onClick={() => signOut()}
+              onClick={() => handleSignOut()}
             >
               <p>Sign out</p>
             </button>
