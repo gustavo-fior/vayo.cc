@@ -19,6 +19,7 @@
     "@trpc/next": "^10.26.0",
     "@trpc/react-query": "^10.26.0",
     "@trpc/server": "^10.26.0",
+    "@vercel/analytics": "^1.0.2",
     "cheerio": "^1.0.0-rc.12",
     "dom-parser": "^0.1.6",
     "jsdom": "^22.1.0",
