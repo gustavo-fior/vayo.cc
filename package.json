@@ -22,6 +22,7 @@
     "@vercel/analytics": "^1.0.2",
     "cheerio": "^1.0.0-rc.12",
     "dom-parser": "^0.1.6",
+    "framer-motion": "^10.16.3",
     "jsdom": "^22.1.0",
     "ky": "^0.33.3",
     "next": "^13.4.2",
