@@ -2,3 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Inter');
+
+@layer components {
+  
+    ::selection {
+      background: #1d1d1d;
+    }
+  
+    ::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      /* Define the scrollbar track (background) color */
+      ::-webkit-scrollbar-track {
+        background: #1b1b1b
+      }
+      
+      /* Define the scrollbar thumb (handle) color */
+      ::-webkit-scrollbar-thumb {
+        background: #2e2e2e;
+        border-radius: 6px;
+      }
+      
+      /* Define the scrollbar thumb (handle) hover color */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #383838;
+      }
+  
+    firefox-scrollbar-fix {
+      scrollbar-width: none;
+    }
+  }
