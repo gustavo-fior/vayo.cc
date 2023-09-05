@@ -12,6 +12,7 @@ export default function Home() {
   useEffect(() => {
     const load = document.getElementsByClassName("load");
     if (load.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
       for (let i = 0; i < load.length; i++) {
         load[i]?.classList.remove("-translate-y-6");
       }
