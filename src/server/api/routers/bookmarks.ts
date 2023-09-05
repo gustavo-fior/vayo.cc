@@ -1,7 +1,11 @@
+import { JSDOM } from "jsdom";
 import ky from "ky";
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { JSDOM } from "jsdom";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 export const bookmarksRouter = createTRPCRouter({
   create: protectedProcedure
@@ -11,7 +15,9 @@ export const bookmarksRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { title, faviconImage, ogImage } = await getBookmarkMetadata(input.url);
+      const { title, faviconImage, ogImage } = await getBookmarkMetadata(
+        input.url
+      );
 
       return await ctx.prisma.bookmark.create({
         data: {
@@ -23,13 +29,21 @@ export const bookmarksRouter = createTRPCRouter({
         },
       });
     }),
-  findByUserId: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.bookmark.findMany({
-      where: {
-        userId: ctx.session.user.id,
-      },
-    });
-  }),
+  findByUserId: publicProcedure
+    .input(
+      z.object({
+        userId: z.string().nullable(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const userId = input.userId ?? ctx.session?.user.id;
+
+      return await ctx.prisma.bookmark.findMany({
+        where: {
+          userId: userId,
+        },
+      });
+    }),
   delete: protectedProcedure
     .input(
       z.object({
@@ -42,8 +56,7 @@ export const bookmarksRouter = createTRPCRouter({
           id: input.id,
         },
       });
-    }
-  ),
+    }),
 });
 
 export type BookmarkMetadata = {
@@ -69,8 +82,6 @@ const getBookmarkMetadata = async (url: string): Promise<BookmarkMetadata> => {
 
   const ogImageElement = document.querySelector("meta[property='og:image']");
   const ogImageUrl = ogImageElement?.getAttribute("content");
-  
-
 
   if (favicon) {
     // Fetch the favicon image link or data here
