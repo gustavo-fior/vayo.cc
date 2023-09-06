@@ -42,6 +42,13 @@ export const bookmarksRouter = createTRPCRouter({
         where: {
           userId: userId,
         },
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
       });
     }),
   delete: protectedProcedure

@@ -3,9 +3,11 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { api } from "~/utils/api";
 import { itemVariants } from "../helpers/animationVariants";
+import { useSession } from "next-auth/react";
 
 const ExpandedBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
   const utils = api.useContext();
+  const { data } = useSession();
 
   const remove = api.bookmarks.delete.useMutation({
     async onSuccess() {
@@ -34,7 +36,9 @@ const ExpandedBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
         className="group flex justify-between rounded-lg p-2 transition duration-300 ease-in-out hover:bg-white hover:bg-opacity-10 hover:drop-shadow-lg hover:backdrop-blur-lg"
       >
         <a
-          className="flex items-center gap-6"
+          className={`flex items-center gap-6 ${
+            data && data.user.id === bookmark.userId ? "" : "w-full"
+          } `}
           href={bookmark.url}
           target="_blank"
         >
@@ -86,28 +90,30 @@ const ExpandedBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
             </div>
           </div>
         </a>
-        <button
-          className="z-10 pr-4 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent the click event from propagating
-            handleDeleteBookmark(bookmark.id);
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        {data && data.user.id === bookmark.userId && (
+          <button
+            className="z-10 pr-4 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent the click event from propagating
+              handleDeleteBookmark(bookmark.id);
+            }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={4}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={4}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        )}
       </motion.div>
     </motion.li>
   );
