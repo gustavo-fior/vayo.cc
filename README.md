@@ -7,3 +7,4 @@
 - optimistic update
 - public/private pages
 - multiple lists per user
+- responsiviness

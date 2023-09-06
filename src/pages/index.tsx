@@ -32,7 +32,7 @@ export default function Home() {
             height={64}
             className="load -translate-y-3 transition duration-1000"
           />
-          <h1 className=" load -translate-y-3 pt-4  text-5xl font-extrabold text-white transition duration-700 sm:text-[5rem]">
+          <h1 className=" load -translate-y-3 pt-4 text-5xl font-extrabold text-white transition duration-700 sm:text-[5rem]">
             Bookmarks
           </h1>
 
@@ -46,7 +46,7 @@ export default function Home() {
             {signingIn ? (
               <svg
                 aria-hidden="true"
-                className="h-12 w-12 animate-spin fill-white dark:text-gray-600"
+                className="h-8 w-8 mt-4 animate-spin fill-white dark:text-gray-600"
                 viewBox="0 0 100 101"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
