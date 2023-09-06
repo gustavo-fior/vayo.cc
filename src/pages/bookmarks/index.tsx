@@ -358,7 +358,7 @@ export default function Bookmarks() {
                     height={200}
                   />
                   <p className="text-center text-gray-500 pt-4 italic">
-                    It's pretty calm here, add some bookmarks!
+                    It&apos;s pretty calm here, add some bookmarks!
                   </p>
                 </>
               )}
