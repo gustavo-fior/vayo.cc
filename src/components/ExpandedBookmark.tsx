@@ -16,13 +16,6 @@ const ExpandedBookmark = ({ bookmark }: { bookmark: Bookmark }) => {
   });
 
   const handleDeleteBookmark = (id: string) => {
-    // remove from cache
-    utils.bookmarks.findByUserId.setData({ userId: null }, (prev) => {
-      prev?.filter((bookmark) => bookmark.id !== id);
-      return prev;
-    });
-
-    // remove from server or rollback
     remove.mutate({
       id,
     });

@@ -28,24 +28,7 @@ export default function Bookmarks() {
     },
   });
 
-  // with optimistic updates
   const handleCreateBookmark = (url: string) => {
-    const optimisticBookmark = {
-      id: new Date().getTime().toString(), // Temporary ID
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: String(session.data?.user.id),
-      url,
-      title: "Loading...",
-      favicon: "https://media0.giphy.com/media/3o7bu3XilJ5BOiSGic/giphy.gif",
-      ogImage: "",
-    };
-
-    utils.bookmarks.findByUserId.setData({ userId: null }, (prev) => {
-      prev?.push(optimisticBookmark);
-      return prev;
-    });
-
     mutate({
       url,
     });
@@ -111,7 +94,9 @@ export default function Bookmarks() {
                   }}
                   type="submit"
                   disabled={url.length === 0 || creating}
-                  className={`rounded-full bg-white/10 p-3 transition duration-300'hover:bg-white/20 ${url.length === 0 || creating ? "bg-white/5" : null}`}
+                  className={`duration-300'hover:bg-white/20 rounded-full bg-white/10 p-3 transition ${
+                    url.length === 0 || creating ? "bg-white/5" : null
+                  }`}
                 >
                   {creating ? (
                     <svg
