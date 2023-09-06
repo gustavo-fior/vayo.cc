@@ -21,7 +21,7 @@ const ExpandedBookmark = ({
         className="group flex justify-between rounded-lg p-2 transition duration-300 ease-in-out hover:bg-white hover:bg-opacity-10 hover:drop-shadow-lg hover:backdrop-blur-lg"
       >
         <a
-          className={`flex items-center gap-6 ${
+          className={`flex items-center gap-6 w-full ${
             data && data.user.id === bookmark.userId ? "" : "w-full"
           } `}
           href={bookmark.url}
