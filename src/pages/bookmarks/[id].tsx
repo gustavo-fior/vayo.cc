@@ -12,6 +12,8 @@ export default function BookmarksByUser() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { id } = router.query;
+  const { data: owner, isLoading: loadingOwner } =
+    api.users.findByUserId.useQuery({ userId: String(id) });
 
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
@@ -42,18 +44,16 @@ export default function BookmarksByUser() {
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
           <div className="flex items-center justify-between align-middle">
-            <div className="flex w-full justify-between items-center gap-2 align-middle">
+            <div className="flex w-full items-center justify-between gap-2 align-middle">
               <Image
                 src="/images/logo.png"
                 alt="logo"
                 width={64}
                 height={64}
-                className="w-[1.8rem] h-[1.8rem]"
+                className="h-[1.8rem] w-[1.8rem]"
               />
               <h1 className="text-2xl font-semibold text-white">
-                {bookmarks
-                  ? `${bookmarks[0]?.user.name}'s bookmarks`
-                  : "Loading..."}
+                {!loadingOwner ? `${owner?.name}'s bookmarks` : "Loading..."}
               </h1>
               <motion.button
                 whileTap={{

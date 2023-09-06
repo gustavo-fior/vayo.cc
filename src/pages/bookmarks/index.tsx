@@ -29,7 +29,7 @@ export default function Bookmarks() {
   const addBookmark = api.bookmarks.create.useMutation({
     onMutate: async () => {
       setUrl("");
-      const {faviconImage, ogImage, title} = await getBookmarkMetadata(url);
+      const { faviconImage, ogImage, title } = await getBookmarkMetadata(url);
 
       console.log(faviconImage, ogImage, title);
 
@@ -40,23 +40,20 @@ export default function Bookmarks() {
 
       utils.bookmarks.findByUserId.setData(
         { userId: String(session.data?.user.id) },
-        (oldQueryData: Bookmark[] | null) =>
-          [
-            ...(oldQueryData ?? []),
-            {
-              id: "temp",
-              url,
-              title: title,
-              userId: String(session.data?.user.id),
-              favicon: faviconImage,
-              ogImage: ogImage,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              user: {
-                name: session.data?.user.name ?? null,
-              },
-            },
-          ] as Bookmark[]
+        (oldQueryData: Bookmark[] | undefined) => {
+          const newBookmark: Bookmark = {
+            id: "temp",
+            url,
+            title,
+            userId: String(session.data?.user.id),
+            favicon: faviconImage ?? null,
+            ogImage: ogImage ?? null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+      
+          return oldQueryData ? [...oldQueryData, newBookmark] : [newBookmark];
+        }
       );
 
       return { previousBookmarks };
@@ -66,9 +63,13 @@ export default function Bookmarks() {
       void utils.bookmarks.findByUserId.invalidate();
     },
     onError: (context) => {
+      const previousBookmarks =
+        (context as { previousBookmarks?: Bookmark[] })?.previousBookmarks ??
+        null;
+
       utils.bookmarks.findByUserId.setData(
         { userId: session.data?.user.id ?? "" },
-        context?.previousBookmarks
+        previousBookmarks!
       );
     },
   });
@@ -318,4 +319,3 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {},
   };
 };
-
