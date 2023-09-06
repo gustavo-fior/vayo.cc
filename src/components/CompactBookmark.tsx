@@ -4,7 +4,13 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { itemVariants } from "../helpers/animationVariants";
 
-const CompactBookmark = ({ bookmark, onRemove }: { bookmark: Bookmark, onRemove: (id: string) => void }) => {
+const CompactBookmark = ({
+  bookmark,
+  onRemove,
+}: {
+  bookmark: Bookmark;
+  onRemove?: (id: string) => void;
+}) => {
   const { data } = useSession();
 
   return (
@@ -35,7 +41,13 @@ const CompactBookmark = ({ bookmark, onRemove }: { bookmark: Bookmark, onRemove:
                 style={{ height: "0.9rem", width: "0.9rem" }}
               />
             )}
-            <p className={`${data && data.user.id === bookmark.userId ? "max-w-xs" : 'max-w-sm'} truncate font-semibold text-white `}>
+            <p
+              className={`${
+                data && data.user.id === bookmark.userId
+                  ? "max-w-xs"
+                  : "max-w-sm"
+              } truncate font-semibold text-white `}
+            >
               {bookmark.title}
             </p>
             <p className="max-w-xs truncate text-sm text-slate-500">
@@ -48,7 +60,7 @@ const CompactBookmark = ({ bookmark, onRemove }: { bookmark: Bookmark, onRemove:
             className="z-10 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
             onClick={(e) => {
               e.stopPropagation(); // Prevent the click event from propagating
-              onRemove(bookmark.id);
+              onRemove ? onRemove(bookmark.id) : null;
             }}
           >
             <svg

@@ -9,7 +9,7 @@ const ExpandedBookmark = ({
   onRemove,
 }: {
   bookmark: Bookmark;
-  onRemove: (id: string) => void;
+  onRemove?: (id: string) => void;
 }) => {
   const { data } = useSession();
 
@@ -80,7 +80,7 @@ const ExpandedBookmark = ({
             className="z-10 pr-4 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
             onClick={(e) => {
               e.stopPropagation(); // Prevent the click event from propagating
-              onRemove(bookmark.id);
+              onRemove ? onRemove(bookmark.id) : null;
             }}
           >
             <svg
