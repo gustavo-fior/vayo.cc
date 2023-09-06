@@ -2,6 +2,7 @@ import { type Bookmark } from "@prisma/client";
 import { motion } from "framer-motion";
 import { type GetServerSideProps } from "next";
 import { getSession, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import CompactBookmark from "~/components/CompactBookmark";
@@ -51,9 +52,43 @@ export default function Bookmarks() {
             createdAt: new Date(),
             updatedAt: new Date(),
           };
-      
+
           return oldQueryData ? [...oldQueryData, newBookmark] : [newBookmark];
         }
+      );
+
+      return { previousBookmarks };
+    },
+
+    onSettled: () => {
+      void utils.bookmarks.findByUserId.invalidate();
+    },
+    onError: (context) => {
+      const previousBookmarks =
+        (context as { previousBookmarks?: Bookmark[] })?.previousBookmarks ??
+        null;
+
+      utils.bookmarks.findByUserId.setData(
+        { userId: session.data?.user.id ?? "" },
+        previousBookmarks!
+      );
+    },
+  });
+
+  const deleteBookmark = api.bookmarks.delete.useMutation({
+    onMutate: async ({ id }) => {
+      //optimistic update
+      await utils.bookmarks.findByUserId.cancel();
+
+      const previousBookmarks = utils.bookmarks.findByUserId.getData();
+
+      utils.bookmarks.findByUserId.setData(
+        { userId: String(session.data?.user.id) },
+        (previousBookmarks: Bookmark[] | undefined) =>
+          [
+            ...(previousBookmarks?.filter((bookmark) => bookmark.id !== id) ??
+              []),
+          ] as Bookmark[]
       );
 
       return { previousBookmarks };
@@ -83,6 +118,15 @@ export default function Bookmarks() {
       url,
     });
   }, [addBookmark, url]);
+
+  const handleDeleteBookmark = useCallback(
+    (id: string) => {
+      deleteBookmark.mutate({
+        id,
+      });
+    },
+    [deleteBookmark]
+  );
 
   const handleCopyToClipboard = () => {
     const url =
@@ -280,21 +324,44 @@ export default function Bookmarks() {
                 },
               }}
             >
-              {isLoading
-                ? [...Array<number>(3)].map((_, i) =>
-                    viewStyle === "compact" ? (
-                      <CompactSkeleton key={i} />
-                    ) : (
-                      <ExpandedSkeleton key={i} />
-                    )
+              {isLoading ? (
+                [...Array<number>(3)].map((_, i) =>
+                  viewStyle === "compact" ? (
+                    <CompactSkeleton key={i} />
+                  ) : (
+                    <ExpandedSkeleton key={i} />
                   )
-                : bookmarks?.map((bookmark) =>
-                    viewStyle === "compact" ? (
-                      <CompactBookmark bookmark={bookmark} key={bookmark.id} />
-                    ) : (
-                      <ExpandedBookmark bookmark={bookmark} key={bookmark.id} />
-                    )
-                  )}
+                )
+              ) : bookmarks && bookmarks?.length > 0 ? (
+                bookmarks?.map((bookmark) =>
+                  viewStyle === "compact" ? (
+                    <CompactBookmark
+                      onRemove={handleDeleteBookmark}
+                      bookmark={bookmark}
+                      key={bookmark.id}
+                    />
+                  ) : (
+                    <ExpandedBookmark
+                      onRemove={handleDeleteBookmark}
+                      bookmark={bookmark}
+                      key={bookmark.id}
+                    />
+                  )
+                )
+              ) : (
+                <>
+                  <Image
+                    src="/images/flowers2.png"
+                    className="mx-auto pt-12 opacity-80"
+                    alt="bookshelf"
+                    width={200}
+                    height={200}
+                  />
+                  <p className="text-center text-gray-500 pt-4 italic">
+                    It's pretty calm here, add some bookmarks!
+                  </p>
+                </>
+              )}
             </motion.ul>
           </motion.div>
         </div>
