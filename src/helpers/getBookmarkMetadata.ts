@@ -25,72 +25,58 @@ export const getBookmarkMetadata = async (
 
     const title = document.querySelector("title")?.textContent ?? "";
 
-    const canonicalElement = document.querySelector("link[rel='canonical']");
-    const canonicalUrl: string | null = canonicalElement?.getAttribute("href");
-
     const ogImageElement = document.querySelector("meta[property='og:image']");
     const ogImageUrl: string | null = ogImageElement?.getAttribute("content");
 
     const faviconElement = document.querySelector("link[rel='icon']");
-    const appleTouchIconElement = document.querySelector("link[rel='apple-touch-icon']");
+    const appleTouchIconElement = document.querySelector(
+      "link[rel='apple-touch-icon']"
+    );
 
-    console.log("appleTouchIconElement", appleTouchIconElement);
+    const faviconUrl: string | null = appleTouchIconElement
+      ? appleTouchIconElement.getAttribute("href")
+      : faviconElement?.getAttribute("href");
 
-    const faviconUrl: string | null = appleTouchIconElement ? appleTouchIconElement.getAttribute("href") : faviconElement?.getAttribute("href");
+    let faviconImage: string | undefined = undefined;
+    let ogImage: string | undefined = undefined;
 
-    console.log("faviconUrl", faviconUrl);
+    if (faviconUrl) {
+      // Fetch the favicon image link or data here
+      try {
+        const faviconResponse = await fetch(new URL(faviconUrl, url).href);
+        const faviconImageData = await faviconResponse.arrayBuffer();
+        const faviconBase64 = btoa(
+          new Uint8Array(faviconImageData).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ""
+          )
+        );
+        faviconImage = `data:image/png;base64,${faviconBase64}`;
+      } catch (error) {
+        console.error("Error fetching favicon:", error);
+      }
+    }
 
-    // Use Promise.all to parallelize requests
-    const [faviconImageData, ogImageImageData] = await Promise.all([
-      canonicalUrl && faviconUrl
-        ? fetchAndEncodeImageData(new URL(faviconUrl, canonicalUrl).href)
-        : null,
-      ogImageUrl
-        ? fetchAndEncodeImageData(new URL(ogImageUrl, url).href)
-        : null,
-    ]);
+    if (ogImageUrl) {
+      try {
+        const ogImageResponse = await fetch(new URL(ogImageUrl, url).href);
+        const ogImageImageData = await ogImageResponse.arrayBuffer();
+        const ogImageBase64 = btoa(
+          new Uint8Array(ogImageImageData).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ""
+          )
+        );
+        ogImage = `data:image/png;base64,${ogImageBase64}`;
+      } catch (error) {
+        console.error("Error fetching favicon:", error);
+      }
+    }
 
-    return {
-      title,
-      faviconImage: faviconImageData
-        ? `data:image/png;base64,${faviconImageData}`
-        : undefined,
-      ogImage: ogImageImageData
-        ? `data:image/png;base64,${ogImageImageData}`
-        : undefined,
-    };
+    return { title, faviconImage, ogImage };
   } catch (error) {
     console.error("Error fetching page metadata:", error);
     return { title: "", faviconImage: undefined, ogImage: undefined };
-  }
-};
-
-const fetchAndEncodeImageData = async (url: string): Promise<string | null> => {
-  try {
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent": "Your User Agent", // Add a User-Agent header for web scraping
-      },
-      referrerPolicy: "no-referrer",
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch: ${response.status} ${response.statusText}`
-      );
-    }
-
-    const imageData = await response.arrayBuffer();
-    const base64Data = btoa(
-      new Uint8Array(imageData).reduce(
-        (data, byte) => data + String.fromCharCode(byte),
-        ""
-      )
-    );
-    return base64Data;
-  } catch (error) {
-    console.error(`Error fetching image data from ${url}:`, error);
-    return null;
   }
 };
 

@@ -1,6 +1,5 @@
 import { type Bookmark } from "@prisma/client";
 import { motion } from "framer-motion";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { itemVariants } from "../helpers/animationVariants";
 
@@ -11,7 +10,6 @@ const CompactBookmark = ({
   bookmark: Bookmark;
   onRemove?: (id: string) => void;
 }) => {
-  const { data } = useSession();
 
   return (
     <motion.li variants={itemVariants} key={bookmark.id}>
@@ -42,11 +40,7 @@ const CompactBookmark = ({
               />
             )}
             <p
-              className={`${
-                data && data.user.id === bookmark.userId
-                  ? "max-w-xs"
-                  : "max-w-sm"
-              } truncate font-semibold text-white `}
+              className={`max-w-sm truncate font-semibold text-white `}
             >
               {bookmark.title}
             </p>
@@ -55,7 +49,6 @@ const CompactBookmark = ({
             </p>
           </div>
         </a>
-        {data && data.user.id === bookmark.userId && (
           <button
             className="z-10 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
             onClick={(e) => {
@@ -78,7 +71,6 @@ const CompactBookmark = ({
               />
             </svg>
           </button>
-        )}
       </motion.div>
     </motion.li>
   );

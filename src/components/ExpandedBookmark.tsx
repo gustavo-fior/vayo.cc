@@ -2,7 +2,6 @@ import { type Bookmark } from "@prisma/client";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { itemVariants } from "../helpers/animationVariants";
-import { useSession } from "next-auth/react";
 
 const ExpandedBookmark = ({
   bookmark,
@@ -11,8 +10,7 @@ const ExpandedBookmark = ({
   bookmark: Bookmark;
   onRemove?: (id: string) => void;
 }) => {
-  const { data } = useSession();
-
+  
   return (
     <motion.li variants={itemVariants} key={bookmark.id}>
       <motion.div
@@ -21,9 +19,7 @@ const ExpandedBookmark = ({
         className="group flex justify-between rounded-lg p-2 transition duration-300 ease-in-out hover:bg-white hover:bg-opacity-10 hover:drop-shadow-lg hover:backdrop-blur-lg"
       >
         <a
-          className={`flex items-center gap-6 w-full ${
-            data && data.user.id === bookmark.userId ? "" : "w-full"
-          } `}
+          className={`flex items-center gap-6 w-full`}
           href={bookmark.url}
           target="_blank"
         >
@@ -75,7 +71,6 @@ const ExpandedBookmark = ({
             </div>
           </div>
         </a>
-        {data && data.user.id === bookmark.userId && (
           <button
             className="z-10 pr-4 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
             onClick={(e) => {
@@ -98,7 +93,6 @@ const ExpandedBookmark = ({
               />
             </svg>
           </button>
-        )}
       </motion.div>
     </motion.li>
   );

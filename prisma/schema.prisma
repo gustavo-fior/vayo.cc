@@ -46,7 +46,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    bookmarks     Bookmark[]
+    folders       Folder[]
 }
 
 model VerificationToken {
@@ -57,6 +57,18 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
+model Folder {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name      String
+    icon      String   @default("📁")
+    isShared  Boolean  @default(false)
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    String
+    bookmarks Bookmark[]
+}
+
 model Bookmark {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
@@ -65,6 +77,6 @@ model Bookmark {
     favicon   String?
     ogImage   String?
     title     String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId    String
+    folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+    folderId  String
 }

@@ -7,19 +7,11 @@ import {
 } from "~/server/api/trpc";
 
 export const bookmarksRouter = createTRPCRouter({
-  getMetadata: protectedProcedure
-    .input(
-      z.object({
-        url: z.string(),
-      })
-    )
-    .query(async ({ input }) => {
-      return await getBookmarkMetadata(input.url);
-    }),
   create: protectedProcedure
     .input(
       z.object({
         url: z.string(),
+        folderId: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -33,22 +25,20 @@ export const bookmarksRouter = createTRPCRouter({
           title: title,
           favicon: faviconImage,
           ogImage: ogImage,
-          userId: ctx.session.user.id,
+          folderId: input.folderId,
         },
       });
     }),
-  findByUserId: publicProcedure
+  findByFolderId: publicProcedure
     .input(
       z.object({
-        userId: z.string().nullable(),
+        folderId: z.string(),
       })
     )
     .query(async ({ input, ctx }) => {
-      const userId = input.userId ?? ctx.session?.user.id;
-
       return await ctx.prisma.bookmark.findMany({
         where: {
-          userId: userId,
+          folderId: input.folderId,
         },
       });
     }),
