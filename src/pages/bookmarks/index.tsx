@@ -9,13 +9,12 @@ import CompactBookmark from "~/components/CompactBookmark";
 import { CompactSkeleton } from "~/components/CompactSkeleton";
 import ExpandedBookmark from "~/components/ExpandedBookmark";
 import { ExpandedSkeleton } from "~/components/ExpandedSkeleton";
-import { getBookmarkMetadata } from "~/helpers/getBookmarkMetadata";
 import { api } from "~/utils/api";
 
 export default function Bookmarks() {
   const utils = api.useContext();
   const session = useSession();
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState("")
   const [isOpen, setIsOpen] = useState(false);
   const [signinOut, setSigninOut] = useState(false);
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
@@ -30,9 +29,6 @@ export default function Bookmarks() {
   const addBookmark = api.bookmarks.create.useMutation({
     onMutate: async () => {
       setUrl("");
-      const { faviconImage, ogImage, title } = await getBookmarkMetadata(url);
-
-      console.log(faviconImage, ogImage, title);
 
       //optimistic update
       await utils.bookmarks.findByUserId.cancel();
@@ -45,10 +41,10 @@ export default function Bookmarks() {
           const newBookmark: Bookmark = {
             id: "temp",
             url,
-            title,
+            title : "Loading...",
             userId: String(session.data?.user.id),
-            favicon: faviconImage ?? null,
-            ogImage: ogImage ?? null,
+            favicon: null,
+            ogImage: null,
             createdAt: new Date(),
             updatedAt: new Date(),
           };
@@ -357,7 +353,7 @@ export default function Bookmarks() {
                     width={200}
                     height={200}
                   />
-                  <p className="text-center text-gray-500 pt-4 italic">
+                  <p className={`text-center text-gray-500 ${viewStyle === "compact" ? "pt-7" : "pt-4"} italic`}>
                     It&apos;s pretty calm here, add some bookmarks!
                   </p>
                 </>

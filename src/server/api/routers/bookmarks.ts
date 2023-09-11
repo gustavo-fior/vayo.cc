@@ -7,6 +7,15 @@ import {
 } from "~/server/api/trpc";
 
 export const bookmarksRouter = createTRPCRouter({
+  getMetadata: protectedProcedure
+    .input(
+      z.object({
+        url: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      return await getBookmarkMetadata(input.url);
+    }),
   create: protectedProcedure
     .input(
       z.object({
