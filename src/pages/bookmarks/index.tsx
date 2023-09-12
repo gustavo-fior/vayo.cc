@@ -5,7 +5,7 @@ import { getSession, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { IoMdAdd, IoMdMenu } from "react-icons/io";
-import {FiMenu} from "react-icons/fi";
+import { FiMenu } from "react-icons/fi";
 import CompactBookmark from "~/components/CompactBookmark";
 import { CompactSkeleton } from "~/components/CompactSkeleton";
 import ExpandedBookmark from "~/components/ExpandedBookmark";
@@ -14,6 +14,7 @@ import { ShareButton } from "~/components/ShareButton";
 import { SignOutButton } from "~/components/SignOutButton";
 import { api } from "~/utils/api";
 import { Spinner } from "~/components/Spinner";
+import { FolderSkeleton } from "~/components/FolderSkeleton";
 
 export default function Bookmarks() {
   const session = useSession();
@@ -24,15 +25,17 @@ export default function Bookmarks() {
     "expanded"
   );
 
-  const { data: folders } = api.folders.findByUserId.useQuery({
-    userId: String(session.data?.user.id),
-  });
+  const { data: folders, isLoading: foldersLoading } =
+    api.folders.findByUserId.useQuery({
+      userId: String(session.data?.user.id),
+    });
 
   const [folderId, setFolderId] = useState<string>(folders?.[0]?.id ?? "");
 
-  const { data: bookmarks, isLoading } = api.bookmarks.findByFolderId.useQuery({
-    folderId: String(folderId),
-  });
+  const { data: bookmarks, isLoading: bookmarksLoading } =
+    api.bookmarks.findByFolderId.useQuery({
+      folderId: String(folderId),
+    });
 
   const addBookmark = api.bookmarks.create.useMutation({
     onMutate: async () => {
@@ -140,10 +143,10 @@ export default function Bookmarks() {
   };
 
   useEffect(() => {
-    if (!isLoading && bookmarks?.length) {
+    if (!bookmarksLoading && bookmarks?.length) {
       setIsOpen(true);
     }
-  }, [isLoading, bookmarks]);
+  }, [bookmarksLoading, bookmarks]);
 
   return (
     <>
@@ -196,9 +199,9 @@ export default function Bookmarks() {
                 className="rounded-full bg-white/10 p-2 font-semibold text-white no-underline transition hover:bg-white/20"
               >
                 {viewStyle === "compact" ? (
-                  <IoMdMenu color="white" size={24}  />
+                  <IoMdMenu color="white" size={24} />
                 ) : (
-                  <FiMenu color="white" size={24}  />
+                  <FiMenu color="white" size={24} />
                 )}
               </motion.button>
 
@@ -206,28 +209,33 @@ export default function Bookmarks() {
               <SignOutButton />
             </div>
           </div>
-          <div className="flex align-middle items-center">
-            {folders && folders?.length > 0 ? (
-              <select
-                name="folder"
-                id="folder"
-                value={folderId}
-                onChange={(e) => setFolderId(e.target.value)}
-                className="rounded-full bg-white/10 px-6 py-2 mt-3 font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 hover:bg-white/20"
-              >
-                {folders?.map((folder) => (
-                  <option key={folder.id} value={folder.id}>
-                    {folder.icon}{" "}
-                    {folder.name}
-                  </option>
-                ))}
-              </select>
+          <div className="flex items-center gap-x-2 pt-4 align-middle">
+            {foldersLoading ? (
+              [...Array<number>(3)].map((_, i) => <FolderSkeleton key={i} />)
+            ) : folders && folders?.length > 0 ? (
+              folders?.map((folder) => (
+                <motion.div
+                  onClick={() => {
+                    setFolderId(folder.id);
+                    setIsOpen(false);
+                    void utils.bookmarks.findByFolderId.invalidate();
+                  }}
+                  key={folder.id}
+                  className={`${
+                    folderId === folder.id ? "bg-white/30" : ""
+                  } flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20`}
+                >
+                  <div>{folder.icon}</div>
+                  <div>{folder.name}</div>
+                </motion.div>
+              ))
             ) : (
-              <p className="text-gray-500 italic">
-                You don&apos;t have any folders yet, create one!
-              </p>
+              <>
+                <p className={`pt-4 text-center italic text-gray-500`}>
+                  It&apos;s pretty calm here, add some folders!
+                </p>
+              </>
             )}
-
           </div>
           <div className="my-6 h-[2px] w-full rounded-full bg-white/5" />
           <motion.div
@@ -258,7 +266,7 @@ export default function Bookmarks() {
                 },
               }}
             >
-              {isLoading ? (
+              {bookmarksLoading ? (
                 [...Array<number>(3)].map((_, i) =>
                   viewStyle === "compact" ? (
                     <CompactSkeleton key={i} />
