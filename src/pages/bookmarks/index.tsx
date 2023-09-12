@@ -15,6 +15,8 @@ import { SignOutButton } from "~/components/SignOutButton";
 import { api } from "~/utils/api";
 import { Spinner } from "~/components/Spinner";
 import { FolderSkeleton } from "~/components/FolderSkeleton";
+import { CreateFolderButton } from "~/components/CreateFolderButton";
+import { DeleteFolderButton } from "~/components/DeleteFolderButton";
 
 export default function Bookmarks() {
   const session = useSession();
@@ -158,7 +160,7 @@ export default function Bookmarks() {
     <>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-          <div className="flex lg:flex-row flex-col-reverse gap-4 lg:gap-0 items-center justify-between align-middle">
+          <div className="flex flex-col-reverse items-center justify-between gap-4 align-middle lg:flex-row lg:gap-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -173,7 +175,7 @@ export default function Bookmarks() {
                   value={inputUrl}
                   onChange={(e) => setInputUrl(e.target.value)}
                   placeholder="https://..."
-                  className="md:w-96 w-72 rounded-md bg-white/10 px-4 py-2 font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 hover:bg-white/20"
+                  className="w-72 rounded-full bg-white/10 px-6 py-2 font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 hover:bg-white/20 md:w-96"
                 />
                 <motion.button
                   whileTap={{
@@ -181,7 +183,7 @@ export default function Bookmarks() {
                   }}
                   type="submit"
                   disabled={inputUrl.length === 0 || addBookmark.isLoading}
-                  className={`duration-300'hover:bg-white/20 rounded-md bg-white/10 p-3 transition ${
+                  className={`duration-300'hover:bg-white/20 rounded-full bg-white/10 p-3 transition ${
                     inputUrl.length === 0 || addBookmark.isLoading
                       ? "bg-white/5"
                       : null
@@ -202,7 +204,7 @@ export default function Bookmarks() {
                   scale: 0.8,
                 }}
                 onClick={() => handleChangeViewStyle()}
-                className="rounded-md bg-white/10 p-2 font-semibold text-white no-underline transition hover:bg-white/20"
+                className="rounded-full bg-white/10 p-2 font-semibold text-white no-underline transition hover:bg-white/20"
               >
                 {viewStyle === "compact" ? (
                   <IoMdMenu color="white" size={24} />
@@ -216,33 +218,40 @@ export default function Bookmarks() {
             </div>
           </div>
           <div className="my-6 h-[2px] w-full rounded-full bg-white/5" />
-          <div className="flex items-center gap-x-2 pb-4 align-middle">
-            {foldersLoading ? (
-              [...Array<number>(3)].map((_, i) => <FolderSkeleton key={i} />)
-            ) : folders && folders?.length > 0 ? (
-              folders?.map((folder) => (
-                <motion.div
-                  onClick={() => {
-                    setFolderId(folder.id);
-                    setIsOpen(false);
-                    void utils.bookmarks.findByFolderId.invalidate();
-                  }}
-                  key={folder.id}
-                  className={`${
-                    folderId === folder.id ? "bg-white/30" : ""
-                  } flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20`}
-                >
-                  <div>{folder.icon}</div>
-                  <div>{folder.name}</div>
-                </motion.div>
-              ))
-            ) : (
-              <>
+          <div className="flex justify-between pb-4 align-middle">
+            <div className="flex items-center gap-x-2 overflow-x-auto ">
+              {foldersLoading ? (
+                [...Array<number>(3)].map((_, i) => <FolderSkeleton key={i} />)
+              ) : folders && folders?.length > 0 ? (
+                folders?.map((folder) => (
+                  <motion.div
+                    whileTap={{
+                      scale: 0.8,
+                    }}
+                    onClick={() => {
+                      setFolderId(folder.id);
+                      setIsOpen(false);
+                      void utils.bookmarks.findByFolderId.invalidate();
+                    }}
+                    key={folder.id}
+                    className={`${
+                      folderId === folder.id ? "bg-white/30" : ""
+                    } flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20`}
+                  >
+                    <div>{folder.icon}</div>
+                    <div>{folder.name}</div>
+                  </motion.div>
+                ))
+              ) : (
                 <p className={`text-center italic text-gray-500`}>
                   It&apos;s pretty calm here, add some folders!
                 </p>
-              </>
-            )}
+              )}
+            </div>
+            <div className="flex gap-2">
+              <DeleteFolderButton folderId={folderId}/>
+              <CreateFolderButton />
+            </div>
           </div>
           <motion.div
             initial={false}
@@ -310,7 +319,7 @@ export default function Bookmarks() {
                       viewStyle === "compact" ? "pt-7" : "pt-4"
                     } italic`}
                   >
-                    It&apos;s pretty calm here, add some bookmarks!
+                    No much down here... Add some bookmarks!
                   </p>
                 </>
               )}

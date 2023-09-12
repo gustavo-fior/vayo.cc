@@ -39,14 +39,14 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
           onClick={() => {
             void handleCopyToClipboard();
           }}
-          className="rounded-md bg-white/10 px-4 py-2 font-semibold text-white no-underline transition hover:bg-white/20"
+          className="rounded-full bg-white/10 px-4 py-2 font-semibold text-white no-underline transition hover:bg-white/20"
         >
           Share
         </motion.button>
       </Popover.Trigger>
       {folderId && (
         <Popover.Portal>
-          <Popover.Content className="mt-2 rounded-md bg-white/10 px-4 py-2 font-semibold text-white no-underline transition">
+          <Popover.Content className="mt-2 rounded-md bg-zinc-800 px-4 py-2 font-semibold text-white no-underline transition">
             <div className="flex items-center gap-3 align-middle">
               <span className="relative flex h-2 w-2">
                 <span

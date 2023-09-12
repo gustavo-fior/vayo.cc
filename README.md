@@ -7,6 +7,8 @@
 - optimistic update ✅
 - public/private pages ✅
 - multiple lists per user ✅
-- responsiviness
+- responsiviness ✅
 - empty state ✅
 - make UI better
+- preview yt videos
+- fix scroll bug in emoji picker
