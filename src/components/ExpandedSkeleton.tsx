@@ -2,14 +2,14 @@ export const ExpandedSkeleton = () => {
   return (
     <a className="flex items-center gap-6 p-2">
       <div
-        className="animate-pulse rounded-md bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"
+        className="animate-pulse rounded-md hidden md:block bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"
         style={{
           height: "4rem",
           width: "12rem",
         }}
       />
       <div className="flex flex-col gap-4">
-        <div className="h-4 w-56 animate-pulse rounded-md bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"></div>
+        <div className="h-4 w-72 animate-pulse rounded-md bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"></div>
         <div className="flex items-center gap-2 align-middle">
           <div
             className="animate-pulse rounded-sm bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"
@@ -19,7 +19,7 @@ export const ExpandedSkeleton = () => {
             }}
           />
 
-          <div className="h-3 w-96 animate-pulse rounded-md bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"></div>
+          <div className="h-3 md:w-96 w-48 animate-pulse rounded-md bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"></div>
         </div>
       </div>
     </a>

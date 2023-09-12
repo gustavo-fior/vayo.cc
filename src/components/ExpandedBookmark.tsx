@@ -18,7 +18,7 @@ const ExpandedBookmark = ({
         className="group flex justify-between rounded-lg p-2 transition duration-300 ease-in-out hover:bg-white hover:bg-opacity-10 hover:drop-shadow-lg hover:backdrop-blur-lg"
       >
         <a
-          className={`flex w-full items-center gap-6`}
+          className={`flex md:w-full items-center gap-6`}
           href={bookmark.url}
           target="_blank"
         >
@@ -28,7 +28,7 @@ const ExpandedBookmark = ({
               alt={bookmark.title}
               width={320}
               height={180}
-              className="rounded-md"
+              className="rounded-md hidden md:block"
               style={{
                 height: "4rem",
                 width: "12rem",
@@ -37,7 +37,7 @@ const ExpandedBookmark = ({
             />
           ) : (
             <div
-              className="rounded-md bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"
+              className="rounded-md hidden md:block bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"
               style={{
                 height: "4rem",
                 width: "12rem",
@@ -64,7 +64,7 @@ const ExpandedBookmark = ({
                   style={{ height: "0.9rem", width: "0.9rem" }}
                 />
               )}
-              <p className="max-w-sm truncate text-sm text-slate-500">
+              <p className="md:max-w-sm md:w-96 w-72 truncate text-sm text-slate-500">
                 {bookmark.url}
               </p>
             </div>

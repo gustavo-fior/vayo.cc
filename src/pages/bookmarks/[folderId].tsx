@@ -16,12 +16,11 @@ import { api } from "~/utils/api";
 
 export default function Bookmarks() {
   const router = useRouter();
+  const { folderId } = router.query;
   const [isOpen, setIsOpen] = useState(false);
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
   );
-
-  const { folderId } = router.query;
 
   const { data: folder, isLoading: folderLoading } =
     api.folders.findById.useQuery({
@@ -46,28 +45,38 @@ export default function Bookmarks() {
   };
 
   useEffect(() => {
-    if (!bookmarksLoading && bookmarks?.length) {
+    if (!bookmarksLoading && bookmarks?.length && !folderLoading) {
       setIsOpen(true);
     }
-  }, [bookmarksLoading, bookmarks]);
+  }, [bookmarksLoading, bookmarks, folderLoading]);
+
+  console.log(folder);
 
   return (
     <>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-          {folder?.isShared ? (
-            <>
-              <div className="flex items-center justify-between align-middle font-semibold text-white">
-                <div>
-                  {folderLoading ? (
-                    <RectangleSkeleton />
-                  ) : (
-                    <div className="flex items-center gap-3 align-middle">
-                      <p className="text-3xl">{folder?.icon}</p>
-                      <p className="text-3xl">{folder?.name}</p>
-                    </div>
-                  )}
-                </div>
+          <>
+            <div className="flex items-center justify-between align-middle font-semibold text-white">
+              <div>
+                {folderLoading ? (
+                  <RectangleSkeleton />
+                ) : (
+                  <div>
+                    {folder?.isShared ? (
+                      <div className="flex items-center gap-3 align-middle">
+                        <p className="text-3xl">{folder?.icon}</p>
+                        <p className="text-3xl">{folder?.name}</p>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 align-middle">
+                        <p className="text-3xl">This folder is private :/</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              {folder?.isShared && (
                 <div className="flex items-center gap-4 align-middle">
                   <motion.button
                     whileTap={{
@@ -85,8 +94,10 @@ export default function Bookmarks() {
 
                   <ShareButton />
                 </div>
-              </div>
-              <div className="my-6 h-[2px] w-full rounded-full bg-white/5" />
+              )}
+            </div>
+            <div className="my-6 h-[2px] w-full rounded-full bg-white/5" />
+            {folder?.isShared && (
               <motion.div
                 initial={false}
                 animate={isOpen ? "open" : "closed"}
@@ -151,18 +162,14 @@ export default function Bookmarks() {
                           viewStyle === "compact" ? "pt-7" : "pt-4"
                         } italic`}
                       >
-                        It&apos;s pretty calm here, add some bookmarks!
+                        There are no bookmarks in this folder :/
                       </p>
                     </>
                   )}
                 </motion.ul>
               </motion.div>
-            </>
-          ) : (
-            <div className="font-semibold text-white">
-              <p className="text-3xl">This folder is not public :/</p>
-            </div>
-          )}
+            )}
+          </>
         </div>
       </main>
     </>

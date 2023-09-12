@@ -158,7 +158,7 @@ export default function Bookmarks() {
     <>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-          <div className="flex items-center justify-between align-middle">
+          <div className="flex lg:flex-row flex-col-reverse gap-4 lg:gap-0 items-center justify-between align-middle">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -173,7 +173,7 @@ export default function Bookmarks() {
                   value={inputUrl}
                   onChange={(e) => setInputUrl(e.target.value)}
                   placeholder="https://..."
-                  className="w-96 rounded-md bg-white/10 px-4 py-2  font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 hover:bg-white/20"
+                  className="md:w-96 w-72 rounded-md bg-white/10 px-4 py-2 font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 hover:bg-white/20"
                 />
                 <motion.button
                   whileTap={{
@@ -280,7 +280,7 @@ export default function Bookmarks() {
                     <ExpandedSkeleton key={i} />
                   )
                 )
-              ) : bookmarks && bookmarks?.length > 0 ? (
+              ) : bookmarks && !bookmarksLoading && bookmarks?.length > 0 ? (
                 bookmarks?.map((bookmark) =>
                   viewStyle === "compact" ? (
                     <CompactBookmark
