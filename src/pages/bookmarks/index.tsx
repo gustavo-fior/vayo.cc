@@ -30,7 +30,7 @@ export default function Bookmarks() {
       userId: String(session.data?.user.id),
     });
 
-  const [folderId, setFolderId] = useState<string>(folders?.[0]?.id ?? "");
+  const [folderId, setFolderId] = useState<string>("");
 
   const { data: bookmarks, isLoading: bookmarksLoading } =
     api.bookmarks.findByFolderId.useQuery({
@@ -148,6 +148,12 @@ export default function Bookmarks() {
     }
   }, [bookmarksLoading, bookmarks]);
 
+  useEffect(() => {
+    if (!foldersLoading && folders && folders?.length > 0) {
+      setFolderId(folders[0]?.id ?? "");
+    }
+  }, [folders, foldersLoading]);
+
   return (
     <>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
@@ -167,7 +173,7 @@ export default function Bookmarks() {
                   value={inputUrl}
                   onChange={(e) => setInputUrl(e.target.value)}
                   placeholder="https://..."
-                  className="w-96 rounded-full bg-white/10 px-6 py-2  font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 hover:bg-white/20"
+                  className="w-96 rounded-md bg-white/10 px-4 py-2  font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 hover:bg-white/20"
                 />
                 <motion.button
                   whileTap={{
@@ -175,7 +181,7 @@ export default function Bookmarks() {
                   }}
                   type="submit"
                   disabled={inputUrl.length === 0 || addBookmark.isLoading}
-                  className={`duration-300'hover:bg-white/20 rounded-full bg-white/10 p-3 transition ${
+                  className={`duration-300'hover:bg-white/20 rounded-md bg-white/10 p-3 transition ${
                     inputUrl.length === 0 || addBookmark.isLoading
                       ? "bg-white/5"
                       : null
@@ -196,7 +202,7 @@ export default function Bookmarks() {
                   scale: 0.8,
                 }}
                 onClick={() => handleChangeViewStyle()}
-                className="rounded-full bg-white/10 p-2 font-semibold text-white no-underline transition hover:bg-white/20"
+                className="rounded-md bg-white/10 p-2 font-semibold text-white no-underline transition hover:bg-white/20"
               >
                 {viewStyle === "compact" ? (
                   <IoMdMenu color="white" size={24} />
@@ -209,7 +215,8 @@ export default function Bookmarks() {
               <SignOutButton />
             </div>
           </div>
-          <div className="flex items-center gap-x-2 pt-4 align-middle">
+          <div className="my-6 h-[2px] w-full rounded-full bg-white/5" />
+          <div className="flex items-center gap-x-2 pb-4 align-middle">
             {foldersLoading ? (
               [...Array<number>(3)].map((_, i) => <FolderSkeleton key={i} />)
             ) : folders && folders?.length > 0 ? (
@@ -231,13 +238,12 @@ export default function Bookmarks() {
               ))
             ) : (
               <>
-                <p className={`pt-4 text-center italic text-gray-500`}>
+                <p className={`text-center italic text-gray-500`}>
                   It&apos;s pretty calm here, add some folders!
                 </p>
               </>
             )}
           </div>
-          <div className="my-6 h-[2px] w-full rounded-full bg-white/5" />
           <motion.div
             initial={false}
             animate={isOpen ? "open" : "closed"}

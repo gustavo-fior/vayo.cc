@@ -10,7 +10,6 @@ const CompactBookmark = ({
   bookmark: Bookmark;
   onRemove?: (id: string) => void;
 }) => {
-
   return (
     <motion.li variants={itemVariants} key={bookmark.id}>
       <motion.div
@@ -39,9 +38,7 @@ const CompactBookmark = ({
                 style={{ height: "0.9rem", width: "0.9rem" }}
               />
             )}
-            <p
-              className={`max-w-sm truncate font-semibold text-white `}
-            >
+            <p className={`max-w-sm truncate font-semibold text-white `}>
               {bookmark.title}
             </p>
             <p className="max-w-xs truncate text-sm text-slate-500">
@@ -49,28 +46,30 @@ const CompactBookmark = ({
             </p>
           </div>
         </a>
-          <button
-            className="z-10 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent the click event from propagating
-              onRemove ? onRemove(bookmark.id) : null;
-            }}
+        {onRemove && (
+        <button
+          className="z-10 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent the click event from propagating
+            onRemove ? onRemove(bookmark.id) : null;
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={4}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={4}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        )}
       </motion.div>
     </motion.li>
   );

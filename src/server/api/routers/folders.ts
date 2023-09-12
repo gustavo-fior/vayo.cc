@@ -1,7 +1,20 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
 export const foldersRouter = createTRPCRouter({
+  findById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      return await ctx.prisma.folder.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
   create: protectedProcedure
     .input(
       z.object({
@@ -46,4 +59,27 @@ export const foldersRouter = createTRPCRouter({
         },
       });
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().nullable(),
+        icon: z.string().nullable(),
+        isShared: z.boolean().nullable(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.folder.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name ?? undefined,
+          icon: input.icon ?? undefined,
+          isShared: input.isShared ?? undefined,
+          updatedAt: new Date(),
+        },
+      });
+    }
+  ),
 });

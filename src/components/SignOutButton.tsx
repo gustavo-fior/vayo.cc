@@ -15,7 +15,7 @@ export const SignOutButton = () => {
       whileTap={{
         scale: 0.8,
       }}
-      className="rounded-full bg-white/10 px-4 py-2 font-semibold text-white no-underline transition hover:bg-white/20"
+      className="rounded-md bg-white/10 px-4 py-2 font-semibold text-white no-underline transition hover:bg-white/20"
       onClick={() => handleSignOut()}
     >
       {signinOut ? (
