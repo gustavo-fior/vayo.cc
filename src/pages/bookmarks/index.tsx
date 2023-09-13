@@ -32,11 +32,11 @@ export default function Bookmarks() {
       userId: String(session.data?.user.id),
     });
 
-  const [folderId, setFolderId] = useState<string>("");
+  const [currentFolderId, setCurrentFolderId] = useState<string>("");
 
   const { data: bookmarks, isLoading: bookmarksLoading } =
     api.bookmarks.findByFolderId.useQuery({
-      folderId: String(folderId),
+      folderId: String(currentFolderId),
     });
 
   const addBookmark = api.bookmarks.create.useMutation({
@@ -49,7 +49,7 @@ export default function Bookmarks() {
       const previousBookmarks = utils.bookmarks.findByFolderId.getData();
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(folderId) },
+        { folderId: String(currentFolderId) },
         (oldQueryData: Bookmark[] | undefined) => {
           const newBookmark: Bookmark = {
             id: "temp",
@@ -78,7 +78,7 @@ export default function Bookmarks() {
         null;
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(folderId) },
+        { folderId: String(currentFolderId) },
         previousBookmarks!
       );
     },
@@ -92,7 +92,7 @@ export default function Bookmarks() {
       const previousBookmarks = utils.bookmarks.findByFolderId.getData();
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(folderId) },
+        { folderId: String(currentFolderId) },
         (previousBookmarks: Bookmark[] | undefined) =>
           [
             ...(previousBookmarks?.filter((bookmark) => bookmark.id !== id) ??
@@ -112,7 +112,7 @@ export default function Bookmarks() {
         null;
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(folderId) },
+        { folderId: String(currentFolderId) },
         previousBookmarks!
       );
     },
@@ -121,9 +121,9 @@ export default function Bookmarks() {
   const handleCreateBookmark = useCallback(() => {
     addBookmark.mutate({
       url: inputUrl,
-      folderId: String(folderId),
+      folderId: String(currentFolderId),
     });
-  }, [addBookmark, inputUrl, folderId]);
+  }, [addBookmark, inputUrl, currentFolderId]);
 
   const handleDeleteBookmark = useCallback(
     (id: string) => {
@@ -144,15 +144,17 @@ export default function Bookmarks() {
     setViewStyle(viewStyle === "compact" ? "expanded" : "compact");
   };
 
+  // Opening the bookmarks list
   useEffect(() => {
     if (!bookmarksLoading && bookmarks?.length) {
       setIsOpen(true);
     }
   }, [bookmarksLoading, bookmarks]);
 
+  // Setting the current folder id
   useEffect(() => {
     if (!foldersLoading && folders && folders?.length > 0) {
-      setFolderId(folders[0]?.id ?? "");
+      setCurrentFolderId(folders[0]?.id ?? "");
     }
   }, [folders, foldersLoading]);
 
@@ -173,6 +175,7 @@ export default function Bookmarks() {
                   name="url"
                   id="url"
                   value={inputUrl}
+                  disabled={addBookmark.isLoading || !currentFolderId}
                   onChange={(e) => setInputUrl(e.target.value)}
                   placeholder="https://..."
                   className="w-72 rounded-full bg-white/10 px-6 py-2 font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 hover:bg-white/20 md:w-96"
@@ -182,7 +185,7 @@ export default function Bookmarks() {
                     scale: 0.8,
                   }}
                   type="submit"
-                  disabled={inputUrl.length === 0 || addBookmark.isLoading}
+                  disabled={inputUrl.length === 0 || addBookmark.isLoading || !currentFolderId}
                   className={`duration-300'hover:bg-white/20 rounded-full bg-white/10 p-3 transition ${
                     inputUrl.length === 0 || addBookmark.isLoading
                       ? "bg-white/5"
@@ -213,7 +216,7 @@ export default function Bookmarks() {
                 )}
               </motion.button>
 
-              <ShareButton folderId={folderId} />
+              <ShareButton folderId={currentFolderId} />
               <SignOutButton />
             </div>
           </div>
@@ -229,13 +232,13 @@ export default function Bookmarks() {
                       scale: 0.8,
                     }}
                     onClick={() => {
-                      setFolderId(folder.id);
+                      setCurrentFolderId(folder.id);
                       setIsOpen(false);
                       void utils.bookmarks.findByFolderId.invalidate();
                     }}
                     key={folder.id}
                     className={`${
-                      folderId === folder.id ? "bg-white/30" : ""
+                      currentFolderId === folder.id ? "bg-white/30" : ""
                     } flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20`}
                   >
                     <div>{folder.icon}</div>
@@ -249,7 +252,7 @@ export default function Bookmarks() {
               )}
             </div>
             <div className="flex gap-2">
-              <DeleteFolderButton folderId={folderId}/>
+              <DeleteFolderButton folderId={currentFolderId} setCurrentFolderId={setCurrentFolderId}/>
               <CreateFolderButton />
             </div>
           </div>
@@ -308,18 +311,18 @@ export default function Bookmarks() {
               ) : (
                 <>
                   <Image
-                    src="/images/flowers2.png"
-                    className="mx-auto pt-12 opacity-80"
-                    alt="bookshelf"
-                    width={200}
-                    height={200}
+                    src="/images/hay.png"
+                    className="mx-auto pt-20 opacity-80"
+                    alt="hay"
+                    width={180}
+                    height={180}
                   />
                   <p
                     className={`text-center text-gray-500 ${
                       viewStyle === "compact" ? "pt-7" : "pt-4"
                     } italic`}
                   >
-                    No much down here... Add some bookmarks!
+                    Not much down here... Add some bookmarks!
                   </p>
                 </>
               )}

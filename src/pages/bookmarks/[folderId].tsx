@@ -151,9 +151,9 @@ export default function Bookmarks() {
                   ) : (
                     <>
                       <Image
-                        src="/images/flowers2.png"
+                        src="/images/hay.png"
                         className="mx-auto pt-12 opacity-80"
-                        alt="bookshelf"
+                        alt="hay"
                         width={200}
                         height={200}
                       />
@@ -176,19 +176,3 @@ export default function Bookmarks() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-};

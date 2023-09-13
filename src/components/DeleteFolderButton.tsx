@@ -5,11 +5,23 @@ import { api } from "~/utils/api";
 import { Spinner } from "./Spinner";
 import { IoMdTrash } from "react-icons/io";
 
-export const DeleteFolderButton = ({ folderId }: { folderId: string }) => {
+export const DeleteFolderButton = ({
+  folderId,
+  setCurrentFolderId,
+}: {
+  folderId: string;
+  setCurrentFolderId: (folderId: string) => void;
+}) => {
   const session = useSession();
   const utils = api.useContext();
   const { mutate: deleteFolder, isLoading: isDeletingFolder } =
-    api.folders.delete.useMutation({});
+    api.folders.delete.useMutation({
+      onSuccess: () => {
+        if (utils.folders.findByUserId.getData()?.length === 0) {
+          setCurrentFolderId("");
+        }
+      },
+    });
 
   const handleDelete = async () => {
     await utils.folders.findByUserId.cancel();
