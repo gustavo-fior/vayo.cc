@@ -1,16 +1,18 @@
 import * as Popover from "@radix-ui/react-popover";
-import { motion } from "framer-motion";
-import { api } from "~/utils/api";
 import * as Switch from "@radix-ui/react-switch";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { IoIosShareAlt } from "react-icons/io";
+import { api } from "~/utils/api";
 
 export const ShareButton = ({ folderId }: { folderId?: string }) => {
   const { data: folder } = api.folders.findById.useQuery({
     id: folderId ?? "",
   });
+
   const [isShared, setIsShared] = useState(false);
   const { mutate: updateFolder } = api.folders.update.useMutation({});
-  
+
   const handleCopyToClipboard = async () => {
     const url = window.location.hostname + "/bookmarks/" + folderId;
     await navigator.clipboard.writeText(url);
@@ -39,9 +41,9 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
           onClick={() => {
             void handleCopyToClipboard();
           }}
-          className="rounded-full bg-white/10 px-4 py-2 font-semibold text-white no-underline transition hover:bg-white/20"
+          className="rounded-full bg-white/10 p-3 font-semibold text-white no-underline transition hover:bg-white/20"
         >
-          Share
+          <IoIosShareAlt color="white" size={18} />
         </motion.button>
       </Popover.Trigger>
       {folderId && (

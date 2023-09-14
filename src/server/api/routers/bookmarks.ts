@@ -33,12 +33,16 @@ export const bookmarksRouter = createTRPCRouter({
     .input(
       z.object({
         folderId: z.string(),
+        direction: z.enum(["asc", "desc"]),
       })
     )
     .query(async ({ input, ctx }) => {
       return await ctx.prisma.bookmark.findMany({
         where: {
           folderId: input.folderId,
+        },
+        orderBy: {
+          createdAt: input.direction,
         },
       });
     }),

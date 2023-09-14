@@ -1,22 +1,21 @@
 import { type Bookmark } from "@prisma/client";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
-import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { IoMdAdd, IoMdMenu } from "react-icons/io";
-import { FiMenu } from "react-icons/fi";
+import { IoMdAdd } from "react-icons/io";
 import CompactBookmark from "~/components/CompactBookmark";
-import { CompactSkeleton } from "~/components/CompactSkeleton";
-import ExpandedBookmark from "~/components/ExpandedBookmark";
-import { ExpandedSkeleton } from "~/components/ExpandedSkeleton";
-import { ShareButton } from "~/components/ShareButton";
-import { SignOutButton } from "~/components/SignOutButton";
-import { api } from "~/utils/api";
-import { Spinner } from "~/components/Spinner";
-import { FolderSkeleton } from "~/components/FolderSkeleton";
 import { CreateFolderButton } from "~/components/CreateFolderButton";
 import { DeleteFolderButton } from "~/components/DeleteFolderButton";
+import { EmptyState } from "~/components/EmptyState";
+import ExpandedBookmark from "~/components/ExpandedBookmark";
+import { FolderSkeleton } from "~/components/FolderSkeleton";
+import { ShareButton } from "~/components/ShareButton";
+import { SignOutButton } from "~/components/SignOutButton";
+import { SkeletonList } from "~/components/SkeletonList";
+import { Spinner } from "~/components/Spinner";
+import { ViewButton } from "~/components/ViewButton";
+import { api } from "~/utils/api";
 
 export default function Bookmarks() {
   const session = useSession();
@@ -26,24 +25,24 @@ export default function Bookmarks() {
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
   );
+  const [currentFolderId, setCurrentFolderId] = useState<string>("");
 
   const { data: folders, isLoading: foldersLoading } =
     api.folders.findByUserId.useQuery(
       { userId: String(session.data?.user.id) },
       {
         onSuccess: (data) => {
-          if (!foldersLoading && data && data?.length > 0) {
+          if (data && data?.length > 0) {
             setCurrentFolderId(data[0]?.id ?? "");
           }
         },
       }
     );
 
-  const [currentFolderId, setCurrentFolderId] = useState<string>("");
-
   const { data: bookmarks, isLoading: bookmarksLoading } =
     api.bookmarks.findByFolderId.useQuery({
       folderId: String(currentFolderId),
+      direction: "asc",
     });
 
   const addBookmark = api.bookmarks.create.useMutation({
@@ -56,7 +55,7 @@ export default function Bookmarks() {
       const previousBookmarks = utils.bookmarks.findByFolderId.getData();
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId) },
+        { folderId: String(currentFolderId), direction: "asc" },
         (oldQueryData: Bookmark[] | undefined) => {
           const newBookmark: Bookmark = {
             id: "temp",
@@ -85,7 +84,7 @@ export default function Bookmarks() {
         null;
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId) },
+        { folderId: String(currentFolderId), direction: "asc" },
         previousBookmarks!
       );
     },
@@ -99,7 +98,7 @@ export default function Bookmarks() {
       const previousBookmarks = utils.bookmarks.findByFolderId.getData();
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId) },
+        { folderId: String(currentFolderId), direction: "asc" },
         (previousBookmarks: Bookmark[] | undefined) =>
           [
             ...(previousBookmarks?.filter((bookmark) => bookmark.id !== id) ??
@@ -119,7 +118,7 @@ export default function Bookmarks() {
         null;
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId) },
+        { folderId: String(currentFolderId), direction: "asc" },
         previousBookmarks!
       );
     },
@@ -157,7 +156,6 @@ export default function Bookmarks() {
       setIsOpen(true);
     }
   }, [bookmarksLoading, bookmarks]);
-
 
   return (
     <>
@@ -207,36 +205,10 @@ export default function Bookmarks() {
             </form>
 
             <div className="flex items-center gap-2 align-middle">
-              <motion.button
-                whileTap={{
-                  scale: 0.8,
-                }}
-                onClick={() => handleChangeViewStyle()}
-                className="rounded-full bg-white/10 p-3 no-underline transition hover:bg-white/20"
-              >
-                <AnimatePresence mode="popLayout">
-                  {viewStyle === "compact" ? (
-                    <motion.div
-                      key="compact"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                    >
-                      <IoMdMenu color="white" size={18} />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="expanded"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                    >
-                      <FiMenu color="white" size={18} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-
+              <ViewButton
+                viewStyle={viewStyle}
+                handleChangeViewStyle={handleChangeViewStyle}
+              />
               <ShareButton folderId={currentFolderId} />
               <SignOutButton />
             </div>
@@ -308,55 +280,27 @@ export default function Bookmarks() {
                 },
               }}
             >
-              {bookmarksLoading || foldersLoading
-                ? [...Array<number>(3)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, transition: { delay: i * 0.05 } }}
-                      exit={{ opacity: 0 }}
-                    >
-                      {viewStyle === "compact" ? (
-                        <CompactSkeleton key={i} />
-                      ) : (
-                        <ExpandedSkeleton key={i} />
-                      )}
-                    </motion.div>
-                  ))
-                : bookmarks && bookmarks?.length > 0
-                ? bookmarks.map((bookmark) => (
-                    <div key={bookmark.id}>
-                      {viewStyle === "compact" ? (
-                        <CompactBookmark
-                          onRemove={handleDeleteBookmark}
-                          bookmark={bookmark}
-                        />
-                      ) : (
-                        <ExpandedBookmark
-                          onRemove={handleDeleteBookmark}
-                          bookmark={bookmark}
-                        />
-                      )}
-                    </div>
-                  ))
-                : bookmarks?.length === 0 && (
-                    <div>
-                      <Image
-                        src="/images/hay.png"
-                        className={`mx-auto pt-20 opacity-80`}
-                        alt="hay"
-                        width={180}
-                        height={180}
+              {bookmarksLoading || foldersLoading ? (
+                <SkeletonList viewStyle={viewStyle} />
+              ) : bookmarks && bookmarks?.length > 0 ? (
+                bookmarks.map((bookmark) => (
+                  <div key={bookmark.id}>
+                    {viewStyle === "compact" ? (
+                      <CompactBookmark
+                        onRemove={handleDeleteBookmark}
+                        bookmark={bookmark}
                       />
-                      <p
-                        className={`text-center text-gray-500 ${
-                          viewStyle === "compact" ? "pt-7" : "pt-4"
-                        } italic`}
-                      >
-                        Not much down here... Add some bookmarks!
-                      </p>
-                    </div>
-                  )}
+                    ) : (
+                      <ExpandedBookmark
+                        onRemove={handleDeleteBookmark}
+                        bookmark={bookmark}
+                      />
+                    )}
+                  </div>
+                ))
+              ) : (
+                bookmarks?.length === 0 && <EmptyState />
+              )}
             </motion.ul>
           </motion.div>
         </div>
