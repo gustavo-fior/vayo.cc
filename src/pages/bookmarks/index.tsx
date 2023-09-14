@@ -1,5 +1,5 @@
 import { type Bookmark } from "@prisma/client";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -158,11 +158,16 @@ export default function Bookmarks() {
     }
   }, [folders, foldersLoading]);
 
+  console.log("bookmarks", bookmarks);
+  console.log("bookmarksLoading", bookmarksLoading);
+  console.log("folders", folders);
+  console.log("foldersLoading", foldersLoading);
+
   return (
     <>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-          <div className="flex flex-col-reverse items-center justify-between gap-4 align-middle lg:flex-row lg:gap-0">
+          <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -185,7 +190,11 @@ export default function Bookmarks() {
                     scale: 0.8,
                   }}
                   type="submit"
-                  disabled={inputUrl.length === 0 || addBookmark.isLoading || !currentFolderId}
+                  disabled={
+                    inputUrl.length === 0 ||
+                    addBookmark.isLoading ||
+                    !currentFolderId
+                  }
                   className={`duration-300'hover:bg-white/20 rounded-full bg-white/10 p-3 transition ${
                     inputUrl.length === 0 || addBookmark.isLoading
                       ? "bg-white/5"
@@ -207,21 +216,37 @@ export default function Bookmarks() {
                   scale: 0.8,
                 }}
                 onClick={() => handleChangeViewStyle()}
-                className="rounded-full bg-white/10 p-2 font-semibold text-white no-underline transition hover:bg-white/20"
+                className="rounded-full bg-white/10 p-3 no-underline transition hover:bg-white/20"
               >
-                {viewStyle === "compact" ? (
-                  <IoMdMenu color="white" size={24} />
-                ) : (
-                  <FiMenu color="white" size={24} />
-                )}
+                <AnimatePresence mode="popLayout">
+                  {viewStyle === "compact" ? (
+                    <motion.div
+                      key="compact"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                    >
+                      <IoMdMenu color="white" size={18} />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="expanded"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                    >
+                      <FiMenu color="white" size={18} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.button>
 
               <ShareButton folderId={currentFolderId} />
               <SignOutButton />
             </div>
           </div>
-          <div className="my-6 h-[2px] w-full rounded-full bg-white/5" />
-          <div className="flex justify-between pb-4 align-middle">
+          <div className="mx-2 my-6  h-[2px] w-full rounded-full bg-white/5" />
+          <div className="flex justify-between px-2 pb-4 align-middle">
             <div className="flex items-center gap-x-2 overflow-x-auto ">
               {foldersLoading ? (
                 [...Array<number>(3)].map((_, i) => <FolderSkeleton key={i} />)
@@ -252,7 +277,10 @@ export default function Bookmarks() {
               )}
             </div>
             <div className="flex gap-2">
-              <DeleteFolderButton folderId={currentFolderId} setCurrentFolderId={setCurrentFolderId}/>
+              <DeleteFolderButton
+                folderId={currentFolderId}
+                setCurrentFolderId={setCurrentFolderId}
+              />
               <CreateFolderButton />
             </div>
           </div>
@@ -284,35 +312,42 @@ export default function Bookmarks() {
                 },
               }}
             >
-              {bookmarksLoading ? (
-                [...Array<number>(3)].map((_, i) =>
-                  viewStyle === "compact" ? (
-                    <CompactSkeleton key={i} />
-                  ) : (
-                    <ExpandedSkeleton key={i} />
-                  )
-                )
-              ) : bookmarks && !bookmarksLoading && bookmarks?.length > 0 ? (
-                bookmarks?.map((bookmark) =>
-                  viewStyle === "compact" ? (
-                    <CompactBookmark
-                      onRemove={handleDeleteBookmark}
-                      bookmark={bookmark}
-                      key={bookmark.id}
-                    />
-                  ) : (
-                    <ExpandedBookmark
-                      onRemove={handleDeleteBookmark}
-                      bookmark={bookmark}
-                      key={bookmark.id}
-                    />
-                  )
-                )
-              ) : (
-                <>
+              {bookmarksLoading || foldersLoading ? (
+                [...Array<number>(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, transition: { delay: i * 0.05 } }}
+                    exit={{ opacity: 0 }}
+                  >
+                    {viewStyle === "compact" ? (
+                      <CompactSkeleton key={i} />
+                    ) : (
+                      <ExpandedSkeleton key={i} />
+                    )}
+                  </motion.div>
+                ))
+              ) : bookmarks && bookmarks?.length > 0 ? (
+                bookmarks.map((bookmark) => (
+                  <div key={bookmark.id}>
+                    {viewStyle === "compact" ? (
+                      <CompactBookmark
+                        onRemove={handleDeleteBookmark}
+                        bookmark={bookmark}
+                      />
+                    ) : (
+                      <ExpandedBookmark
+                        onRemove={handleDeleteBookmark}
+                        bookmark={bookmark}
+                      />
+                    )}
+                  </div>
+                ))
+              ) : bookmarks?.length === 0 && (
+                <div>
                   <Image
                     src="/images/hay.png"
-                    className="mx-auto pt-20 opacity-80"
+                    className={`mx-auto pt-20 opacity-80`}
                     alt="hay"
                     width={180}
                     height={180}
@@ -324,7 +359,7 @@ export default function Bookmarks() {
                   >
                     Not much down here... Add some bookmarks!
                   </p>
-                </>
+                </div>
               )}
             </motion.ul>
           </motion.div>

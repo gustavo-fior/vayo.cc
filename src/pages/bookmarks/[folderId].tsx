@@ -50,14 +50,12 @@ export default function Bookmarks() {
     }
   }, [bookmarksLoading, bookmarks, folderLoading]);
 
-  console.log(folder);
-
   return (
     <>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
           <>
-            <div className="flex items-center justify-between align-middle font-semibold text-white">
+            <div className="px-2 flex items-center justify-between align-middle font-semibold text-white">
               <div>
                 {folderLoading ? (
                   <RectangleSkeleton />
@@ -83,12 +81,12 @@ export default function Bookmarks() {
                       scale: 0.8,
                     }}
                     onClick={() => handleChangeViewStyle()}
-                    className="rounded-md bg-white/10 p-2 no-underline transition hover:bg-white/20"
+                    className="rounded-full bg-white/10 p-3 no-underline transition hover:bg-white/20"
                   >
                     {viewStyle === "compact" ? (
-                      <IoMdMenu color="white" size={24} />
+                      <IoMdMenu color="white" size={18} />
                     ) : (
-                      <FiMenu color="white" size={24} />
+                      <FiMenu color="white" size={18} />
                     )}
                   </motion.button>
 

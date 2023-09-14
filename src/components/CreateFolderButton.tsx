@@ -113,7 +113,7 @@ export const CreateFolderButton = () => {
               <Popover.Portal>
                 <Popover.Content className="mt-2 rounded-md font-semibold text-white no-underline transition">
                   <EmojiPicker
-                    emojiStyle={EmojiStyle.NATIVE}
+                    emojiStyle={EmojiStyle.APPLE}
                     previewConfig={{
                       showPreview: false,
                     }}
@@ -121,6 +121,8 @@ export const CreateFolderButton = () => {
                     theme={Theme.DARK}
                     skinTonePickerLocation={SkinTonePickerLocation.PREVIEW}
                     onEmojiClick={(emojiData) => {
+                      
+
                       setIcon(emojiData.emoji);
                     }}
                     lazyLoadEmojis
