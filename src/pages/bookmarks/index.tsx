@@ -28,9 +28,16 @@ export default function Bookmarks() {
   );
 
   const { data: folders, isLoading: foldersLoading } =
-    api.folders.findByUserId.useQuery({
-      userId: String(session.data?.user.id),
-    });
+    api.folders.findByUserId.useQuery(
+      { userId: String(session.data?.user.id) },
+      {
+        onSuccess: (data) => {
+          if (!foldersLoading && data && data?.length > 0) {
+            setCurrentFolderId(data[0]?.id ?? "");
+          }
+        },
+      }
+    );
 
   const [currentFolderId, setCurrentFolderId] = useState<string>("");
 
@@ -151,17 +158,6 @@ export default function Bookmarks() {
     }
   }, [bookmarksLoading, bookmarks]);
 
-  // Setting the current folder id
-  useEffect(() => {
-    if (!foldersLoading && folders && folders?.length > 0) {
-      setCurrentFolderId(folders[0]?.id ?? "");
-    }
-  }, [folders, foldersLoading]);
-
-  console.log("bookmarks", bookmarks);
-  console.log("bookmarksLoading", bookmarksLoading);
-  console.log("folders", folders);
-  console.log("foldersLoading", foldersLoading);
 
   return (
     <>
@@ -312,55 +308,55 @@ export default function Bookmarks() {
                 },
               }}
             >
-              {bookmarksLoading || foldersLoading ? (
-                [...Array<number>(3)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1, transition: { delay: i * 0.05 } }}
-                    exit={{ opacity: 0 }}
-                  >
-                    {viewStyle === "compact" ? (
-                      <CompactSkeleton key={i} />
-                    ) : (
-                      <ExpandedSkeleton key={i} />
-                    )}
-                  </motion.div>
-                ))
-              ) : bookmarks && bookmarks?.length > 0 ? (
-                bookmarks.map((bookmark) => (
-                  <div key={bookmark.id}>
-                    {viewStyle === "compact" ? (
-                      <CompactBookmark
-                        onRemove={handleDeleteBookmark}
-                        bookmark={bookmark}
+              {bookmarksLoading || foldersLoading
+                ? [...Array<number>(3)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1, transition: { delay: i * 0.05 } }}
+                      exit={{ opacity: 0 }}
+                    >
+                      {viewStyle === "compact" ? (
+                        <CompactSkeleton key={i} />
+                      ) : (
+                        <ExpandedSkeleton key={i} />
+                      )}
+                    </motion.div>
+                  ))
+                : bookmarks && bookmarks?.length > 0
+                ? bookmarks.map((bookmark) => (
+                    <div key={bookmark.id}>
+                      {viewStyle === "compact" ? (
+                        <CompactBookmark
+                          onRemove={handleDeleteBookmark}
+                          bookmark={bookmark}
+                        />
+                      ) : (
+                        <ExpandedBookmark
+                          onRemove={handleDeleteBookmark}
+                          bookmark={bookmark}
+                        />
+                      )}
+                    </div>
+                  ))
+                : bookmarks?.length === 0 && (
+                    <div>
+                      <Image
+                        src="/images/hay.png"
+                        className={`mx-auto pt-20 opacity-80`}
+                        alt="hay"
+                        width={180}
+                        height={180}
                       />
-                    ) : (
-                      <ExpandedBookmark
-                        onRemove={handleDeleteBookmark}
-                        bookmark={bookmark}
-                      />
-                    )}
-                  </div>
-                ))
-              ) : bookmarks?.length === 0 && (
-                <div>
-                  <Image
-                    src="/images/hay.png"
-                    className={`mx-auto pt-20 opacity-80`}
-                    alt="hay"
-                    width={180}
-                    height={180}
-                  />
-                  <p
-                    className={`text-center text-gray-500 ${
-                      viewStyle === "compact" ? "pt-7" : "pt-4"
-                    } italic`}
-                  >
-                    Not much down here... Add some bookmarks!
-                  </p>
-                </div>
-              )}
+                      <p
+                        className={`text-center text-gray-500 ${
+                          viewStyle === "compact" ? "pt-7" : "pt-4"
+                        } italic`}
+                      >
+                        Not much down here... Add some bookmarks!
+                      </p>
+                    </div>
+                  )}
             </motion.ul>
           </motion.div>
         </div>

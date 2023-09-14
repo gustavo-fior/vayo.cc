@@ -41,7 +41,7 @@ const CompactBookmark = ({
             <p className={`max-w-sm truncate font-semibold text-white `}>
               {bookmark.title}
             </p>
-            <p className="w-90 hidden md:block truncate text-sm text-slate-500">
+            <p className="w-96 hidden md:block truncate text-sm text-slate-500">
               {bookmark.url}
             </p>
           </div>

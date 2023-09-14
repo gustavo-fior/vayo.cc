@@ -28,22 +28,42 @@ export const getBookmarkMetadata = async (
     const ogImageElement = document.querySelector("meta[property='og:image']");
     const ogImageUrl: string | null = ogImageElement?.getAttribute("content");
 
-    const faviconElement = document.querySelector("link[rel='icon']");
-    const appleTouchIconElement = document.querySelector(
+    let favicon: string | null = null;
+
+    const faviconElement: HTMLElement =
+      document.querySelector("link[rel='icon']");
+    const appleTouchIconElement: HTMLElement = document.querySelector(
       "link[rel='apple-touch-icon']"
     );
 
-    const faviconUrl: string | null = appleTouchIconElement
-      ? appleTouchIconElement.getAttribute("href")
-      : faviconElement?.getAttribute("href");
+    if (appleTouchIconElement) {
+      const appleTouchIconResponse = await fetch(
+        new URL(appleTouchIconElement.getAttribute("href") ?? "", url).href
+      );
+
+      if (appleTouchIconResponse.ok)
+        favicon = appleTouchIconElement.getAttribute("href");
+    }
+
+    if (faviconElement && !favicon) {
+      const faviconResponse = await fetch(
+        new URL(faviconElement.getAttribute("href") ?? "", url).href
+      );
+
+      if (faviconResponse.ok) favicon = faviconElement.getAttribute("href");
+    }
+
+    if (!favicon) {
+      favicon = new URL("/favicon.ico", url).href;
+    }
 
     let faviconImage: string | undefined = undefined;
     let ogImage: string | undefined = undefined;
 
-    if (faviconUrl) {
+    if (favicon) {
       // Fetch the favicon image link or data here
       try {
-        const faviconResponse = await fetch(new URL(faviconUrl, url).href);
+        const faviconResponse = await fetch(new URL(favicon, url).href);
         const faviconImageData = await faviconResponse.arrayBuffer();
         const faviconBase64 = btoa(
           new Uint8Array(faviconImageData).reduce(
