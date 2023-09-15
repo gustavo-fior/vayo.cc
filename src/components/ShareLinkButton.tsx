@@ -1,8 +1,8 @@
+import { CheckIcon, CopyIcon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { IoIosCheckmark, IoIosShareAlt } from "react-icons/io";
 
-export const ShareLinkButton = ({ folderId }: { folderId?: string }) => {
+export const ShareLinkButton = ({ folderId }: { folderId: string }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyToClipboard = async () => {
@@ -34,7 +34,7 @@ export const ShareLinkButton = ({ folderId }: { folderId?: string }) => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
           >
-            <IoIosCheckmark color="white" size={18} strokeWidth={32} />
+            <CheckIcon className="h-4 w-4" />
           </motion.div>
         ) : (
           <motion.div
@@ -43,7 +43,7 @@ export const ShareLinkButton = ({ folderId }: { folderId?: string }) => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
           >
-            <IoIosShareAlt color="white" size={18} />
+            <CopyIcon className="h-4 w-4" />
           </motion.div>
         )}
       </motion.button>

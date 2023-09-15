@@ -1,14 +1,16 @@
 import * as Popover from "@radix-ui/react-popover";
-import * as Switch from "@radix-ui/react-switch";
-import { motion } from "framer-motion";
+import * as Checkbox from "@radix-ui/react-checkbox";
+import { CheckIcon, CopyIcon, GlobeIcon } from "@radix-ui/react-icons";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { IoIosShareAlt } from "react-icons/io";
 import { api } from "~/utils/api";
 
 export const ShareButton = ({ folderId }: { folderId?: string }) => {
   const { data: folder } = api.folders.findById.useQuery({
     id: folderId ?? "",
   });
+
+  const [copied, setCopied] = useState(false);
 
   const [isShared, setIsShared] = useState(false);
   const { mutate: updateFolder } = api.folders.update.useMutation({});
@@ -38,56 +40,119 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
           whileTap={{
             scale: 0.8,
           }}
-          onClick={() => {
-            void handleCopyToClipboard();
-          }}
-          className="rounded-full bg-white/10 p-3 font-semibold text-white no-underline transition hover:bg-white/20"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          className="rounded-full bg-white/10 px-3 py-2 text-white no-underline transition hover:bg-white/20"
         >
-          <IoIosShareAlt color="white" size={18} />
+          <div className="flex items-center gap-x-2 align-middle">
+            <p>Share</p>
+          </div>
         </motion.button>
       </Popover.Trigger>
       {folderId && (
         <Popover.Portal>
-          <Popover.Content className="mt-2 rounded-md bg-zinc-800 px-4 py-2 font-semibold text-white no-underline transition">
-            <div className="flex items-center gap-3 align-middle">
-              <span className="relative flex h-2 w-2">
-                <span
-                  className={`absolute inline-flex h-full w-full ${
-                    isShared ? "animate-ping bg-green-500" : "bg-gray-700"
-                  }  rounded-full  opacity-75`}
-                ></span>
-                <span
-                  className={`relative inline-flex h-2 w-2 rounded-full ${
-                    isShared ? "bg-green-500" : "bg-gray-700"
+          <Popover.Content>
+            <motion.div
+              initial={{ opacity: 0, y: 3 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -3 }}
+              className="mt-4 flex flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold text-white no-underline backdrop-blur-lg"
+            >
+              <div className="flex items-center justify-between gap-2 align-middle">
+                <div className="flex items-center gap-2 align-middle">
+                  <GlobeIcon className="h-4 w-4" />
+                  <p>Share</p>
+                </div>
+                <span className="relative mr-2 mt-0.5 flex h-2 w-2">
+                  <span
+                    className={`absolute inline-flex h-full w-full ${
+                      isShared ? "animate-ping bg-green-500" : "bg-gray-700"
+                    }  rounded-full opacity-75 transition duration-300 ease-in-out`}
+                  />
+                  <span
+                    className={`relative inline-flex h-2 w-2 rounded-full transition duration-300 ease-in-out ${
+                      isShared ? "bg-green-500" : "bg-gray-700"
+                    }`}
+                  />
+                </span>
+              </div>
+              <div className="h-[2px] w-full rounded-full bg-white/5" />
+
+              <div className="flex items-center gap-2 align-middle">
+                <p className="font-normal">Public?</p>
+                <Checkbox.Root
+                  defaultChecked={isShared}
+                  className="flex h-6 w-6 items-center justify-center rounded-md bg-white/10 transition duration-300 ease-in-out hover:bg-white/20"
+                  onCheckedChange={() => {
+                    setIsShared(!isShared);
+                    handleUpdateFolder();
+                  }}
+                >
+                  <motion.div
+                    whileTap={{
+                      scale: 0.8,
+                    }}
+                  >
+                    <Checkbox.Indicator>
+                      <CheckIcon className="h-4 w-4 text-green-500" />
+                    </Checkbox.Indicator>
+                  </motion.div>
+                </Checkbox.Root>
+              </div>
+              <div className="flex items-center gap-2 align-middle">
+                <input
+                  className={`rounded-md bg-white/10 px-3 py-2 text-sm font-normal no-underline transition duration-300  ease-in-out ${
+                    !isShared ? "text-zinc-600/50" : "text-white"
                   }`}
-                ></span>
-              </span>
-              <p>{isShared ? "This page is live!" : "This page is private!"}</p>
-              <Switch.Root
-                onClick={() => {
-                  setIsShared(!isShared);
-                  handleUpdateFolder();
-                }}
-                className="h-6 w-12 rounded-full bg-white/10"
-              >
-                <Switch.Thumb
-                  className={`block h-4 w-4 bg-white transition-transform duration-100 will-change-transform ${
-                    isShared ? "translate-x-7" : "translate-x-1"
-                  }  rounded-full`}
+                  type="text"
+                  value={window.location.hostname + "/bookmarks/" + folderId}
+                  readOnly
                 />
-              </Switch.Root>
-              <motion.button
-                whileTap={{
-                  scale: 0.8,
-                }}
-                onClick={() => {
-                  void handleCopyToClipboard();
-                }}
-                className="rounded-md bg-white/10 px-4 py-2 font-semibold text-white no-underline transition hover:bg-white/20"
-              >
-                Share
-              </motion.button>
-            </div>
+                <AnimatePresence mode="popLayout">
+                  <motion.button
+                    whileTap={{
+                      scale: 0.8,
+                    }}
+                    disabled={!isShared}
+                    onClick={() => {
+                      setCopied(true);
+
+                      setTimeout(() => {
+                        setCopied(false);
+                      }, 4000);
+
+                      void handleCopyToClipboard();
+                    }}
+                    className="rounded-md bg-white/10 px-4 py-2.5 font-semibold text-white no-underline transition ease-in-out hover:bg-white/20"
+                  >
+                    {copied ? (
+                      <motion.div
+                        key={"copied"}
+                        initial={{ opacity: 0, scale: 1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 1 }}
+                      >
+                        <CheckIcon className="h-4 w-4" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key={"copy"}
+                        initial={{ opacity: 0, scale: 1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 1 }}
+                      >
+                        <CopyIcon
+                          className={`h-4 w-4 transition duration-300 ease-in-out ${
+                            isShared ? "text-white" : "text-zinc-600/50"
+                          }`}
+                        />
+                      </motion.div>
+                    )}
+                  </motion.button>
+                </AnimatePresence>
+              </div>
+            </motion.div>
           </Popover.Content>
         </Popover.Portal>
       )}

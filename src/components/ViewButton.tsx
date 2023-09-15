@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { IoMdMenu } from "react-icons/io";
-import { FiMenu } from "react-icons/fi";
+import { HamburgerMenuIcon, RowsIcon } from "@radix-ui/react-icons";
+import { AnimatePresence, motion } from "framer-motion";
+
 
 export const ViewButton = ({
   viewStyle,
@@ -11,11 +11,14 @@ export const ViewButton = ({
 }) => {
   return (
     <motion.button
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
       whileTap={{
         scale: 0.8,
       }}
       onClick={() => handleChangeViewStyle()}
-      className="rounded-full bg-white/10 p-3 no-underline transition hover:bg-white/20"
+      className="rounded-full bg-white/10 p-3 no-underline text-white transition hover:bg-white/20"
     >
       <AnimatePresence mode="popLayout">
         {viewStyle === "compact" ? (
@@ -25,7 +28,7 @@ export const ViewButton = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
           >
-            <IoMdMenu color="white" size={18} />
+            <HamburgerMenuIcon className="h-4 w-4" />
           </motion.div>
         ) : (
           <motion.div
@@ -34,7 +37,7 @@ export const ViewButton = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
           >
-            <FiMenu color="white" size={18} />
+            <RowsIcon className="h-4 w-4" />
           </motion.div>
         )}
       </AnimatePresence>

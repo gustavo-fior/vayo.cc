@@ -1,8 +1,13 @@
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export const EmptyState = () => {
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 3 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 3 }}
+    >
       <Image
         src="/images/hay.png"
         className={`mx-auto pt-20 opacity-80`}
@@ -13,6 +18,6 @@ export const EmptyState = () => {
       <p className={`pt-10 text-center italic text-gray-500`}>
         Not much going on down here...
       </p>
-    </div>
+    </motion.div>
   );
 };

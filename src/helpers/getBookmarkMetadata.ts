@@ -41,6 +41,8 @@ export const getBookmarkMetadata = async (
         new URL(appleTouchIconElement.getAttribute("href") ?? "", url).href
       );
 
+      console.log("appleTouchIconResponse", appleTouchIconResponse);
+
       if (appleTouchIconResponse.ok)
         favicon = appleTouchIconElement.getAttribute("href");
     }

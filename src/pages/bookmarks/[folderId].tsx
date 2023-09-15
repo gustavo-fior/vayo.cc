@@ -1,14 +1,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { FiMenu } from "react-icons/fi";
-import { IoMdMenu } from "react-icons/io";
-import CompactBookmark from "~/components/CompactBookmark";
+import { CompactBookmark } from "~/components/CompactBookmark";
 import { EmptyState } from "~/components/EmptyState";
-import ExpandedBookmark from "~/components/ExpandedBookmark";
+import { ExpandedBookmark } from "~/components/ExpandedBookmark";
 import { RectangleSkeleton } from "~/components/RectangleSkeleton";
 import { ShareLinkButton } from "~/components/ShareLinkButton";
 import { SkeletonList } from "~/components/SkeletonList";
+import { ViewButton } from "~/components/ViewButton";
 import { api } from "~/utils/api";
 
 export default function Bookmarks() {
@@ -84,30 +83,14 @@ export default function Bookmarks() {
               )}
               {folder?.isShared && (
                 <div className="flex items-center gap-2 align-middle">
-                  <motion.button
-                    key="loaded"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    whileTap={{
-                      scale: 0.8,
-                    }}
-                    onClick={() => handleChangeViewStyle()}
-                    className="rounded-full bg-white/10 p-3 no-underline transition hover:bg-white/20"
-                  >
-                    {viewStyle === "compact" ? (
-                      <IoMdMenu color="white" size={18} />
-                    ) : (
-                      <FiMenu color="white" size={18} />
-                    )}
-                  </motion.button>
+                  <ViewButton viewStyle={viewStyle} handleChangeViewStyle={handleChangeViewStyle} />
                   <motion.div
                     key="loaded"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                   >
-                    <ShareLinkButton />
+                    <ShareLinkButton folderId={folderId as string} />
                   </motion.div>
                 </div>
               )}
