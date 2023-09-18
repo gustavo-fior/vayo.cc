@@ -92,7 +92,6 @@ export default function Bookmarks() {
 
   const deleteBookmark = api.bookmarks.delete.useMutation({
     onMutate: async ({ id }) => {
-      //optimistic update
       await utils.bookmarks.findByFolderId.cancel();
 
       const previousBookmarks = utils.bookmarks.findByFolderId.getData();

@@ -17,13 +17,14 @@ export const DeleteFolderButton = ({
   const { mutate: deleteFolder, isLoading: isDeletingFolder } =
     api.folders.delete.useMutation({
       onSuccess: async () => {
-        await utils.bookmarks.findByFolderId.invalidate({ folderId });
-        await utils.folders.findByUserId.invalidate({ userId: session?.data?.user?.id });
         if (utils.folders.findByUserId.getData()?.length === 0) {
           setCurrentFolderId("");
         } else {
           setCurrentFolderId(utils.folders.findByUserId.getData()?.[0]?.id ?? "");
         }
+
+        await utils.bookmarks.findByFolderId.invalidate({ folderId });
+        await utils.folders.findByUserId.invalidate({ userId: session?.data?.user?.id });
       },
       onError: () => {
         utils.folders.findByUserId.setData(

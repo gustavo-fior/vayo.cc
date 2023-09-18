@@ -27,8 +27,8 @@ export default function Home() {
           <Image
             src="/images/logo.png"
             alt="logo"
-            width={64}
-            height={64}
+            width={72}
+            height={72}
             className=" transition duration-1000"
           />
           <h1 className="  pt-4 text-5xl font-extrabold text-white transition duration-700 sm:text-[5rem]">

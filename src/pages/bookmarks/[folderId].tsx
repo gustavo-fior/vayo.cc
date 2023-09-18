@@ -51,7 +51,7 @@ export default function Bookmarks() {
     <>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence mode="wait">
             <div className="flex items-center justify-between px-2 align-middle font-semibold text-white">
               {folderLoading ? (
                 <motion.div
@@ -59,15 +59,18 @@ export default function Bookmarks() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="pt-2"
                 >
                   <RectangleSkeleton />
                 </motion.div>
               ) : (
                 <motion.div
                   key="loaded"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                  initial={{ opacity: 0, y: 2 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
                   {folder?.isShared ? (
                     <div className="flex items-center gap-3 align-middle">
@@ -83,12 +86,24 @@ export default function Bookmarks() {
               )}
               {folder?.isShared && (
                 <div className="flex items-center gap-2 align-middle">
-                  <ViewButton viewStyle={viewStyle} handleChangeViewStyle={handleChangeViewStyle} />
                   <motion.div
                     key="loaded"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ViewButton
+                      viewStyle={viewStyle}
+                      handleChangeViewStyle={handleChangeViewStyle}
+                    />
+                  </motion.div>
+                  <motion.div
+                    key="loaded"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <ShareLinkButton folderId={folderId as string} />
                   </motion.div>
