@@ -25,8 +25,41 @@ export const getBookmarkMetadata = async (
 
     const title = document.querySelector("title")?.textContent ?? "";
 
-    const ogImageElement = document.querySelector("meta[property='og:image']");
-    const ogImageUrl: string | null = ogImageElement?.getAttribute("content");
+    let ogImageElement = document.querySelector("meta[property='og:image']");
+
+    if (!ogImageElement) {
+      ogImageElement = document.querySelector("meta[name='og:image']");
+    }
+
+    let ogImageUrl: string | null = ogImageElement?.getAttribute("content");
+
+    if (!ogImageUrl) {
+      const twitterImageElement = document.querySelector(
+        "meta[name='twitter:image']"
+      );
+      const twitterImageUrl: string | null =
+        twitterImageElement?.getAttribute("content");
+
+      if (twitterImageUrl) {
+        const twitterImageResponse = await fetch(
+          new URL(twitterImageUrl, url).href
+        );
+
+        if (twitterImageResponse.ok) ogImageUrl = twitterImageUrl;
+      }
+    }
+
+    if (!ogImageUrl) {
+      const imageElement = document.querySelector("img");
+
+      if (imageElement) {
+        const imageResponse = await fetch(
+          new URL((imageElement.getAttribute("src") as string) ?? "", url).href
+        );
+
+        if (imageResponse.ok) ogImageUrl = imageElement.getAttribute("src");
+      }
+    }
 
     let favicon: string | null = null;
 
@@ -35,13 +68,15 @@ export const getBookmarkMetadata = async (
     const appleTouchIconElement: HTMLElement = document.querySelector(
       "link[rel='apple-touch-icon']"
     );
+    const shortcutIconElement: HTMLElement = document.querySelector(
+      "link[rel='shortcut icon']"
+    );
 
+    // First try to get the apple touch icon
     if (appleTouchIconElement) {
       const appleTouchIconResponse = await fetch(
         new URL(appleTouchIconElement.getAttribute("href") ?? "", url).href
       );
-
-      console.log("appleTouchIconResponse", appleTouchIconResponse);
 
       if (appleTouchIconResponse.ok)
         favicon = appleTouchIconElement.getAttribute("href");
@@ -55,6 +90,14 @@ export const getBookmarkMetadata = async (
       if (faviconResponse.ok) favicon = faviconElement.getAttribute("href");
     }
 
+    if (shortcutIconElement && !favicon) {
+      const shortcutIcon = await fetch(
+        new URL(shortcutIconElement.getAttribute("href") ?? "", url).href
+      );
+
+      if (shortcutIcon.ok) favicon = shortcutIconElement.getAttribute("href");
+    }
+
     if (!favicon) {
       favicon = new URL("/favicon.ico", url).href;
     }
@@ -66,14 +109,30 @@ export const getBookmarkMetadata = async (
       // Fetch the favicon image link or data here
       try {
         const faviconResponse = await fetch(new URL(favicon, url).href);
-        const faviconImageData = await faviconResponse.arrayBuffer();
-        const faviconBase64 = btoa(
-          new Uint8Array(faviconImageData).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ""
-          )
-        );
-        faviconImage = `data:image/png;base64,${faviconBase64}`;
+
+        if (!faviconResponse.ok) {
+          throw new Error(
+            `Failed to fetch: ${faviconResponse.status} ${faviconResponse.statusText}`
+          );
+        }
+
+        if (favicon.endsWith(".svg")) {
+
+          const faviconData = await faviconResponse.text();
+
+          faviconImage = `data:image/svg+xml;base64,${btoa(faviconData)}`;
+        } else {
+          const faviconImageData = await faviconResponse.arrayBuffer();
+
+          const faviconBase64 = btoa(
+            new Uint8Array(faviconImageData).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ""
+            )
+          );
+
+          faviconImage = `data:image/png;base64,${faviconBase64}`;
+        }
       } catch (error) {
         console.error("Error fetching favicon:", error);
       }

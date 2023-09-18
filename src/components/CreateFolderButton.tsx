@@ -17,6 +17,7 @@ import { Spinner } from "./Spinner";
 export const CreateFolderButton = () => {
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const session = useSession();
   const utils = api.useContext();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -34,7 +35,7 @@ export const CreateFolderButton = () => {
             return oldQueryData?.filter((folder) => folder.id !== "temp");
           }
         );
-      }
+      },
     });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -122,7 +123,9 @@ export const CreateFolderButton = () => {
               <div className="flex flex-row items-center gap-4 align-middle">
                 <div className="flex flex-col">
                   <label className="text-gray-500">Icon</label>
-                  <Popover.Root>
+                  <Popover.Root onOpenChange={(open) => {
+                    setEmojiPickerOpen(open);
+                  }} open={emojiPickerOpen}>
                     <Popover.Trigger asChild>
                       <input
                         type="text"
@@ -132,33 +135,35 @@ export const CreateFolderButton = () => {
                         readOnly
                       />
                     </Popover.Trigger>
-                    <Popover.Portal>
-                      <Popover.Content className="mt-2 rounded-md font-semibold text-white no-underline transition">
-                        <EmojiPicker
-                          emojiStyle={EmojiStyle.APPLE}
-                          previewConfig={{
-                            showPreview: false,
-                          }}
-                          suggestedEmojisMode={SuggestionMode.RECENT}
-                          theme={Theme.DARK}
-                          skinTonePickerLocation={
-                            SkinTonePickerLocation.PREVIEW
-                          }
-                          onEmojiClick={(emojiData) => {
-                            setIcon(emojiData.emoji);
-                          }}
-                          lazyLoadEmojis
-                          autoFocusSearch
-                        />
-                      </Popover.Content>
-                    </Popover.Portal>
+                        <Popover.Portal>
+                          <Popover.Content className="mt-2 rounded-md font-semibold text-white no-underline transition">
+                            <EmojiPicker
+                              emojiStyle={EmojiStyle.APPLE}
+                              previewConfig={{
+                                showPreview: false,
+                              }}
+                              suggestedEmojisMode={SuggestionMode.RECENT}
+                              theme={Theme.DARK}
+                              skinTonePickerLocation={
+                                SkinTonePickerLocation.PREVIEW
+                              }
+                              onEmojiClick={(emojiData) => {
+                                // close popover and set icon
+                                setIcon(emojiData.emoji);
+                                setEmojiPickerOpen(false);
+                              }}
+                              autoFocusSearch
+                              width={400}
+                            />
+                          </Popover.Content>
+                        </Popover.Portal>
                   </Popover.Root>
                 </div>
                 <div className="flex flex-col">
                   <label className=" text-gray-500">Name</label>
                   <input
                     type="text"
-                    className="mt-1 w-40 rounded-md bg-white/10 px-4 py-3 text-white placeholder-zinc-600"
+                    className="mt-1 w-40 rounded-md bg-white/10 px-4 py-2.5 text-white placeholder-zinc-600"
                     placeholder="Awesome refs"
                     required
                     autoFocus
