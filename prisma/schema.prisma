@@ -74,8 +74,8 @@ model Bookmark {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     url       String
-    favicon   String?
-    ogImage   String?
+    faviconUrl String?
+    ogImageUrl     String?
     title     String
     folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
     folderId  String

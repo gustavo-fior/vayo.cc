@@ -52,7 +52,7 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
       </Popover.Trigger>
       {folderId && (
         <Popover.Portal>
-          <Popover.Content>
+          <Popover.Content className="z-50">
             <motion.div
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}

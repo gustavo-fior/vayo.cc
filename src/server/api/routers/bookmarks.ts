@@ -15,7 +15,7 @@ export const bookmarksRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { title, faviconImage, ogImage } = await getBookmarkMetadata(
+      const { title, faviconUrl, ogImageUrl } = await getBookmarkMetadata(
         input.url
       );
 
@@ -23,8 +23,8 @@ export const bookmarksRouter = createTRPCRouter({
         data: {
           url: input.url,
           title: title,
-          favicon: faviconImage,
-          ogImage: ogImage,
+          faviconUrl: faviconUrl,
+          ogImageUrl: ogImageUrl,
           folderId: input.folderId,
         },
       });

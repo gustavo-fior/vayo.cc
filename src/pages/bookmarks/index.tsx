@@ -60,10 +60,10 @@ export default function Bookmarks() {
           const newBookmark: Bookmark = {
             id: "temp",
             url: inputUrl,
-            title: "Loading...",
+            title: inputUrl.split("/")[2]?.split(".")[0] ?? "",
             folderId: "temp",
-            favicon: null,
-            ogImage: null,
+            faviconUrl: null,
+            ogImageUrl: null,
             createdAt: new Date(),
             updatedAt: new Date(),
           };
@@ -277,7 +277,7 @@ export default function Bookmarks() {
                   type: "spring",
                   bounce: 0,
                   duration: 0.7,
-                  staggerChildren: 0.1,
+                  staggerChildren: 0.08,
                   delayChildren: 0.2,
                 },
               },

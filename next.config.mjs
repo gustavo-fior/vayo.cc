@@ -18,6 +18,19 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  // allow any hosts for now
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+      {
+        protocol: "http",
+        hostname: "**",
+      },
+    ],
+  },
 };
 
 export default config;

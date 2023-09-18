@@ -61,7 +61,7 @@ export const getBookmarkMetadata = async (
       }
     }
 
-    let favicon: string | null = null;
+    let faviconUrl: string | null = null;
 
     const faviconElement: HTMLElement =
       document.querySelector("link[rel='icon']");
@@ -79,90 +79,47 @@ export const getBookmarkMetadata = async (
       );
 
       if (appleTouchIconResponse.ok)
-        favicon = appleTouchIconElement.getAttribute("href");
+        faviconUrl = appleTouchIconElement.getAttribute("href");
     }
 
-    if (faviconElement && !favicon) {
+    if (faviconElement && !faviconUrl) {
       const faviconResponse = await fetch(
         new URL(faviconElement.getAttribute("href") ?? "", url).href
       );
 
-      if (faviconResponse.ok) favicon = faviconElement.getAttribute("href");
+      if (faviconResponse.ok) faviconUrl = faviconElement.getAttribute("href");
     }
 
-    if (shortcutIconElement && !favicon) {
+    if (shortcutIconElement && !faviconUrl) {
       const shortcutIcon = await fetch(
         new URL(shortcutIconElement.getAttribute("href") ?? "", url).href
       );
 
-      if (shortcutIcon.ok) favicon = shortcutIconElement.getAttribute("href");
+      if (shortcutIcon.ok)
+        faviconUrl = shortcutIconElement.getAttribute("href");
     }
 
-    if (!favicon) {
-      favicon = new URL("/favicon.ico", url).href;
+    if (!faviconUrl) {
+      faviconUrl = new URL("/favicon.ico", url).href;
     }
 
-    let faviconImage: string | undefined = undefined;
-    let ogImage: string | undefined = undefined;
-
-    if (favicon) {
-      // Fetch the favicon image link or data here
-      try {
-        const faviconResponse = await fetch(new URL(favicon, url).href);
-
-        if (!faviconResponse.ok) {
-          throw new Error(
-            `Failed to fetch: ${faviconResponse.status} ${faviconResponse.statusText}`
-          );
-        }
-
-        if (favicon.endsWith(".svg")) {
-
-          const faviconData = await faviconResponse.text();
-
-          faviconImage = `data:image/svg+xml;base64,${btoa(faviconData)}`;
-        } else {
-          const faviconImageData = await faviconResponse.arrayBuffer();
-
-          const faviconBase64 = btoa(
-            new Uint8Array(faviconImageData).reduce(
-              (data, byte) => data + String.fromCharCode(byte),
-              ""
-            )
-          );
-
-          faviconImage = `data:image/png;base64,${faviconBase64}`;
-        }
-      } catch (error) {
-        console.error("Error fetching favicon:", error);
-      }
-    }
-
-    if (ogImageUrl) {
-      try {
-        const ogImageResponse = await fetch(new URL(ogImageUrl, url).href);
-        const ogImageImageData = await ogImageResponse.arrayBuffer();
-        const ogImageBase64 = btoa(
-          new Uint8Array(ogImageImageData).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ""
-          )
-        );
-        ogImage = `data:image/png;base64,${ogImageBase64}`;
-      } catch (error) {
-        console.error("Error fetching favicon:", error);
-      }
-    }
-
-    return { title, faviconImage, ogImage };
+    return {
+      title,
+      faviconUrl: new URL(faviconUrl, url).toString(),
+      ogImageUrl,
+    };
   } catch (error) {
     console.error("Error fetching page metadata:", error);
-    return { title: "", faviconImage: undefined, ogImage: undefined };
+    return {
+      title: "",
+      faviconUrl: null,
+      ogImageUrl: null,
+    };
   }
 };
 
 export type BookmarkMetadata = {
   title: string;
-  faviconImage: string | undefined;
-  ogImage: string | undefined;
+  faviconUrl: string | null;
+  ogImageUrl: string | null;
 };

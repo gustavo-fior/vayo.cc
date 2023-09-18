@@ -25,9 +25,9 @@ export const ExpandedBookmark = ({
               href={bookmark.url}
               target="_blank"
             >
-              {bookmark.ogImage ? (
+              {bookmark.ogImageUrl ? (
                 <Image
-                  src={String(bookmark.ogImage)}
+                  src={String(bookmark.ogImageUrl)}
                   alt={bookmark.title}
                   width={320}
                   height={180}
@@ -52,9 +52,9 @@ export const ExpandedBookmark = ({
                   {bookmark.title}
                 </p>
                 <div className="flex items-center gap-2 align-middle">
-                  {bookmark.favicon ? (
+                  {bookmark.faviconUrl ? (
                     <Image
-                      src={String(bookmark.favicon)}
+                      src={String(bookmark.faviconUrl)}
                       alt={bookmark.title}
                       width={12}
                       height={12}

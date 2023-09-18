@@ -9,7 +9,7 @@
   }
 
   ::-webkit-scrollbar {
-    width: 2px;
+    width: 4px;
   }
 
   /* Define the scrollbar track (background) color */

@@ -26,9 +26,9 @@ export const CompactBookmark = ({
               target="_blank"
             >
               <div className="flex flex-row items-center gap-3 align-middle ">
-                {bookmark.favicon ? (
+                {bookmark.faviconUrl ? (
                   <Image
-                    src={String(bookmark.favicon)}
+                    src={String(bookmark.faviconUrl)}
                     alt={bookmark.title}
                     width={12}
                     height={12}

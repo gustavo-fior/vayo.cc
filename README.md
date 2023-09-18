@@ -8,11 +8,12 @@
 - responsiviness ✅
 - empty state ✅
 - implement [context menu](https://www.radix-ui.com/primitives/docs/components/context-menu) ✅ (dont know if its good or nah)
+- figure out why some favicons dont work ✅
 
 
 # TODO
 
-- figure out why some favicons dont work (CORS) (now verifying if apple-touch-icon is present)
+
 - make UI better and create a pattern ([icons](https://www.radix-ui.com/icons), paddings, animations, texts)
 - preview yt videos
 - fix scroll bug in emoji picker and exit when selected
@@ -21,3 +22,5 @@
 - add search 
 - add tags
 - add custom favicon and title to different folders
+- add a db query to verify if the bookmark already exists and is recent (maybe < 3 months?), so that we dont need to fetch favicon and og image again
+- maybe change background, so that dark favicons look better
