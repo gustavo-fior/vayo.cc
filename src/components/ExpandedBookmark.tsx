@@ -1,7 +1,8 @@
 import { type Bookmark } from "@prisma/client";
+import * as ContextMenu from "@radix-ui/react-context-menu";
+import { Cross1Icon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import * as ContextMenu from "@radix-ui/react-context-menu";
 import { itemVariants } from "../helpers/animationVariants";
 
 export const ExpandedBookmark = ({
@@ -11,6 +12,7 @@ export const ExpandedBookmark = ({
   bookmark: Bookmark;
   onRemove?: (id: string) => void;
 }) => {
+
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger>
@@ -73,54 +75,6 @@ export const ExpandedBookmark = ({
                 </div>
               </div>
             </a>
-            {/* Future youtube play video */}
-            {/* {bookmark.url.startsWith("https://www.youtube.com/watch") && (
-          <motion.button
-            className="pr-4 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
-            onClick={() => {
-              setWatchingVideo(true);
-            }}
-          >
-            <AnimatePresence>
-              {watchingVideo ? (
-                <motion.svg
-                  key="watching-svg"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  initial={{ rotate: 0 }}
-                  animate={{ rotate: 90 }}
-                  exit={{ rotate: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={4}
-                    d="M8 5l12 7-12 7V5z"
-                  />
-                </motion.svg>
-              ) : (
-                <motion.svg
-                  key="initial-svg"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={4}
-                    d="M8 5l12 7-12 7V5z"
-                  />
-                </motion.svg>
-              )}
-            </AnimatePresence>
-          </motion.button>
-        )} */}
-
             {onRemove && (
               <button
                 className="z-10 pr-4 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
@@ -129,20 +83,7 @@ export const ExpandedBookmark = ({
                   onRemove ? onRemove(bookmark.id) : null;
                 }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={4}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <Cross1Icon className="h-4 w-4" />
               </button>
             )}
           </motion.div>

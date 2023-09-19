@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 export const foldersRouter = createTRPCRouter({
   findById: publicProcedure
@@ -44,6 +48,9 @@ export const foldersRouter = createTRPCRouter({
         where: {
           userId: userId,
         },
+        orderBy: {
+          updatedAt: "desc",
+        },
       });
     }),
   delete: protectedProcedure
@@ -80,6 +87,5 @@ export const foldersRouter = createTRPCRouter({
           updatedAt: new Date(),
         },
       });
-    }
-  ),
+    }),
 });

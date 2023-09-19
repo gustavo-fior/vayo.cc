@@ -44,6 +44,7 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    lastFolderId  String?
     accounts      Account[]
     sessions      Session[]
     folders       Folder[]

@@ -169,8 +169,7 @@ export default function Bookmarks() {
 
     setTimeout(() => {
       setIsOpen(true);
-    }
-    , 10);
+    }, 10);
 
     setDirection(direction === "asc" ? "desc" : "asc");
 
@@ -193,7 +192,7 @@ export default function Bookmarks() {
         </title>
         <link rel="icon" href={faviconUrl} />
       </Head>
-      <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
+      <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-br from-[#202020] to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
           <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
             <motion.form
