@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { CompactBookmark } from "~/components/CompactBookmark";
+import { DirectionButton } from "~/components/DirectionButton";
 import { EmptyState } from "~/components/EmptyState";
 import { ExpandedBookmark } from "~/components/ExpandedBookmark";
 import { RectangleSkeleton } from "~/components/RectangleSkeleton";
@@ -15,6 +16,8 @@ export default function Bookmarks() {
   const router = useRouter();
   const { folderId } = router.query;
   const [isOpen, setIsOpen] = useState(false);
+  const utils = api.useContext();
+  const [direction, setDirection] = useState<"asc" | "desc">("asc");
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
   );
@@ -29,7 +32,7 @@ export default function Bookmarks() {
   const { data: bookmarks, isLoading: bookmarksLoading } =
     api.bookmarks.findByFolderId.useQuery({
       folderId: String(folderId),
-      direction: "asc",
+      direction: direction,
     });
 
   const handleChangeViewStyle = () => {
@@ -42,6 +45,11 @@ export default function Bookmarks() {
     setViewStyle(viewStyle === "compact" ? "expanded" : "compact");
   };
 
+  const handleChangeDirection = () => {
+    setDirection(direction === "asc" ? "desc" : "asc");
+    void utils.bookmarks.findByFolderId.invalidate();
+  };
+
   useEffect(() => {
     if (!bookmarksLoading && bookmarks?.length && !folderLoading) {
       setIsOpen(true);
@@ -52,8 +60,10 @@ export default function Bookmarks() {
     <>
       <Head>
         <title>{folder?.name ?? "Bookmarks"}</title>
-        <link rel="icon" href={`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${folder?.icon}</text></svg>`} />
-
+        <link
+          rel="icon"
+          href={`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${folder?.icon}</text></svg>`}
+        />
       </Head>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
@@ -102,6 +112,18 @@ export default function Bookmarks() {
                     <ViewButton
                       viewStyle={viewStyle}
                       handleChangeViewStyle={handleChangeViewStyle}
+                    />
+                  </motion.div>
+                  <motion.div
+                    key="loaded"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <DirectionButton
+                      direction={direction}
+                      handleChangeDirection={handleChangeDirection}
                     />
                   </motion.div>
                   <motion.div
@@ -167,4 +189,3 @@ export default function Bookmarks() {
     </>
   );
 }
-

@@ -6,7 +6,7 @@ export const ShareLinkButton = ({ folderId }: { folderId: string }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyToClipboard = async () => {
-    const url = window.location.hostname + "/bookmarks/" + folderId;
+    const url = window.location.hostname + "/bookmarks/public/" + folderId;
     await navigator.clipboard.writeText(url);
 
     setCopied(true);

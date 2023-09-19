@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { api } from "~/utils/api";
 import { Spinner } from "./Spinner";
+import InputEmoji from "react-input-emoji";
 
 export const CreateFolderButton = () => {
   const [name, setName] = useState("");
@@ -20,7 +21,6 @@ export const CreateFolderButton = () => {
   const [popverOpen, setPopverOpen] = useState(false);
   const session = useSession();
   const utils = api.useContext();
-
 
   const { mutate: createFolder, isLoading: isCreatingFolder } =
     api.folders.create.useMutation({
@@ -80,7 +80,17 @@ export const CreateFolderButton = () => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
     >
-      <Popover.Root open={popverOpen} onOpenChange={setPopverOpen}>
+      <Popover.Root
+        open={popverOpen}
+        onOpenChange={(open) => {
+          setPopverOpen(open);
+
+          if (!open) {
+            setName("");
+            setIcon("");
+          }
+        }}
+      >
         <Popover.Trigger asChild>
           <motion.button
             whileTap={{
@@ -132,15 +142,16 @@ export const CreateFolderButton = () => {
                       <input
                         type="text"
                         value={icon}
-                        className="mt-1 w-12 rounded-md bg-white/10 py-1.5 text-center text-lg text-white placeholder-zinc-600 placeholder-opacity-50"
-                        placeholder="📚"
+                        className="mt-1 w-8 rounded-md bg-white/10 py-1 text-center text-white placeholder-zinc-600 placeholder-opacity-50"
+                        placeholder="🪴"
                         readOnly
                       />
                     </Popover.Trigger>
                     <Popover.Portal>
                       <Popover.Content className="z-50 mt-2 rounded-md font-semibold text-white no-underline transition">
-                        <EmojiPicker
+                        {/* <EmojiPicker
                           emojiStyle={EmojiStyle.APPLE}
+
                           previewConfig={{
                             showPreview: false,
                           }}
@@ -150,13 +161,22 @@ export const CreateFolderButton = () => {
                             SkinTonePickerLocation.PREVIEW
                           }
                           onEmojiClick={(emojiData) => {
-                            // close popover and set icon
                             setIcon(emojiData.emoji);
                             setEmojiPickerOpen(false);
                           }}
                           lazyLoadEmojis
                           autoFocusSearch
                           width={400}
+                        /> */}
+                        <InputEmoji
+                          value={icon}
+                          onChange={setIcon}
+                          cleanOnEnter
+                          placeholder="Type a message"
+                          theme="dark"
+                          fontFamily="Inter"
+                          borderRadius={8}
+                          height={40}
                         />
                       </Popover.Content>
                     </Popover.Portal>
@@ -166,7 +186,7 @@ export const CreateFolderButton = () => {
                   <label className=" font-normal text-gray-500">Name</label>
                   <input
                     type="text"
-                    className="mt-1 w-40 rounded-md bg-white/10 px-4 py-2 font-normal text-white placeholder-zinc-600"
+                    className="mt-1 w-40 rounded-md bg-white/10 px-2 py-1 font-normal text-white placeholder-zinc-600"
                     placeholder="Awesome refs"
                     required
                     autoFocus

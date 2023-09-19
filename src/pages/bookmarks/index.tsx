@@ -1,12 +1,14 @@
 import { type Bookmark } from "@prisma/client";
-import { type GetServerSideProps } from "next";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
+import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
 import { CompactBookmark } from "~/components/CompactBookmark";
 import { CreateFolderButton } from "~/components/CreateFolderButton";
 import { DeleteFolderButton } from "~/components/DeleteFolderButton";
+import { DirectionButton } from "~/components/DirectionButton";
 import { EmptyState } from "~/components/EmptyState";
 import { ExpandedBookmark } from "~/components/ExpandedBookmark";
 import { FolderSkeleton } from "~/components/FolderSkeleton";
@@ -16,7 +18,6 @@ import { SkeletonList } from "~/components/SkeletonList";
 import { Spinner } from "~/components/Spinner";
 import { ViewButton } from "~/components/ViewButton";
 import { api } from "~/utils/api";
-import Head from "next/head";
 
 export default function Bookmarks() {
   const session = useSession();
@@ -26,6 +27,7 @@ export default function Bookmarks() {
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
   );
+  const [direction, setDirection] = useState<"asc" | "desc">("asc");
   const [currentFolderId, setCurrentFolderId] = useState<string>("");
 
   const { data: folders, isLoading: foldersLoading } =
@@ -33,7 +35,7 @@ export default function Bookmarks() {
       { userId: String(session.data?.user.id) },
       {
         onSuccess: (data) => {
-          if (data && data?.length > 0) {
+          if (data && data?.length > 0 && !currentFolderId) {
             setCurrentFolderId(data[0]?.id ?? "");
           }
         },
@@ -51,7 +53,7 @@ export default function Bookmarks() {
   const { data: bookmarks, isLoading: bookmarksLoading } =
     api.bookmarks.findByFolderId.useQuery({
       folderId: String(currentFolderId),
-      direction: "asc",
+      direction: direction,
     });
 
   const addBookmark = api.bookmarks.create.useMutation({
@@ -69,7 +71,10 @@ export default function Bookmarks() {
           const newBookmark: Bookmark = {
             id: "temp",
             url: inputUrl,
-            title: inputUrl.split("/")[2]?.split(".")[0] ?? "",
+            title:
+              inputUrl.split("/")[2]?.split(".")[0] === "www"
+                ? inputUrl.split("/")[2]?.split(".")[1] ?? ""
+                : inputUrl.split("/")[2]?.split(".")[0] ?? "",
             folderId: "temp",
             faviconUrl: null,
             ogImageUrl: null,
@@ -93,7 +98,7 @@ export default function Bookmarks() {
         null;
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId), direction: "asc" },
+        { folderId: String(currentFolderId), direction: direction },
         previousBookmarks!
       );
     },
@@ -106,7 +111,7 @@ export default function Bookmarks() {
       const previousBookmarks = utils.bookmarks.findByFolderId.getData();
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId), direction: "asc" },
+        { folderId: String(currentFolderId), direction: direction },
         (previousBookmarks: Bookmark[] | undefined) =>
           [
             ...(previousBookmarks?.filter((bookmark) => bookmark.id !== id) ??
@@ -126,7 +131,7 @@ export default function Bookmarks() {
         null;
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId), direction: "asc" },
+        { folderId: String(currentFolderId), direction: direction },
         previousBookmarks!
       );
     },
@@ -156,6 +161,20 @@ export default function Bookmarks() {
     }, 10);
 
     setViewStyle(viewStyle === "compact" ? "expanded" : "compact");
+  };
+
+  const handleChangeDirection = () => {
+    // handle direction change with a delay to allow the bookmarks list to close
+    setIsOpen(false);
+
+    setTimeout(() => {
+      setIsOpen(true);
+    }
+    , 10);
+
+    setDirection(direction === "asc" ? "desc" : "asc");
+
+    void utils.bookmarks.findByFolderId.invalidate();
   };
 
   // Opening the bookmarks list
@@ -227,6 +246,10 @@ export default function Bookmarks() {
                 viewStyle={viewStyle}
                 handleChangeViewStyle={handleChangeViewStyle}
               />
+              <DirectionButton
+                direction={direction}
+                handleChangeDirection={handleChangeDirection}
+              />
               <ShareButton folderId={currentFolderId} />
               <SignOutButton />
             </div>
@@ -279,57 +302,59 @@ export default function Bookmarks() {
               <CreateFolderButton />
             </div>
           </div>
-          <motion.div
-            initial={false}
-            animate={isOpen ? "open" : "closed"}
-            className="flex flex-col gap-8"
-          >
-            <motion.ul
-              className={`flex flex-col ${
-                viewStyle === "compact" ? "gap-2" : "gap-6"
-              }`}
-              variants={{
-                open: {
-                  transition: {
-                    type: "spring",
-                    bounce: 0,
-                    duration: 0.7,
-                    staggerChildren: 0.08,
-                    delayChildren: 0.2,
-                  },
-                },
-                closed: {
-                  transition: {
-                    type: "spring",
-                    bounce: 0,
-                    duration: 0.3,
-                  },
-                },
-              }}
+          <AnimatePresence mode="wait">
+            <motion.div
+              initial={false}
+              animate={isOpen ? "open" : "closed"}
+              className="flex flex-col gap-8"
             >
-              {bookmarksLoading || foldersLoading ? (
-                <SkeletonList viewStyle={viewStyle} />
-              ) : bookmarks && bookmarks?.length > 0 ? (
-                bookmarks.map((bookmark) => (
-                  <div key={bookmark.id}>
-                    {viewStyle === "compact" ? (
-                      <CompactBookmark
-                        onRemove={handleDeleteBookmark}
-                        bookmark={bookmark}
-                      />
-                    ) : (
-                      <ExpandedBookmark
-                        onRemove={handleDeleteBookmark}
-                        bookmark={bookmark}
-                      />
-                    )}
-                  </div>
-                ))
-              ) : (
-                bookmarks?.length === 0 && <EmptyState />
-              )}
-            </motion.ul>
-          </motion.div>
+              <motion.ul
+                className={`flex flex-col ${
+                  viewStyle === "compact" ? "gap-2" : "gap-6"
+                }`}
+                variants={{
+                  open: {
+                    transition: {
+                      type: "spring",
+                      bounce: 0,
+                      duration: 0.7,
+                      staggerChildren: 0.08,
+                      delayChildren: 0.2,
+                    },
+                  },
+                  closed: {
+                    transition: {
+                      type: "spring",
+                      bounce: 0,
+                      duration: 0.3,
+                    },
+                  },
+                }}
+              >
+                {bookmarksLoading || foldersLoading ? (
+                  <SkeletonList viewStyle={viewStyle} />
+                ) : bookmarks && bookmarks?.length > 0 ? (
+                  bookmarks.map((bookmark) => (
+                    <div key={bookmark.id}>
+                      {viewStyle === "compact" ? (
+                        <CompactBookmark
+                          onRemove={handleDeleteBookmark}
+                          bookmark={bookmark}
+                        />
+                      ) : (
+                        <ExpandedBookmark
+                          onRemove={handleDeleteBookmark}
+                          bookmark={bookmark}
+                        />
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  bookmarks?.length === 0 && <EmptyState />
+                )}
+              </motion.ul>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
     </>

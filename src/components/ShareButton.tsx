@@ -16,7 +16,7 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
   const { mutate: updateFolder } = api.folders.update.useMutation({});
 
   const handleCopyToClipboard = async () => {
-    const url = window.location.hostname + "/bookmarks/" + folderId;
+    const url = window.location.hostname + "/bookmarks/public/" + folderId;
     await navigator.clipboard.writeText(url);
   };
 
@@ -106,7 +106,7 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
                     !isShared ? "text-zinc-600/50" : "text-white"
                   }`}
                   type="text"
-                  value={window.location.hostname + "/bookmarks/" + folderId}
+                  value={window.location.hostname + "/bookmarks/public/" + folderId}
                   readOnly
                 />
                 <AnimatePresence mode="popLayout">
