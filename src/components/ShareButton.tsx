@@ -43,7 +43,7 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="rounded-full bg-white/10 px-3 py-2 text-white no-underline transition hover:bg-white/20"
+          className="rounded-full bg-white/10 p-3 text-white no-underline transition hover:bg-white/20"
         >
           <div className="flex items-center gap-x-2 align-middle">
             <Share2Icon className="h-4 w-4" />
