@@ -28,3 +28,6 @@
 - migrate to jotai (already installed)
 - animate direction button
 - add option to verify duplicate
+- default folder
+- shared folder
+- add a way to add a bookmark without opening the website (maybe a chrome extension?)

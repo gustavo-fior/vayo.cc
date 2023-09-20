@@ -1,4 +1,4 @@
-import { CheckIcon, CopyIcon } from "@radix-ui/react-icons";
+import { CheckIcon, CopyIcon, Share2Icon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 
@@ -43,7 +43,7 @@ export const ShareLinkButton = ({ folderId }: { folderId: string }) => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
           >
-            <CopyIcon className="h-4 w-4" />
+            <Share2Icon className="h-4 w-4" />
           </motion.div>
         )}
       </motion.button>

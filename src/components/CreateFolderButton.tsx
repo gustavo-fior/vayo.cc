@@ -149,7 +149,7 @@ export const CreateFolderButton = () => {
                     </Popover.Trigger>
                     <Popover.Portal>
                       <Popover.Content className="z-50 mt-2 rounded-md font-semibold text-white no-underline transition">
-                        {/* <EmojiPicker
+                        <EmojiPicker
                           emojiStyle={EmojiStyle.APPLE}
 
                           previewConfig={{
@@ -167,8 +167,8 @@ export const CreateFolderButton = () => {
                           lazyLoadEmojis
                           autoFocusSearch
                           width={400}
-                        /> */}
-                        <InputEmoji
+                        />
+                        {/* <InputEmoji
                           value={icon}
                           onChange={setIcon}
                           cleanOnEnter
@@ -177,7 +177,7 @@ export const CreateFolderButton = () => {
                           fontFamily="Inter"
                           borderRadius={8}
                           height={40}
-                        />
+                        /> */}
                       </Popover.Content>
                     </Popover.Portal>
                   </Popover.Root>

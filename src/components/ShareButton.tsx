@@ -1,6 +1,6 @@
 import * as Popover from "@radix-ui/react-popover";
 import * as Checkbox from "@radix-ui/react-checkbox";
-import { CheckIcon, CopyIcon, GlobeIcon } from "@radix-ui/react-icons";
+import { CheckIcon, CopyIcon, GlobeIcon, Share2Icon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
@@ -46,7 +46,7 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
           className="rounded-full bg-white/10 px-3 py-2 text-white no-underline transition hover:bg-white/20"
         >
           <div className="flex items-center gap-x-2 align-middle">
-            <p>Share</p>
+            <Share2Icon className="h-4 w-4" />
           </div>
         </motion.button>
       </Popover.Trigger>
