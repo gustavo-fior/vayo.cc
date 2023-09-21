@@ -24,14 +24,17 @@ export const foldersRouter = createTRPCRouter({
       z.object({
         name: z.string(),
         icon: z.string().nullable(),
+        userId: z.string().nullable(),
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const userId = input.userId ?? ctx.session.user.id;
+
       return await ctx.prisma.folder.create({
         data: {
           name: input.name,
           icon: input.icon ?? undefined,
-          userId: ctx.session.user.id,
+          userId: userId,
         },
       });
     }),

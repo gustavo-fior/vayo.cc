@@ -14,6 +14,7 @@
 - ✅  fix scroll bug in emoji picker and exit when selected
 - ✅  add custom favicon and title to different folders
 - ✅  add direction button (asc, desc) (API already supports it)
+- ✅  default folder
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can just click and watch it on yt)
 - ❌  add last opened folder (folders are already sorted by last update)
 
@@ -28,6 +29,6 @@
 - migrate to jotai (already installed)
 - animate direction button
 - add option to verify duplicate
-- default folder
+
 - shared folder
 - add a way to add a bookmark without opening the website (maybe a chrome extension?)

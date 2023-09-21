@@ -66,6 +66,7 @@ export const CreateFolderButton = () => {
     createFolder({
       name,
       icon,
+      userId: null,
     });
 
     setName("");
@@ -151,7 +152,6 @@ export const CreateFolderButton = () => {
                       <Popover.Content className="z-50 mt-2 rounded-md font-semibold text-white no-underline transition">
                         <EmojiPicker
                           emojiStyle={EmojiStyle.APPLE}
-
                           previewConfig={{
                             showPreview: false,
                           }}

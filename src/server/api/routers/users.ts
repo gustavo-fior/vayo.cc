@@ -21,22 +21,4 @@ export const usersRouter = createTRPCRouter({
         },
       });
     }),
-  updateLastFolderId: protectedProcedure
-    .input(
-      z.object({
-        lastFolderId: z.string(),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      const userId = ctx.session?.user.id;
-
-      return await ctx.prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          lastFolderId: input.lastFolderId,
-        },
-      });
-    }),
 });
