@@ -1,6 +1,7 @@
 import { type Bookmark } from "@prisma/client";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
+import { useAtom } from "jotai";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
@@ -8,27 +9,32 @@ import { useCallback, useEffect, useState } from "react";
 import { CompactBookmark } from "~/components/CompactBookmark";
 import { CreateFolderButton } from "~/components/CreateFolderButton";
 import { DeleteFolderButton } from "~/components/DeleteFolderButton";
-import { DirectionButton } from "~/components/DirectionButton";
 import { EmptyState } from "~/components/EmptyState";
 import { ExpandedBookmark } from "~/components/ExpandedBookmark";
 import { FolderSkeleton } from "~/components/FolderSkeleton";
+import { Separator } from "~/components/Separator";
 import { ShareButton } from "~/components/ShareButton";
 import { SignOutButton } from "~/components/SignOutButton";
 import { SkeletonList } from "~/components/SkeletonList";
 import { Spinner } from "~/components/Spinner";
 import { ViewButton } from "~/components/ViewButton";
+import {
+  currentFolderIdAtom,
+  directionAtom,
+  isOpenAtom,
+} from "~/helpers/atoms";
 import { api } from "~/utils/api";
 
 export default function Bookmarks() {
   const session = useSession();
   const utils = api.useContext();
   const [inputUrl, setInputUrl] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
   );
-  const [direction, setDirection] = useState<"asc" | "desc">("asc");
-  const [currentFolderId, setCurrentFolderId] = useState<string>("");
+  const [direction] = useAtom(directionAtom);
+  const [currentFolderId, setCurrentFolderId] = useAtom(currentFolderIdAtom);
 
   const { data: folders, isLoading: foldersLoading } =
     api.folders.findByUserId.useQuery(
@@ -163,19 +169,6 @@ export default function Bookmarks() {
     setViewStyle(viewStyle === "compact" ? "expanded" : "compact");
   };
 
-  const handleChangeDirection = () => {
-    // handle direction change with a delay to allow the bookmarks list to close
-    setIsOpen(false);
-
-    setTimeout(() => {
-      setIsOpen(true);
-    }, 10);
-
-    setDirection(direction === "asc" ? "desc" : "asc");
-
-    void utils.bookmarks.findByFolderId.invalidate();
-  };
-
   // Opening the bookmarks list
   useEffect(() => {
     if (!bookmarksLoading && bookmarks?.length) {
@@ -192,168 +185,170 @@ export default function Bookmarks() {
         </title>
         <link rel="icon" href={faviconUrl} />
       </Head>
-      <main className="relative flex min-h-screen w-full flex-col items-center bg-gradient-to-br from-[#202020] to-[black]">
-        <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-          <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
-            <motion.form
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleCreateBookmark();
-              }}
-            >
-              <div className="flex items-center gap-2">
-                <input
-                  type="url"
-                  name="url"
-                  id="url"
-                  value={inputUrl}
-                  disabled={addBookmark.isLoading || !currentFolderId}
-                  onChange={(e) => setInputUrl(e.target.value)}
-                  placeholder="https://..."
-                  className="w-72 rounded-full bg-white/10 px-6 py-2 font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 placeholder:font-normal hover:bg-white/20 md:w-96"
-                />
-                <motion.button
-                  whileTap={{
-                    scale: 0.8,
-                  }}
-                  type="submit"
-                  disabled={
-                    inputUrl.length === 0 ||
-                    addBookmark.isLoading ||
-                    !currentFolderId
-                  }
-                  className={`duration-300'hover:bg-white/20 rounded-full bg-white/10 p-3 transition ${
-                    inputUrl.length === 0 || addBookmark.isLoading
-                      ? "bg-white/5"
-                      : null
-                  }`}
-                >
-                  {addBookmark.isLoading ? (
-                    <Spinner size="sm" />
-                  ) : (
-                    <PlusIcon className="h-4 w-4 text-white" />
-                  )}
-                </motion.button>
-              </div>
-            </motion.form>
-
-            <div className="flex items-center gap-2 align-middle">
-              <ViewButton
-                viewStyle={viewStyle}
-                handleChangeViewStyle={handleChangeViewStyle}
-              />
-              <DirectionButton
-                direction={direction}
-                handleChangeDirection={handleChangeDirection}
-              />
-              <ShareButton folderId={currentFolderId} />
-              <SignOutButton />
-            </div>
-          </div>
-          <div className="mx-2 my-6  h-[2px] w-full rounded-full bg-white/5" />
-          <div className="flex justify-between px-2 pb-4 align-middle">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="flex items-center gap-x-2 overflow-x-auto "
-            >
-              {foldersLoading ? (
-                [...Array<number>(3)].map((_, i) => <FolderSkeleton key={i} />)
-              ) : folders && folders?.length > 0 ? (
-                folders?.map((folder) => (
-                  <motion.div
+      <main className="relative min-h-screen w-full bg-gradient-to-br from-[#202020] to-[black]">
+        <div className="flex flex-col items-center">
+          <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
+            <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
+              <motion.form
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleCreateBookmark();
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <input
+                    type="url"
+                    name="url"
+                    id="url"
+                    value={inputUrl}
+                    disabled={addBookmark.isLoading || !currentFolderId}
+                    onChange={(e) => setInputUrl(e.target.value)}
+                    placeholder="https://..."
+                    className="w-72 rounded-full bg-white/10 px-6 py-2 font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 placeholder:font-normal hover:bg-white/20 md:w-96"
+                  />
+                  <motion.button
                     whileTap={{
                       scale: 0.8,
                     }}
-                    onClick={() => {
-                      if (currentFolderId !== folder.id) {
-                        setCurrentFolderId(folder.id);
-                        setIsOpen(false);
-                        void utils.bookmarks.findByFolderId.invalidate();
-                      }
-                    }}
-                    key={folder.id}
-                    className={`${
-                      currentFolderId === folder.id ? "bg-white/30" : ""
-                    } group flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20`}
+                    type="submit"
+                    disabled={
+                      inputUrl.length === 0 ||
+                      addBookmark.isLoading ||
+                      !currentFolderId
+                    }
+                    className={`duration-300'hover:bg-white/20 rounded-full bg-white/10 p-3 transition ${
+                      inputUrl.length === 0 || addBookmark.isLoading
+                        ? "bg-white/5"
+                        : null
+                    }`}
                   >
-                    {folder.icon && <div>{folder.icon}</div>}
-                    <div>{folder.name}</div>
-                  </motion.div>
-                ))
-              ) : (
-                <p className={`text-center italic text-gray-500`}>
-                  No folders yet, create one -{">"}
-                </p>
-              )}
-            </motion.div>
-            <div className="flex gap-2">
-              {folders && folders?.length > 0 && (
-                <DeleteFolderButton
-                  folderId={currentFolderId}
-                  setCurrentFolderId={setCurrentFolderId}
+                    {addBookmark.isLoading ? (
+                      <Spinner size="sm" />
+                    ) : (
+                      <PlusIcon className="h-4 w-4 text-white" />
+                    )}
+                  </motion.button>
+                </div>
+              </motion.form>
+
+              <div className="flex items-center gap-2 align-middle">
+                <ViewButton
+                  viewStyle={viewStyle}
+                  handleChangeViewStyle={handleChangeViewStyle}
                 />
-              )}
-              <CreateFolderButton />
+                <ShareButton folderId={currentFolderId} />
+                <SignOutButton />
+              </div>
             </div>
-          </div>
-          <AnimatePresence mode="wait">
-            <motion.div
-              initial={false}
-              animate={isOpen ? "open" : "closed"}
-              className="flex flex-col gap-8"
-            >
-              <motion.ul
-                className={`flex flex-col ${
-                  viewStyle === "compact" ? "gap-2" : "gap-6"
-                }`}
-                variants={{
-                  open: {
-                    transition: {
-                      type: "spring",
-                      bounce: 0,
-                      duration: 0.7,
-                      staggerChildren: 0.08,
-                      delayChildren: 0.2,
-                    },
-                  },
-                  closed: {
-                    transition: {
-                      type: "spring",
-                      bounce: 0,
-                      duration: 0.3,
-                    },
-                  },
-                }}
+
+            <Separator height={2} mx={2} my={6} />
+
+            <div className="flex justify-between px-2 pb-4 align-middle">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="flex items-center gap-x-2 overflow-x-auto "
               >
-                {bookmarksLoading || foldersLoading ? (
-                  <SkeletonList viewStyle={viewStyle} />
-                ) : bookmarks && bookmarks?.length > 0 ? (
-                  bookmarks.map((bookmark) => (
-                    <div key={bookmark.id}>
-                      {viewStyle === "compact" ? (
-                        <CompactBookmark
-                          onRemove={handleDeleteBookmark}
-                          bookmark={bookmark}
-                        />
-                      ) : (
-                        <ExpandedBookmark
-                          onRemove={handleDeleteBookmark}
-                          bookmark={bookmark}
-                        />
-                      )}
-                    </div>
+                {foldersLoading ? (
+                  [...Array<number>(3)].map((_, i) => (
+                    <FolderSkeleton key={i} />
+                  ))
+                ) : folders && folders?.length > 0 ? (
+                  folders?.map((folder) => (
+                    <motion.div
+                      whileTap={{
+                        scale: 0.8,
+                      }}
+                      onClick={() => {
+                        if (currentFolderId !== folder.id) {
+                          setCurrentFolderId(folder.id);
+                          setIsOpen(false);
+                          void utils.bookmarks.findByFolderId.invalidate();
+                        }
+                      }}
+                      key={folder.id}
+                      className={`${
+                        currentFolderId === folder.id ? "bg-white/30" : ""
+                      } group flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20`}
+                    >
+                      {folder.icon && <div>{folder.icon}</div>}
+                      <div>{folder.name}</div>
+                    </motion.div>
                   ))
                 ) : (
-                  bookmarks?.length === 0 && <EmptyState />
+                  <p className={`text-center italic text-gray-500`}>
+                    No folders yet, create one -{">"}
+                  </p>
                 )}
-              </motion.ul>
-            </motion.div>
-          </AnimatePresence>
+              </motion.div>
+              <div className="flex gap-2">
+                {folders && folders?.length > 0 && (
+                  <DeleteFolderButton
+                    folderId={currentFolderId}
+                    setCurrentFolderId={setCurrentFolderId}
+                  />
+                )}
+                <CreateFolderButton />
+              </div>
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                initial={false}
+                animate={isOpen ? "open" : "closed"}
+                className="flex flex-col gap-8"
+              >
+                <motion.ul
+                  className={`flex flex-col ${
+                    viewStyle === "compact" ? "gap-2" : "gap-6"
+                  }`}
+                  variants={{
+                    open: {
+                      transition: {
+                        type: "spring",
+                        bounce: 0,
+                        duration: 0.7,
+                        staggerChildren: 0.08,
+                        delayChildren: 0.2,
+                      },
+                    },
+                    closed: {
+                      transition: {
+                        type: "spring",
+                        bounce: 0,
+                        duration: 0.3,
+                      },
+                    },
+                  }}
+                >
+                  {bookmarksLoading || foldersLoading ? (
+                    <SkeletonList viewStyle={viewStyle} />
+                  ) : bookmarks && bookmarks?.length > 0 ? (
+                    bookmarks.map((bookmark) => (
+                      <div key={bookmark.id}>
+                        {viewStyle === "compact" ? (
+                          <CompactBookmark
+                            onRemove={handleDeleteBookmark}
+                            bookmark={bookmark}
+                          />
+                        ) : (
+                          <ExpandedBookmark
+                            onRemove={handleDeleteBookmark}
+                            bookmark={bookmark}
+                          />
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    bookmarks?.length === 0 && <EmptyState />
+                  )}
+                </motion.ul>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </main>
     </>

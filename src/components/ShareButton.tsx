@@ -1,9 +1,15 @@
 import * as Popover from "@radix-ui/react-popover";
 import * as Checkbox from "@radix-ui/react-checkbox";
-import { CheckIcon, CopyIcon, GlobeIcon, Share2Icon } from "@radix-ui/react-icons";
+import {
+  CheckIcon,
+  CopyIcon,
+  GlobeIcon,
+  Share2Icon,
+} from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
+import { Separator } from "./Separator";
 
 export const ShareButton = ({ folderId }: { folderId?: string }) => {
   const { data: folder } = api.folders.findById.useQuery({
@@ -26,6 +32,7 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
       isShared: !isShared,
       icon: folder?.icon ?? null,
       name: folder?.name ?? null,
+      allowDuplicate: folder?.allowDuplicate ?? false,
     });
   };
 
@@ -77,7 +84,7 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
                   />
                 </span>
               </div>
-              <div className="h-[2px] w-full rounded-full bg-white/5" />
+              <Separator height={1} />
 
               <div className="flex items-center gap-2 align-middle">
                 <p className="font-normal">Public?</p>
@@ -106,7 +113,9 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
                     !isShared ? "text-zinc-600/50" : "text-white"
                   }`}
                   type="text"
-                  value={window.location.hostname + "/bookmarks/public/" + folderId}
+                  value={
+                    window.location.hostname + "/bookmarks/public/" + folderId
+                  }
                   readOnly
                 />
                 <AnimatePresence mode="popLayout">

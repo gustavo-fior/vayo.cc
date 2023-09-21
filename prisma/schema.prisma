@@ -64,6 +64,7 @@ model Folder {
     updatedAt DateTime @updatedAt
     name      String
     icon      String   @default("📁")
+    allowDuplicate Boolean @default(true)
     isShared  Boolean  @default(false)
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    String

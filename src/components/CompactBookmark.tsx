@@ -27,6 +27,7 @@ export const CompactBookmark = ({
             >
               <div className="flex flex-row items-center gap-3 align-middle ">
                 {bookmark.faviconUrl ? (
+                  <div className="rounded-lg bg-white/10 p-2">
                   <Image
                     src={String(bookmark.faviconUrl)}
                     alt={bookmark.title}
@@ -35,10 +36,11 @@ export const CompactBookmark = ({
                     className="rounded-sm"
                     style={{ height: "0.9rem", width: "0.9rem" }}
                   />
+                  </div>
                 ) : (
                   <div
-                    className="rounded-sm bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"
-                    style={{ height: "0.9rem", width: "0.9rem" }}
+                    className="rounded-lg bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"
+                    style={{ height: "1.9rem", width: "1.9rem" }}
                   />
                 )}
                 <p className={`max-w-sm truncate font-semibold text-white `}>

@@ -76,6 +76,7 @@ export const foldersRouter = createTRPCRouter({
         name: z.string().nullable(),
         icon: z.string().nullable(),
         isShared: z.boolean().nullable(),
+        allowDuplicate: z.boolean().nullable(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -88,6 +89,7 @@ export const foldersRouter = createTRPCRouter({
           icon: input.icon ?? undefined,
           isShared: input.isShared ?? undefined,
           updatedAt: new Date(),
+          allowDuplicate: input.allowDuplicate ?? undefined,
         },
       });
     }),

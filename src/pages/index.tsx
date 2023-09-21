@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { type GetServerSideProps } from "next";
 import { getSession, signIn } from "next-auth/react";
+import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
 import { BsGithub, BsGoogle } from "react-icons/bs";
@@ -16,12 +17,17 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>Bookmarks</title>
+        <meta name="description" content="Keeping bookmarks" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <motion.div
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 5 }}
-          transition={{ duration: 0.3}}
+          transition={{ duration: 0.3 }}
           className="container flex flex-col items-center justify-center px-4 py-16 "
         >
           <Image
