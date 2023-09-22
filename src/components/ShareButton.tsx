@@ -1,36 +1,44 @@
-import * as Popover from "@radix-ui/react-popover";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import {
   CheckIcon,
-  CopyIcon,
   GlobeIcon,
   Link1Icon,
   Share2Icon,
 } from "@radix-ui/react-icons";
+import * as Popover from "@radix-ui/react-popover";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { Separator } from "./Separator";
+import { currentFolderAtom } from "~/helpers/atoms";
+import { useAtom } from "jotai";
 
-export const ShareButton = ({ folderId }: { folderId?: string }) => {
+export const ShareButton = () => {
+  const [currentFolder] = useAtom(currentFolderAtom);
+
   const { data: folder } = api.folders.findById.useQuery({
-    id: folderId ?? "",
+    id: currentFolder?.id ?? "",
   });
 
-  const [copied, setCopied] = useState(false);
-
-  const [isShared, setIsShared] = useState(false);
   const { mutate: updateFolder } = api.folders.update.useMutation({});
 
+  const [copied, setCopied] = useState(false);
+  const [isShared, setIsShared] = useState(currentFolder?.isShared ?? false);
+
   const handleCopyToClipboard = async () => {
-    const url = window.location.hostname + "/bookmarks/public/" + folderId;
+    const url =
+      window.location.hostname + "/bookmarks/public/" + currentFolder?.id;
     await navigator.clipboard.writeText(url);
   };
 
   const handleUpdateFolder = () => {
+    const updatedIsShared = !isShared;
+
+    setIsShared(updatedIsShared);
+    
     updateFolder({
-      id: folderId ?? "",
-      isShared: !isShared,
+      id: currentFolder?.id ?? "",
+      isShared: updatedIsShared,
       icon: folder?.icon ?? null,
       name: folder?.name ?? null,
       allowDuplicate: folder?.allowDuplicate ?? false,
@@ -58,14 +66,14 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
           </div>
         </motion.button>
       </Popover.Trigger>
-      {folderId && (
+      {currentFolder?.id && (
         <Popover.Portal>
           <Popover.Content className="z-50">
             <motion.div
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
-              className="mt-4 flex flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold mr-36 text-white no-underline backdrop-blur-lg"
+              className="mr-40 mt-4 flex flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold text-white no-underline backdrop-blur-lg"
             >
               <div className="flex items-center justify-between gap-2 align-middle">
                 <div className="flex items-center gap-2 align-middle">
@@ -85,7 +93,7 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
                   />
                 </span>
               </div>
-              <Separator height={1} />
+              <Separator height={2} />
 
               <div className="flex items-center gap-2 align-middle">
                 <p className="font-normal">Public?</p>
@@ -93,7 +101,6 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
                   defaultChecked={isShared}
                   className="flex h-6 w-6 items-center justify-center rounded-md bg-white/10 transition duration-300 ease-in-out hover:bg-white/20"
                   onCheckedChange={() => {
-                    setIsShared(!isShared);
                     handleUpdateFolder();
                   }}
                 >
@@ -115,7 +122,9 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
                   }`}
                   type="text"
                   value={
-                    window.location.hostname + "/bookmarks/public/" + folderId
+                    window.location.hostname +
+                    "/bookmarks/public/" +
+                    currentFolder?.id
                   }
                   readOnly
                 />

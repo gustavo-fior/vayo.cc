@@ -1,6 +1,7 @@
+import { type Folder } from "@prisma/client";
 import { atom } from "jotai";
 
 export const directionAtom = atom<"asc" | "desc">("asc");
+export const currentFolderAtom = atom<Folder | null>(null);
 export const isOpenAtom = atom(false);
-export const currentFolderIdAtom = atom<string>("");
 export const viewStyleAtom = atom<"expanded" | "compact">("expanded");

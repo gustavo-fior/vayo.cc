@@ -4,36 +4,40 @@ import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { Spinner } from "./Spinner";
+import { useAtom } from "jotai";
+import { currentFolderAtom } from "~/helpers/atoms";
 
-export const DeleteFolderButton = ({
-  folderId,
-  setCurrentFolderId,
-}: {
-  folderId: string;
-  setCurrentFolderId: (folderId: string) => void;
-}) => {
+export const DeleteFolderButton = () => {
   const session = useSession();
   const utils = api.useContext();
+  const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
+
   const { mutate: deleteFolder, isLoading: isDeletingFolder } =
     api.folders.delete.useMutation({
       onSuccess: async () => {
         if (utils.folders.findByUserId.getData()?.length === 0) {
-          setCurrentFolderId("");
+          setCurrentFolder(null);
         } else {
-          setCurrentFolderId(utils.folders.findByUserId.getData()?.[0]?.id ?? "");
+          setCurrentFolder(utils.folders.findByUserId.getData()?.[0] ?? null);
         }
 
-        await utils.bookmarks.findByFolderId.invalidate({ folderId });
-        await utils.folders.findByUserId.invalidate({ userId: session?.data?.user?.id });
+        await utils.bookmarks.findByFolderId.invalidate({
+          folderId: currentFolder?.id,
+        });
+        await utils.folders.findByUserId.invalidate({
+          userId: session?.data?.user?.id,
+        });
       },
       onError: () => {
         utils.folders.findByUserId.setData(
           { userId: String(session?.data?.user?.id) },
           (oldQueryData: Folder[] | undefined) => {
-            return oldQueryData?.filter((folder) => folder.id !== folderId);
+            return oldQueryData?.filter(
+              (folder) => folder.id !== currentFolder?.id
+            );
           }
         );
-      }
+      },
     });
 
   const handleDelete = async () => {
@@ -45,13 +49,14 @@ export const DeleteFolderButton = ({
       { userId: String(session?.data?.user?.id) },
       (previousFolders: Folder[] | undefined) =>
         [
-          ...(previousFolders?.filter((folder) => folder.id !== folderId) ??
-            []),
+          ...(previousFolders?.filter(
+            (folder) => folder.id !== currentFolder?.id
+          ) ?? []),
         ] as Folder[]
     );
 
     deleteFolder({
-      id: folderId,
+      id: String(currentFolder?.id),
     });
 
     return { previousFolders };

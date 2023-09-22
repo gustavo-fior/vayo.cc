@@ -12,17 +12,18 @@ import { DeleteFolderButton } from "~/components/DeleteFolderButton";
 import { EmptyState } from "~/components/EmptyState";
 import { ExpandedBookmark } from "~/components/ExpandedBookmark";
 import { FolderSkeleton } from "~/components/FolderSkeleton";
+import { ProfileMenu } from "~/components/ProfileMenu";
 import { Separator } from "~/components/Separator";
 import { ShareButton } from "~/components/ShareButton";
-import { ProfileMenu } from "~/components/ProfileMenu";
 import { SkeletonList } from "~/components/SkeletonList";
 import { Spinner } from "~/components/Spinner";
 import {
-  currentFolderIdAtom,
+  currentFolderAtom,
   directionAtom,
   isOpenAtom,
   viewStyleAtom,
 } from "~/helpers/atoms";
+import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { api } from "~/utils/api";
 
 export default function Bookmarks() {
@@ -30,33 +31,30 @@ export default function Bookmarks() {
   const utils = api.useContext();
   const [inputUrl, setInputUrl] = useState("");
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
+  const [isDuplicate, setIsDuplicate] = useState(false);
   const [viewStyle] = useAtom(viewStyleAtom);
   const [direction] = useAtom(directionAtom);
-  const [currentFolderId, setCurrentFolderId] = useAtom(currentFolderIdAtom);
+  const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
 
   const { data: folders, isLoading: foldersLoading } =
     api.folders.findByUserId.useQuery(
       { userId: String(session.data?.user.id) },
       {
         onSuccess: (data) => {
-          if (data && data?.length > 0 && !currentFolderId) {
-            setCurrentFolderId(data[0]?.id ?? "");
+          if (data && data?.length > 0 && !currentFolder) {
+            setCurrentFolder(data[0] ?? null);
           }
         },
       }
     );
 
-  const faviconUrl: string = folders?.find(
-    (folder) => folder.id === currentFolderId
-  )?.icon
-    ? `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${
-        folders?.find((folder) => folder.id === currentFolderId)?.icon
-      }</text></svg>`
+  const faviconUrl: string = currentFolder?.icon
+    ? `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${currentFolder?.icon}</text></svg>`
     : "/favicon.ico";
 
   const { data: bookmarks, isLoading: bookmarksLoading } =
     api.bookmarks.findByFolderId.useQuery({
-      folderId: String(currentFolderId),
+      folderId: String(currentFolder?.id),
       direction: direction,
     });
 
@@ -70,15 +68,19 @@ export default function Bookmarks() {
       const previousBookmarks = utils.bookmarks.findByFolderId.getData();
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId), direction: "asc" },
+        { folderId: String(currentFolder?.id), direction: "asc" },
         (oldQueryData: Bookmark[] | undefined) => {
           const newBookmark: Bookmark = {
             id: "temp",
             url: inputUrl,
             title:
               inputUrl.split("/")[2]?.split(".")[0] === "www"
-                ? inputUrl.split("/")[2]?.split(".")[1] ?? ""
-                : inputUrl.split("/")[2]?.split(".")[0] ?? "",
+                ? capitalizeFirstLetter(
+                    inputUrl.split("/")[2]?.split(".")[1] ?? ""
+                  )
+                : capitalizeFirstLetter(
+                    inputUrl.split("/")[2]?.split(".")[0] ?? ""
+                  ),
             folderId: "temp",
             faviconUrl: null,
             ogImageUrl: null,
@@ -102,7 +104,7 @@ export default function Bookmarks() {
         null;
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId), direction: direction },
+        { folderId: String(currentFolder?.id), direction: direction },
         previousBookmarks!
       );
     },
@@ -115,7 +117,7 @@ export default function Bookmarks() {
       const previousBookmarks = utils.bookmarks.findByFolderId.getData();
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId), direction: direction },
+        { folderId: String(currentFolder?.id), direction: direction },
         (previousBookmarks: Bookmark[] | undefined) =>
           [
             ...(previousBookmarks?.filter((bookmark) => bookmark.id !== id) ??
@@ -135,7 +137,7 @@ export default function Bookmarks() {
         null;
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolderId), direction: direction },
+        { folderId: String(currentFolder?.id), direction: direction },
         previousBookmarks!
       );
     },
@@ -144,9 +146,9 @@ export default function Bookmarks() {
   const handleCreateBookmark = useCallback(() => {
     addBookmark.mutate({
       url: inputUrl,
-      folderId: String(currentFolderId),
+      folderId: String(currentFolder?.id),
     });
-  }, [addBookmark, inputUrl, currentFolderId]);
+  }, [addBookmark, inputUrl, currentFolder?.id]);
 
   const handleDeleteBookmark = useCallback(
     (id: string) => {
@@ -167,10 +169,7 @@ export default function Bookmarks() {
   return (
     <>
       <Head>
-        <title>
-          {folders?.find((folder) => folder.id === currentFolderId)?.name ??
-            "Bookmarks"}
-        </title>
+        <title>{currentFolder?.name ?? "Bookmarks"}</title>
         <link rel="icon" href={faviconUrl} />
       </Head>
       <main className="relative min-h-screen w-full bg-gradient-to-br from-[#202020] to-[black]">
@@ -183,6 +182,20 @@ export default function Bookmarks() {
                 exit={{ opacity: 0, scale: 0.9 }}
                 onSubmit={(e) => {
                   e.preventDefault();
+
+                  if (
+                    !currentFolder?.allowDuplicate &&
+                    bookmarks?.find((bookmark) => bookmark.url === inputUrl)
+                  ) {
+                    setIsDuplicate(true);
+
+                    setTimeout(() => {
+                      setIsDuplicate(false);
+                    }, 2000);
+
+                    return;
+                  }
+
                   handleCreateBookmark();
                 }}
               >
@@ -191,11 +204,13 @@ export default function Bookmarks() {
                     type="url"
                     name="url"
                     id="url"
-                    value={inputUrl}
-                    disabled={addBookmark.isLoading || !currentFolderId}
+                    value={isDuplicate ? "Duplicate" : inputUrl}
+                    disabled={addBookmark.isLoading || !currentFolder}
                     onChange={(e) => setInputUrl(e.target.value)}
                     placeholder="https://..."
-                    className="w-72 rounded-full bg-white/10 px-6 py-2 font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 placeholder:font-normal hover:bg-white/20 md:w-96"
+                    className={`w-72 rounded-full bg-white/10 px-6 py-2 font-semibold text-white no-underline placeholder-zinc-600 transition duration-300 ease-in-out placeholder:font-normal hover:bg-white/20 md:w-96 ${
+                      isDuplicate ? "ring-2 ring-red-500" : ""
+                    }`}
                   />
                   <motion.button
                     whileTap={{
@@ -205,7 +220,7 @@ export default function Bookmarks() {
                     disabled={
                       inputUrl.length === 0 ||
                       addBookmark.isLoading ||
-                      !currentFolderId
+                      !currentFolder
                     }
                     className={`duration-300'hover:bg-white/20 rounded-full bg-white/10 p-3 transition ${
                       inputUrl.length === 0 || addBookmark.isLoading
@@ -223,7 +238,7 @@ export default function Bookmarks() {
               </motion.form>
 
               <div className="flex items-center gap-2 align-middle">
-                <ShareButton folderId={currentFolderId} />
+                <ShareButton />
                 <ProfileMenu />
               </div>
             </div>
@@ -248,15 +263,15 @@ export default function Bookmarks() {
                         scale: 0.8,
                       }}
                       onClick={() => {
-                        if (currentFolderId !== folder.id) {
-                          setCurrentFolderId(folder.id);
+                        if (currentFolder?.id !== folder.id) {
+                          setCurrentFolder(folder);
                           setIsOpen(false);
                           void utils.bookmarks.findByFolderId.invalidate();
                         }
                       }}
                       key={folder.id}
                       className={`${
-                        currentFolderId === folder.id ? "bg-white/30" : ""
+                        currentFolder?.id === folder.id ? "bg-white/30" : ""
                       } group flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20`}
                     >
                       {folder.icon && <div>{folder.icon}</div>}
@@ -270,12 +285,7 @@ export default function Bookmarks() {
                 )}
               </motion.div>
               <div className="flex gap-2">
-                {folders && folders?.length > 0 && (
-                  <DeleteFolderButton
-                    folderId={currentFolderId}
-                    setCurrentFolderId={setCurrentFolderId}
-                  />
-                )}
+                {folders && folders?.length > 0 && <DeleteFolderButton />}
                 <CreateFolderButton />
               </div>
             </div>

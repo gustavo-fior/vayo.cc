@@ -4,6 +4,7 @@ import { Cross1Icon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { itemVariants } from "../helpers/animationVariants";
+import { useState } from "react";
 
 export const ExpandedBookmark = ({
   bookmark,
@@ -12,6 +13,11 @@ export const ExpandedBookmark = ({
   bookmark: Bookmark;
   onRemove?: (id: string) => void;
 }) => {
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
 
   return (
     <ContextMenu.Root>
@@ -27,18 +33,20 @@ export const ExpandedBookmark = ({
               href={bookmark.url}
               target="_blank"
             >
-              {bookmark.ogImageUrl ? (
+              {bookmark.ogImageUrl && !imageError ? (
                 <Image
                   src={String(bookmark.ogImageUrl)}
                   alt={bookmark.title}
                   width={320}
                   height={180}
                   className="hidden rounded-md md:block"
+                  priority
                   style={{
                     height: "4rem",
                     width: "12rem",
                     objectFit: "cover",
                   }}
+                  onError={handleImageError}
                 />
               ) : (
                 <div
