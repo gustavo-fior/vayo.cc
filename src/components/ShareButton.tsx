@@ -4,6 +4,7 @@ import {
   CheckIcon,
   CopyIcon,
   GlobeIcon,
+  Link1Icon,
   Share2Icon,
 } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
@@ -64,11 +65,11 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
-              className="mt-4 flex flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold text-white no-underline backdrop-blur-lg"
+              className="mt-4 flex flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold mr-36 text-white no-underline backdrop-blur-lg"
             >
               <div className="flex items-center justify-between gap-2 align-middle">
                 <div className="flex items-center gap-2 align-middle">
-                  <GlobeIcon className="h-4 w-4" />
+                  <GlobeIcon className="h-4 w-4 text-gray-400" />
                   <p>Share</p>
                 </div>
                 <span className="relative mr-2 mt-0.5 flex h-2 w-2">
@@ -151,7 +152,7 @@ export const ShareButton = ({ folderId }: { folderId?: string }) => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1 }}
                       >
-                        <CopyIcon
+                        <Link1Icon
                           className={`h-4 w-4 transition duration-300 ease-in-out ${
                             isShared ? "text-white" : "text-zinc-600/50"
                           }`}

@@ -14,14 +14,14 @@ import { ExpandedBookmark } from "~/components/ExpandedBookmark";
 import { FolderSkeleton } from "~/components/FolderSkeleton";
 import { Separator } from "~/components/Separator";
 import { ShareButton } from "~/components/ShareButton";
-import { SignOutButton } from "~/components/SignOutButton";
+import { ProfileMenu } from "~/components/ProfileMenu";
 import { SkeletonList } from "~/components/SkeletonList";
 import { Spinner } from "~/components/Spinner";
-import { ViewButton } from "~/components/ViewButton";
 import {
   currentFolderIdAtom,
   directionAtom,
   isOpenAtom,
+  viewStyleAtom,
 } from "~/helpers/atoms";
 import { api } from "~/utils/api";
 
@@ -30,9 +30,7 @@ export default function Bookmarks() {
   const utils = api.useContext();
   const [inputUrl, setInputUrl] = useState("");
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
-  const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
-    "expanded"
-  );
+  const [viewStyle] = useAtom(viewStyleAtom);
   const [direction] = useAtom(directionAtom);
   const [currentFolderId, setCurrentFolderId] = useAtom(currentFolderIdAtom);
 
@@ -159,22 +157,12 @@ export default function Bookmarks() {
     [deleteBookmark]
   );
 
-  const handleChangeViewStyle = () => {
-    setIsOpen(false);
-
-    setTimeout(() => {
-      setIsOpen(true);
-    }, 10);
-
-    setViewStyle(viewStyle === "compact" ? "expanded" : "compact");
-  };
-
   // Opening the bookmarks list
   useEffect(() => {
     if (!bookmarksLoading && bookmarks?.length) {
       setIsOpen(true);
     }
-  }, [bookmarksLoading, bookmarks]);
+  }, [bookmarksLoading, bookmarks, setIsOpen]);
 
   return (
     <>
@@ -235,12 +223,8 @@ export default function Bookmarks() {
               </motion.form>
 
               <div className="flex items-center gap-2 align-middle">
-                <ViewButton
-                  viewStyle={viewStyle}
-                  handleChangeViewStyle={handleChangeViewStyle}
-                />
                 <ShareButton folderId={currentFolderId} />
-                <SignOutButton />
+                <ProfileMenu />
               </div>
             </div>
 
