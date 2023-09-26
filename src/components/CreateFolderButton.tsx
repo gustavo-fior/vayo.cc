@@ -57,6 +57,7 @@ export const CreateFolderButton = () => {
           userId: String(session?.data?.user?.id),
           createdAt: new Date(),
           updatedAt: new Date(),
+          allowDuplicate: true,
         };
 
         return oldQueryData ? [...oldQueryData, newFolder] : [newFolder];
