@@ -3,6 +3,7 @@ import * as ContextMenu from "@radix-ui/react-context-menu";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { itemVariants } from "../helpers/animationVariants";
+import { Cross1Icon } from "@radix-ui/react-icons";
 
 export const CompactBookmark = ({
   bookmark,
@@ -28,14 +29,14 @@ export const CompactBookmark = ({
               <div className="flex flex-row items-center gap-3 align-middle ">
                 {bookmark.faviconUrl ? (
                   <div className="rounded-lg bg-white/10 p-2">
-                  <Image
-                    src={String(bookmark.faviconUrl)}
-                    alt={bookmark.title}
-                    width={12}
-                    height={12}
-                    className="rounded-sm"
-                    style={{ height: "0.9rem", width: "0.9rem" }}
-                  />
+                    <Image
+                      src={String(bookmark.faviconUrl)}
+                      alt={bookmark.title}
+                      width={12}
+                      height={12}
+                      className="rounded-sm"
+                      style={{ height: "0.9rem", width: "0.9rem" }}
+                    />
                   </div>
                 ) : (
                   <div
@@ -59,20 +60,7 @@ export const CompactBookmark = ({
                   onRemove ? onRemove(bookmark.id) : null;
                 }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={4}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <Cross1Icon className="h-4 w-4" />
               </button>
             )}
           </motion.div>
