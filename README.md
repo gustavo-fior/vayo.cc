@@ -32,3 +32,4 @@
 - shared folder
 - add a way to add a bookmark without opening the website (maybe a chrome extension?)
 - x links doesn't work (tks elon)
+- record last view style and last sorting
