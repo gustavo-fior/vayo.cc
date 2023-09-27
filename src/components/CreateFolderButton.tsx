@@ -188,7 +188,7 @@ export const CreateFolderButton = () => {
                       disabled={isCreatingFolder || icon.length === 0}
                       className={`flex h-6 w-6 items-center justify-center rounded-md ${
                         icon.length === 0 ? "bg-white/5" : "bg-white/10"
-                      } p-1.5 align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20`}
+                      } p-1.5 align-middle font-semibold text-white no-underline transition hover:bg-white/20`}
                       onClick={() => setIcon("")}
                     >
                       <Cross1Icon
