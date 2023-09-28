@@ -15,21 +15,22 @@
 - ✅  add custom favicon and title to different folders
 - ✅  add direction button (asc, desc) (API already supports it)
 - ✅  default folder
-- ✅  migrate to jotai (migrated where global states are needed, really enjoyed it, mad emy life easier)  
-- ✅  add option to verify duplicate
-- ❌  preview yt videos (figured out there's no reason to implement this, the user can just click and watch it on yt)
-- ❌  add last opened folder (folders are already sorted by last update)
+- ✅  migrate to jotai (migrated where global states are needed, really enjoyed it, made my life easier)  
+- ✅  add an option to verify duplicate
+- ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
+- ❌  add the last opened folder (folders are already sorted by the last update)
 
 
 # TODO
 
-- make UI better and create a pattern (paddings, animations, texts) (probably have a menu that contains viewStyle, direction and sign out)
+- make UI better and create a pattern (paddings, animations, texts) (probably have a menu that contains view style, direction, and sign out)
 - add search
 - add light mode
-- allow user to edit and have a custom sort for folders
-- maybe insert AI generated og images when one cant be found (too crazy?)
+- allow users to edit and have a custom sort for folders
+- maybe insert AI-generated og images when one can't be found (too crazy?)
 - animate direction button
 - shared folder
-- add a way to add a bookmark without opening the website (maybe a chrome extension?)
-- x links doesn't work (tks elon)
+- add a way to add a bookmark without opening the website (maybe a Chrome extension?)
+- x links don't work (tks Elon)
 - record last view style and last sorting
+- add confirmation when deleting a folder
