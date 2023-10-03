@@ -34,3 +34,4 @@
 - x links don't work (tks Elon)
 - record last view style and last sorting
 - add confirmation when deleting a folder
+- focus when adding a new bookmark
