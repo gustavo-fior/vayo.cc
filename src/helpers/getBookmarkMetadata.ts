@@ -3,21 +3,22 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { URL } from "url";
-import fetch from "node-fetch";
+import fetch, { type RequestInit } from "node-fetch";
 
 export const getBookmarkMetadata = async (
-  url: string
+  url: string,
+  options?: RequestInit
 ): Promise<BookmarkMetadata> => {
   try {
-    console.log("url", url);
-    console.log("----------------------------");
-
-    const response = await fetch(url, {
-      referrerPolicy: "no-referrer",
-      redirect: "manual", // Disable automatic redirects
+    
+    const response = await fetch(url, options ?? {
+      redirect: "manual",
+      headers: {
+        "mode": "same-origin",
+      },
     });
 
-    console.log("response", response);
+    console.log("response: " + response.status);
 
     // If the response is a redirect, fetch the redirect URL
     if (response.status >= 300 && response.status < 400) {
@@ -34,7 +35,17 @@ export const getBookmarkMetadata = async (
         throw new Error("Redirect location header missing");
       }
 
-      return getBookmarkMetadata(redirectUrl);
+      return getBookmarkMetadata(redirectUrl, {
+        headers: {
+          "Cookie": "guest_id=a;",
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
+            "AppleWebKit/537.36 (KHTML, like Gecko) " +
+            "Chrome/92.0.4515.159 Safari/537.36",
+          "Accept-Language": "en-US,en;q=0.9",
+          "Accept-Encoding": "gzip, deflate, br",
+        },
+      });
     }
 
     if (!response.ok) {
@@ -44,11 +55,16 @@ export const getBookmarkMetadata = async (
     }
 
     const html = await response.text();
+
+    console.log("html: " + html);
+
     const { JSDOM } = require("jsdom");
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
-    const title = document.querySelector("title")?.textContent ?? "";
+    const title = document.querySelector("title")?.textContent ?? document.querySelector("meta[property='og:title']").getAttribute("content") ?? "";
+
+    console.log("title: " + title);
 
     let ogImageElement = document.querySelector("meta[property='og:image']");
 
