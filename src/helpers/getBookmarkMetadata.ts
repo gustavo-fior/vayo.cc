@@ -3,14 +3,39 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { URL } from "url";
+import fetch from "node-fetch";
 
 export const getBookmarkMetadata = async (
   url: string
 ): Promise<BookmarkMetadata> => {
   try {
+    console.log("url", url);
+    console.log("----------------------------");
+
     const response = await fetch(url, {
       referrerPolicy: "no-referrer",
+      redirect: "manual", // Disable automatic redirects
     });
+
+    console.log("response", response);
+
+    // If the response is a redirect, fetch the redirect URL
+    if (response.status >= 300 && response.status < 400) {
+      console.log("redirecting to : " + response.headers.get("location"));
+
+      const originalUrl = new URL(url);
+      // get host and path
+      const redirectUrl = new URL(
+        response.headers.get("location") ?? "",
+        originalUrl.origin
+      ).href;
+
+      if (!redirectUrl) {
+        throw new Error("Redirect location header missing");
+      }
+
+      return getBookmarkMetadata(redirectUrl);
+    }
 
     if (!response.ok) {
       throw new Error(

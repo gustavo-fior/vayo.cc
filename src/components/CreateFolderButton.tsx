@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { api } from "~/utils/api";
 import { Spinner } from "./Spinner";
+import { Separator } from "./Separator";
 
 export const CreateFolderButton = () => {
   const [name, setName] = useState("");
@@ -124,13 +125,13 @@ export const CreateFolderButton = () => {
               }}
             >
               <div className="flex items-center justify-between gap-2 align-middle">
-                <div className="flex items-center gap-2 align-middle">
+                <div className="flex items-center gap-2 align-middle px-1">
                   <ArchiveIcon className="h-4 w-4 text-gray-400" />
                   <p>New folder</p>
                 </div>
               </div>
-              <div className="h-[2px] w-full rounded-full bg-white/5" />
-              <div className="flex flex-row items-center gap-2 align-middle">
+              <Separator height={2} />
+              <div className="flex flex-row items-center gap-2 align-middle px-1">
                 <div className="flex flex-col">
                   <label className="text-sm font-normal text-gray-500">
                     Icon

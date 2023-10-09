@@ -120,14 +120,14 @@ export const ProfileMenu = () => {
             exit={{ opacity: 0, y: -3 }}
             className="mt-4 flex flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold text-white no-underline backdrop-blur-lg"
           >
-            <div className="flex items-center gap-2 align-middle">
+            <div className="flex items-center gap-2 align-middle px-1">
               <div className="flex items-center gap-2 align-middle">
                 <GearIcon className="h-4 w-4 text-gray-400" />
                 <p>Settings</p>
               </div>
             </div>
             <Separator />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 px-1">
               <div className="flex items-center justify-between gap-x-2 align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
                   <AnimatePresence mode="popLayout">

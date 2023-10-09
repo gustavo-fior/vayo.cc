@@ -31,7 +31,7 @@
 - shared folder
 - add a way to add a bookmark without opening the website (maybe a Chrome extension?)
 - x links don't work (tks Elon)
-- record last view style and last sorting
+- save last view style and last sorting
 - add confirmation when deleting a folder
 - focus when adding a new bookmark
 - add some common favicons to speed up insert (maybe a problem if the company changes the logo, but i think it's worth it)

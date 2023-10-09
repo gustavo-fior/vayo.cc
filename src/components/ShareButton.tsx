@@ -3,6 +3,8 @@ import {
   CheckIcon,
   GlobeIcon,
   Link1Icon,
+  LockClosedIcon,
+  LockOpen1Icon,
   Share2Icon,
 } from "@radix-ui/react-icons";
 import * as Popover from "@radix-ui/react-popover";
@@ -35,7 +37,7 @@ export const ShareButton = () => {
     const updatedIsShared = !isShared;
 
     setIsShared(updatedIsShared);
-    
+
     updateFolder({
       id: currentFolder?.id ?? "",
       isShared: updatedIsShared,
@@ -75,7 +77,7 @@ export const ShareButton = () => {
               exit={{ opacity: 0, y: -3 }}
               className="mr-40 mt-4 flex flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold text-white no-underline backdrop-blur-lg"
             >
-              <div className="flex items-center justify-between gap-2 align-middle">
+              <div className="flex items-center justify-between gap-2 align-middle px-1">
                 <div className="flex items-center gap-2 align-middle">
                   <GlobeIcon className="h-4 w-4 text-gray-400" />
                   <p>Share</p>
@@ -95,8 +97,31 @@ export const ShareButton = () => {
               </div>
               <Separator height={2} />
 
-              <div className="flex items-center gap-2 align-middle">
-                <p className="font-normal">Public?</p>
+              <div className="flex items-center justify-between gap-x-2 align-middle px-1">
+                <div className="flex items-center gap-x-3 align-middle">
+                  <AnimatePresence mode="popLayout">
+                    {isShared ? (
+                      <motion.div
+                        key="allowDuplicate"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <LockOpen1Icon className="h-4 w-4 text-gray-400" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="notAllowDuplicate"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <LockClosedIcon className="h-4 w-4 text-gray-400" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <p className="text-sm font-normal">Public?</p>
+                </div>
                 <Checkbox.Root
                   defaultChecked={isShared}
                   className="flex h-6 w-6 items-center justify-center rounded-md bg-white/10 transition duration-300 ease-in-out hover:bg-white/20"
@@ -110,11 +135,14 @@ export const ShareButton = () => {
                     }}
                   >
                     <Checkbox.Indicator>
-                      <CheckIcon className="h-4 w-4 text-green-500" />
+                      <CheckIcon className="h-4 w-4" />
                     </Checkbox.Indicator>
                   </motion.div>
                 </Checkbox.Root>
               </div>
+              <p className="text-xs font-normal text-gray-400 px-1">
+                Here&apos;s your magic link:
+              </p>
               <div className="flex items-center gap-2 align-middle">
                 <input
                   className={`rounded-md bg-white/10 px-3 py-2 text-sm font-normal no-underline transition duration-300  ease-in-out ${
