@@ -34,4 +34,5 @@
 - save last view style and last sorting
 - add confirmation when deleting a folder
 - focus when adding a new bookmark
-- add some common favicons to speed up insert (maybe a problem if the company changes the logo, but i think it's worth it)
+- add some common favicons to speed up insert (maybe a problem if the website changes the logo, but i think it's worth it) (also for things like pdfs)
+- maybe fetch folders with the bookmakrs instead of creating 2 queries

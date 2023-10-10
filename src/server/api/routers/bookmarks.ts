@@ -19,15 +19,6 @@ export const bookmarksRouter = createTRPCRouter({
         input.url
       );
 
-      await ctx.prisma.folder.update({
-        where: {
-          id: input.folderId,
-        },
-        data: {
-          updatedAt: new Date(),
-        },
-      });
-
       return await ctx.prisma.bookmark.create({
         data: {
           url: input.url,

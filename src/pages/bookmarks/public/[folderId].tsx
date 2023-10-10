@@ -10,6 +10,7 @@ import { RectangleSkeleton } from "~/components/RectangleSkeleton";
 import { ShareLinkButton } from "~/components/ShareLinkButton";
 import { SkeletonList } from "~/components/SkeletonList";
 import { ViewButton } from "~/components/ViewButton";
+import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
 import { api } from "~/utils/api";
 
 export default function Bookmarks() {
@@ -17,7 +18,7 @@ export default function Bookmarks() {
   const { folderId } = router.query;
   const [isOpen, setIsOpen] = useState(false);
   const utils = api.useContext();
-  const [direction, setDirection] = useState<"asc" | "desc">("asc");
+  const [direction, setDirection] = useState<"asc" | "desc">("desc");
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
   );
@@ -60,10 +61,7 @@ export default function Bookmarks() {
     <>
       <Head>
         <title>{folder?.name ?? "Bookmarks"}</title>
-        <link
-          rel="icon"
-          href={`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${folder?.icon}</text></svg>`}
-        />
+        <link rel="icon" href={getFaviconForFolder(folder)} />
       </Head>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">

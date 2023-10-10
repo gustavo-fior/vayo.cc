@@ -1,4 +1,4 @@
-import { type Bookmark } from "@prisma/client";
+import { Folder, type Bookmark } from "@prisma/client";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
@@ -24,6 +24,7 @@ import {
   viewStyleAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
+import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
 import { api } from "~/utils/api";
 
 export default function Bookmarks() {
@@ -48,10 +49,6 @@ export default function Bookmarks() {
       }
     );
 
-  const faviconUrl: string = currentFolder?.icon
-    ? `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${currentFolder?.icon}</text></svg>`
-    : "/favicon.ico";
-
   const { data: bookmarks, isLoading: bookmarksLoading } =
     api.bookmarks.findByFolderId.useQuery({
       folderId: String(currentFolder?.id),
@@ -68,7 +65,7 @@ export default function Bookmarks() {
       const previousBookmarks = utils.bookmarks.findByFolderId.getData();
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolder?.id), direction: "asc" },
+        { folderId: String(currentFolder?.id), direction: direction },
         (oldQueryData: Bookmark[] | undefined) => {
           const newBookmark: Bookmark = {
             id: "temp",
@@ -88,7 +85,17 @@ export default function Bookmarks() {
             updatedAt: new Date(),
           };
 
-          return oldQueryData ? [...oldQueryData, newBookmark] : [newBookmark];
+          if (direction === "desc") {
+            // If the direction is "desc," add the new bookmark at the beginning of the list
+            return oldQueryData
+              ? [newBookmark, ...oldQueryData]
+              : [newBookmark];
+          } else {
+            // If the direction is not "desc," add the new bookmark at the end of the list (default behavior)
+            return oldQueryData
+              ? [...oldQueryData, newBookmark]
+              : [newBookmark];
+          }
         }
       );
 
@@ -170,7 +177,7 @@ export default function Bookmarks() {
     <>
       <Head>
         <title>{currentFolder?.name ?? "Bookmarks"}</title>
-        <link rel="icon" href={faviconUrl} />
+        <link rel="icon" href={getFaviconForFolder(currentFolder)} />
       </Head>
       <main className="relative min-h-screen w-full bg-gradient-to-br from-[#202020] to-[black]">
         <div className="flex flex-col items-center">
