@@ -1,10 +1,11 @@
-import { Folder, type Bookmark } from "@prisma/client";
+import { type Bookmark } from "@prisma/client";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { CompactBookmark } from "~/components/CompactBookmark";
 import { CreateFolderButton } from "~/components/CreateFolderButton";
@@ -31,6 +32,7 @@ export default function Bookmarks() {
   const session = useSession();
   const utils = api.useContext();
   const [inputUrl, setInputUrl] = useState("");
+  const router = useRouter();
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [viewStyle] = useAtom(viewStyleAtom);
@@ -175,6 +177,27 @@ export default function Bookmarks() {
       setIsOpen(true);
     }
   }, [bookmarksLoading, bookmarks, setIsOpen]);
+
+  useEffect(() => {
+    // Find the element with the specified ID
+    const elementToScrollTo = document.getElementById("temp");
+
+    if (elementToScrollTo) {
+      // Get the element's position relative to the viewport
+      const elementRect = elementToScrollTo.getBoundingClientRect();
+
+      // Check if the element is not in the viewport
+      if (
+        elementRect.top < 0 ||
+        elementRect.bottom > window.innerHeight ||
+        elementRect.left < 0 ||
+        elementRect.right > window.innerWidth
+      ) {
+        // Scroll to the element
+        elementToScrollTo.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [bookmarks]);
 
   return (
     <>
@@ -332,7 +355,7 @@ export default function Bookmarks() {
                     <SkeletonList viewStyle={viewStyle} />
                   ) : bookmarks && bookmarks?.length > 0 ? (
                     bookmarks.map((bookmark) => (
-                      <div key={bookmark.id}>
+                      <div key={bookmark.id} id={bookmark.id}>
                         {viewStyle === "compact" ? (
                           <CompactBookmark
                             onRemove={handleDeleteBookmark}
