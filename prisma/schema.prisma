@@ -45,6 +45,8 @@ model User {
     emailVerified DateTime?
     image         String?
     firstAccess   Boolean   @default(true)
+    lastDirection String?
+    lastViewStyle String?
     accounts      Account[]
     sessions      Session[]
     folders       Folder[]

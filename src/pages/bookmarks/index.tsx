@@ -71,7 +71,10 @@ export default function Bookmarks() {
             id: "temp",
             url: inputUrl,
             title:
-              inputUrl.split("/")[2]?.split(".")[0] === "www"
+              inputUrl.split("/")[2]?.split(".")[0] === "www" ||
+              inputUrl.split("/")[2]?.split(".")[0] === "m" ||
+              inputUrl.split("/")[2]?.split(".")[0] === "mobile" ||
+              inputUrl.split("/")[2]?.split(".")[0] === "open"
                 ? capitalizeFirstLetter(
                     inputUrl.split("/")[2]?.split(".")[1] ?? ""
                   )

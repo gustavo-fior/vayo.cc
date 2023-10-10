@@ -39,6 +39,12 @@ export const ProfileMenu = () => {
     currentFolder?.allowDuplicate
   );
 
+  const user = api.users.findByUserId.useQuery({
+    userId: session.data?.user?.id ?? "",
+  });
+
+  const updateUser = api.users.update.useMutation({});
+
   const mutate = api.folders.update.useMutation({
     onSuccess: (data) => {
       setCurrentFolder(data);
@@ -49,7 +55,18 @@ export const ProfileMenu = () => {
   const handleChangeDirection = (newDirection: "asc" | "desc") => {
     setDirection(newDirection);
 
-    void utils.bookmarks.findByFolderId.invalidate();
+    const currentBookmarks = utils.bookmarks.findByFolderId.getData();
+
+    utils.bookmarks.findByFolderId.setData(
+      { folderId: String(currentFolder?.id), direction: direction },
+      currentBookmarks?.reverse()
+    );
+
+    updateUser.mutate({
+      id: String(user.data?.id),
+      lastDirection: newDirection,
+      lastViewStyle: viewStyle,
+    });
   };
 
   const handleSignOut = () => {
@@ -79,11 +96,24 @@ export const ProfileMenu = () => {
     }, 10);
 
     setViewStyle(newViewStyle);
+
+    updateUser.mutate({
+      id: String(user.data?.id),
+      lastDirection: direction,
+      lastViewStyle: newViewStyle,
+    });
   };
 
   useEffect(() => {
     setAllowDuplicate(currentFolder?.allowDuplicate);
   }, [currentFolder]);
+
+  useEffect(() => {
+    user.data?.lastDirection &&
+      setDirection(user.data?.lastDirection as "asc" | "desc");
+    user.data?.lastViewStyle &&
+      setViewStyle(user.data?.lastViewStyle as "compact" | "expanded");
+  }, [user.data, setDirection, setViewStyle]);
 
   return (
     <Popover.Root>
@@ -120,7 +150,7 @@ export const ProfileMenu = () => {
             exit={{ opacity: 0, y: -3 }}
             className="mt-4 flex flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold text-white no-underline backdrop-blur-lg"
           >
-            <div className="flex items-center gap-2 align-middle px-1">
+            <div className="flex items-center gap-2 px-1 align-middle">
               <div className="flex items-center gap-2 align-middle">
                 <GearIcon className="h-4 w-4 text-gray-400" />
                 <p>Settings</p>
