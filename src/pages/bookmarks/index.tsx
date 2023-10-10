@@ -32,7 +32,6 @@ export default function Bookmarks() {
   const session = useSession();
   const utils = api.useContext();
   const [inputUrl, setInputUrl] = useState("");
-  const router = useRouter();
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [viewStyle] = useAtom(viewStyleAtom);
@@ -178,8 +177,8 @@ export default function Bookmarks() {
     }
   }, [bookmarksLoading, bookmarks, setIsOpen]);
 
+  // Scroll to the newly created bookmark
   useEffect(() => {
-    // Find the element with the specified ID
     const elementToScrollTo = document.getElementById("temp");
 
     if (elementToScrollTo) {

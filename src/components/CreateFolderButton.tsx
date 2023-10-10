@@ -95,6 +95,9 @@ export const CreateFolderButton = () => {
       >
         <Popover.Trigger asChild>
           <motion.button
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
             whileTap={{
               scale: 0.8,
             }}

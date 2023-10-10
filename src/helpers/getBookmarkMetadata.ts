@@ -11,12 +11,15 @@ export const getBookmarkMetadata = async (
   options?: RequestInit
 ): Promise<BookmarkMetadata> => {
   try {
+
     const response = await fetch(
       url,
       options ?? {
-        redirect: "manual",
+        redirect: "follow",
+        follow: 1,
         headers: {
-          mode: "same-origin",
+          "mode": "same-origin",
+          "Cookie": "guest_id=v1%3A169688089407904299; guest_id_ads=v1%3A169688089407904299; guest_id_marketing=v1%3A169688089407904299;",
         },
       }
     );
@@ -36,11 +39,7 @@ export const getBookmarkMetadata = async (
         throw new Error("Redirect location header missing");
       }
 
-      return getBookmarkMetadata(redirectUrl, {
-        headers: {
-          "Cookie": "guest_id=a;",
-        },
-      });
+      return getBookmarkMetadata(redirectUrl, requestOptions);
     }
 
     if (!response.ok) {
@@ -124,7 +123,7 @@ const getFaviconUrl = async (
   }
 
   if (!faviconUrl && new URL(url).pathname !== "/") {
-    const response = await fetch(new URL("/", url).href);
+    const response = await fetch(new URL("/", url).href, requestOptions);
     const html = await response.text();
     const { JSDOM } = require("jsdom");
     const dom = new JSDOM(html);
@@ -185,7 +184,7 @@ const getOgImageUrl = async (
   }
 
   if (!ogImageUrl && new URL(url).pathname !== "/") {
-    const response = await fetch(new URL("/", url).href);
+    const response = await fetch(new URL("/", url).href, requestOptions);
     const html = await response.text();
     const { JSDOM } = require("jsdom");
     const dom = new JSDOM(html);
@@ -213,7 +212,7 @@ const getTitle = async (url: string, document: Document): Promise<string> => {
   const rootUrl = new URL("/", url).href;
 
   if (!title) {
-    const response = await fetch(rootUrl);
+    const response = await fetch(rootUrl, requestOptions);
     const html = await response.text();
     const { JSDOM } = require("jsdom");
     const dom = new JSDOM(html);
@@ -276,4 +275,13 @@ const commonFavicons = (url: string): string | null => {
     default:
       return null;
   }
+}
+
+export const requestOptions : RequestInit = {
+  redirect: "follow",
+  follow: 20,
+  headers: {
+    "mode": "same-origin",
+    "Cookie": "guest_id=v1%3A169688089407904299; guest_id_ads=v1%3A169688089407904299; guest_id_marketing=v1%3A169688089407904299;",
+  },
 }

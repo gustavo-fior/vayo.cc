@@ -18,21 +18,24 @@
 - ✅  migrate to jotai (migrated where global states are needed, really enjoyed it, made my life easier)  
 - ✅  add an option to verify duplicate
 - ✅  save last view style and last sorting
-- ✅ add some common favicons to speed up insert (maybe a problem if the website changes the logo, but i think it's worth it) 
+- ✅  add some common favicons to speed up insert (maybe a problem if the website changes the logo, but i think it's worth it) 
+- ✅  focus when adding a new bookmark
+- ✅  add confirmation when deleting a folder (deleted my whole list one time :´/)
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌  add the last opened folder (folders are already sorted by the last update)
 
 # TODO
 
-- 🔴 make UI better and create a pattern (paddings, animations, texts) (probably have a menu that contains view style, direction, and sign out)
-- 🟢 add search
-- 🟢 add light mode
-- 🟡 allow users to edit and have a custom sort for folders
-- 🟢 maybe insert AI-generated og images when one can't be found (too crazy?)
-- 🔴 animate direction button
-- 🟢 shared folder
-- 🟢 add a way to add a bookmark without opening the website (maybe a Chrome extension?)
-- 🔴 x links don't work (tks Elon)
-- 🔴 add confirmation when deleting a folder
-- 🟡 focus when adding a new bookmark
-- 🟢 maybe fetch folders with the bookmarks instead of creating 2 queries
+- 🔴  make UI better and create a pattern (paddings, animations, texts) (probably have a menu that contains view style, direction, and sign out)
+- 🔴  x links don't work (tks Elon)
+- 🔴  animate direction button
+- 🟡  allow users to edit and have a custom sort for folders
+- 🟢  add search
+- 🟢  add light mode
+- 🟢  maybe insert AI-generated og images when one can't be found (too crazy?)
+- 🟢  shared folder
+- 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
+- 🟢  maybe fetch folders with the bookmarks instead of creating 2 queries
+- 🟢  improve hover on bookmarks (keep only one bar that flows)
+- 🟢  change to other folder when one is deleted instantly
+
