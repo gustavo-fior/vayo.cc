@@ -37,7 +37,7 @@ export const ExpandedBookmark = ({
         >
           {isHovering === bookmark.id && (
             <motion.div
-              transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
               animate={{ opacity: 1 }}
               layoutId="bookmark"
               className="absolute left-0 top-0 z-0 h-full w-full rounded-lg bg-white/5"
