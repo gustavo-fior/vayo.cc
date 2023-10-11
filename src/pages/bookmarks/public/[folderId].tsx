@@ -146,9 +146,7 @@ export default function Bookmarks() {
               className="flex flex-col gap-8"
             >
               <motion.ul
-                className={`flex flex-col ${
-                  viewStyle === "compact" ? "gap-3" : "gap-6"
-                }`}
+                className={`flex flex-col`}
                 variants={{
                   open: {
                     transition: {
