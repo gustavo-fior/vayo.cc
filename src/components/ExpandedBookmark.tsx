@@ -14,6 +14,7 @@ export const ExpandedBookmark = ({
   onRemove?: (id: string) => void;
 }) => {
   const [imageError, setImageError] = useState(false);
+  const [isHovering, setIsHovering] = useState("");
 
   const handleImageError = () => {
     setImageError(true);
@@ -22,17 +23,32 @@ export const ExpandedBookmark = ({
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger>
-        <motion.li variants={itemVariants} key={bookmark.id}>
+        <motion.li
+          variants={itemVariants}
+          key={bookmark.id}
+          onMouseEnter={() => {
+            setIsHovering(bookmark.id);
+          }}
+          onMouseLeave={() => setIsHovering("")}
+          className="relative border-y-8 border-transparent hover:cursor-pointer"
+          onClick={() => {
+            window.open(bookmark.url, "_blank");
+          }}
+        >
+          {isHovering === bookmark.id && (
+            <motion.div
+              transition={{ duration: 0.5 }}
+              animate={{ opacity: 1 }}
+              layoutId="bookmark"
+              className="absolute left-0 top-0 z-0 h-full w-full rounded-lg bg-white/5"
+            />
+          )}
           <motion.div
-            whileHover={{ scale: 1.01 }}
+            whileHover={{ scale: 1.005 }}
             whileTap={{ scale: 0.98 }}
-            className="group flex justify-between rounded-lg p-2 transition duration-300 ease-in-out hover:bg-white hover:bg-opacity-10 hover:drop-shadow-lg hover:backdrop-blur-lg"
+            className="flex justify-between rounded-lg z-10 p-2 transition duration-500 ease-in-out"
           >
-            <a
-              className={`flex items-center gap-6 md:w-full`}
-              href={bookmark.url}
-              target="_blank"
-            >
+            <div className={`flex items-center gap-6 md:w-full`}>
               {bookmark.ogImageUrl && !imageError ? (
                 <Image
                   src={String(bookmark.ogImageUrl)}
@@ -82,17 +98,26 @@ export const ExpandedBookmark = ({
                   </p>
                 </div>
               </div>
-            </a>
+            </div>
             {onRemove && (
-              <button
-                className="z-10 pr-4 font-bold text-slate-500 opacity-0 transition duration-300 ease-in-out hover:text-white group-hover:opacity-100"
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                initial={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                animate={
+                  isHovering
+                    ? { opacity: 1, transition: { delay: 0.5 } }
+                    : { opacity: 0 }
+                }
+                exit={{ opacity: 0 }}
+                className="z-50 pr-4 font-bold text-slate-500 duration-300 ease-in-out hover:text-white"
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent the click event from propagating
                   onRemove ? onRemove(bookmark.id) : null;
                 }}
               >
                 <Cross1Icon className="h-4 w-4" />
-              </button>
+              </motion.button>
             )}
           </motion.div>
         </motion.li>

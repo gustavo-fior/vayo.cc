@@ -5,7 +5,6 @@ import { useAtom } from "jotai";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { CompactBookmark } from "~/components/CompactBookmark";
 import { CreateFolderButton } from "~/components/CreateFolderButton";
@@ -328,9 +327,7 @@ export default function Bookmarks() {
                 className="flex flex-col gap-8"
               >
                 <motion.ul
-                  className={`flex flex-col ${
-                    viewStyle === "compact" ? "gap-2" : "gap-6"
-                  }`}
+                  className={`flex flex-col`}
                   variants={{
                     open: {
                       transition: {
