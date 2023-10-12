@@ -37,5 +37,6 @@
 - 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
 - 🟢  maybe fetch folders with the bookmarks instead of creating 2 queries
 - 🟢  improve hover on bookmarks (keep only one bar that flows)
-- 🟢  instantly change to other folder when one is deleted 
+- 🟢  instantly change to other folder when one is deleted
+- 🟢  update skeletons to last view style
 
