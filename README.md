@@ -27,7 +27,7 @@
 # TODO
 
 - 🔴  make UI better and create a pattern (paddings, animations, texts) (probably have a menu that contains view style, direction, and sign out)
-- 🔴  x, airbnb and docs links don't work (tks Elon)
+- 🔴  x, airbnb and docs links don't work (tks Elon) (check https://www.pexels.com/@googledeepmind/)
 - 🔴  animate direction button
 - 🟡  allow users to edit and have a custom sort for folders
 - 🟡  figure out why <img> tags are not being found

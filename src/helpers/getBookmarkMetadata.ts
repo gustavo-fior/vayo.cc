@@ -174,6 +174,9 @@ const getOgImageUrl = async (
   if (!ogImageUrl) {
     const imageElement = document.querySelector("img");
 
+    console.log(imageElement);
+    console.log(imageElement?.getAttribute("src"));
+
     if (imageElement) {
       const imageResponse = await fetch(
         new URL(imageElement.getAttribute("src") ?? "", url).href
