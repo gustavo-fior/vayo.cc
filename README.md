@@ -30,6 +30,7 @@
 - 🔴  x, airbnb and docs links don't work (tks Elon)
 - 🔴  animate direction button
 - 🟡  allow users to edit and have a custom sort for folders
+- 🟡  figure out why <img> tags are not being found
 - 🟢  add search
 - 🟢  add light mode
 - 🟢  maybe insert AI-generated og images when one can't be found (too crazy?)

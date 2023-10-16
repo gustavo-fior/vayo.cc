@@ -74,6 +74,8 @@ export default function Bookmarks() {
               inputUrl.split("/")[2]?.split(".")[0] === "www" ||
               inputUrl.split("/")[2]?.split(".")[0] === "m" ||
               inputUrl.split("/")[2]?.split(".")[0] === "mobile" ||
+              inputUrl.split("/")[2]?.split(".")[0] === "en" ||
+              inputUrl.split("/")[2]?.split(".")[0] === "br" ||
               inputUrl.split("/")[2]?.split(".")[0] === "open"
                 ? capitalizeFirstLetter(
                     inputUrl.split("/")[2]?.split(".")[1] ?? ""
