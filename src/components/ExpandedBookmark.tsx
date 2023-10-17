@@ -49,7 +49,7 @@ export const ExpandedBookmark = ({
             className="flex justify-between rounded-lg z-10 p-2 transition duration-500 ease-in-out"
           >
             <div className={`flex items-center gap-6 md:w-full`}>
-              {bookmark.ogImageUrl && !imageError ? (
+              {bookmark.ogImageUrl && !imageError && bookmark.ogImageUrl !== 'https://raw.githubusercontent.com/spacedriveapp/.github/main/profile/spacedrive_icon.png' ? (
                 <Image
                   src={String(bookmark.ogImageUrl)}
                   alt={bookmark.title}
