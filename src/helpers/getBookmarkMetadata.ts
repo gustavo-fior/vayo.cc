@@ -6,8 +6,7 @@ import { URL } from "url";
 import fetch, { type RequestInit } from "node-fetch";
 import { capitalizeFirstLetter } from "./capitalizeFirstLetter";
 import { getCommonFavicons } from "./getCommonFavicons";
-import { scrapeWebsite } from "./bypassCloudflare";
-// import puppeteer from "puppeteer";
+import puppeteer from "puppeteer";
 
 export const getBookmarkMetadata = async (
   url: string,
@@ -46,44 +45,42 @@ export const getBookmarkMetadata = async (
     }
 
     if (response.status >= 400) {
-      // const browser = await puppeteer.launch({ headless: true });
-      // const page = await browser.newPage();
+      const browser = await puppeteer.launch({ headless: true });
+      const page = await browser.newPage();
 
-      // await page.setUserAgent(
-      //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"
-      // );
+      await page.setUserAgent(
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"
+      );
 
-      // await page.setCookie(
-      //   {
-      //     name: "guest_id",
-      //     value: "v1:169688089407904299",
-      //     domain: new URL(url).hostname,
-      //   },
-      //   {
-      //     name: "guest_id_ads",
-      //     value: "v1:169688089407904299",
-      //     domain: new URL(url).hostname,
-      //   },
-      //   {
-      //     name: "guest_id_marketing",
-      //     value: "v1:169688089407904299",
-      //     domain: new URL(url).hostname,
-      //   }
-      // );
+      await page.setCookie(
+        {
+          name: "guest_id",
+          value: "v1:169688089407904299",
+          domain: new URL(url).hostname,
+        },
+        {
+          name: "guest_id_ads",
+          value: "v1:169688089407904299",
+          domain: new URL(url).hostname,
+        },
+        {
+          name: "guest_id_marketing",
+          value: "v1:169688089407904299",
+          domain: new URL(url).hostname,
+        }
+      );
 
-      // await page.goto(url);
+      await page.goto(url);
 
-      // await page.cookies().then((cookies) => {
-      //   console.log(cookies);
-      // });
+      await page.cookies().then((cookies) => {
+        console.log(cookies);
+      });
 
-      // console.log(await page.content());
+      console.log(await page.content());
 
-      // const html = await page.content();
+      const html = await page.content();
 
-      // await browser.close();
-
-      const html = scrapeWebsite(url);
+      await browser.close();
 
       console.log(html);
 
