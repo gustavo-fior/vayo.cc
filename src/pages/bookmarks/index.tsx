@@ -24,6 +24,7 @@ import {
   viewStyleAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
+import { getCommonFavicons } from "~/helpers/getCommonFavicons";
 import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
 import { api } from "~/utils/api";
 
@@ -84,7 +85,7 @@ export default function Bookmarks() {
                     inputUrl.split("/")[2]?.split(".")[0] ?? ""
                   ),
             folderId: "temp",
-            faviconUrl: null,
+            faviconUrl: getCommonFavicons(inputUrl),
             ogImageUrl: null,
             createdAt: new Date(),
             updatedAt: new Date(),
