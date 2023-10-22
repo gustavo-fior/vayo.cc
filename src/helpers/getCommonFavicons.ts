@@ -1,4 +1,7 @@
-export const getCommonFavicons = (url: string): string | null => {
+const getCommonFavicons = (url: string): string | null => {
+
+    console.log("hostname: ", new URL(url).hostname);
+
     switch (new URL(url).hostname) {
       case "www.youtube.com" || "youtube.com" || "youtu.be" || "www.youtu.be":
         return "https://www.youtube.com/s/desktop/d7e8df8d/img/favicon_144x144.png";
@@ -14,11 +17,11 @@ export const getCommonFavicons = (url: string): string | null => {
         return "https://www.amazon.com/favicon.ico";
       case "www.netflix.com" || "netflix.com":
         return "https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico";
-      case "www.wikipedia.org" || "wikipedia.org":
+      case "www.wikipedia.org" || "wikipedia.org" || "en.wikipedia.org" || "www.en.wikipedia.org" || "m.wikipedia.org" || "www.m.wikipedia.org" || "br.wikipedia.org" || "www.br.wikipedia.org":
         return "https://en.wikipedia.org/static/apple-touch/wikipedia.png";
       case "www.substack.com" || "substack.com":
         return "https://substackcdn.com/icons/substack/apple-touch-icon-1024x1024.png";
-      case "www.medium.com" || "medium.com":
+      case "www.medium.com" || "medium.com" || "www.**.medium.com":
         return "https://miro.medium.com/v2/resize:fill:152:152/1*sHhtYhaCe2Uc3IU0IgKwIQ.png";
       case "www.nytimes.com" || "nytimes.com":
         return "https://static.nytimes.com/favicon.ico";
@@ -38,3 +41,5 @@ export const getCommonFavicons = (url: string): string | null => {
         return null;
     }
   }
+
+  export default getCommonFavicons;
