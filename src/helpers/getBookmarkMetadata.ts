@@ -6,21 +6,23 @@ import { URL } from "url";
 import fetch, { type RequestInit } from "node-fetch";
 import { capitalizeFirstLetter } from "./capitalizeFirstLetter";
 import { getCommonFavicons } from "./getCommonFavicons";
+import { scrapeWebsite } from "./bypassCloudflare";
+// import puppeteer from "puppeteer";
 
 export const getBookmarkMetadata = async (
   url: string,
   options?: RequestInit
 ): Promise<BookmarkMetadata> => {
   try {
+
     const response = await fetch(
       url,
       options ?? {
         redirect: "follow",
         follow: 1,
         headers: {
-          mode: "same-origin",
-          Cookie:
-            "guest_id=v1%3A169688089407904299; guest_id_ads=v1%3A169688089407904299; guest_id_marketing=v1%3A169688089407904299;",
+          "mode": "same-origin",
+          "Cookie": "guest_id=v1%3A169688089407904299; guest_id_ads=v1%3A169688089407904299; guest_id_marketing=v1%3A169688089407904299;",
         },
       }
     );
@@ -43,10 +45,61 @@ export const getBookmarkMetadata = async (
       return getBookmarkMetadata(redirectUrl, requestOptions);
     }
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch: ${response.status} ${response.statusText}`
-      );
+    if (response.status >= 400) {
+      // const browser = await puppeteer.launch({ headless: true });
+      // const page = await browser.newPage();
+
+      // await page.setUserAgent(
+      //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"
+      // );
+
+      // await page.setCookie(
+      //   {
+      //     name: "guest_id",
+      //     value: "v1:169688089407904299",
+      //     domain: new URL(url).hostname,
+      //   },
+      //   {
+      //     name: "guest_id_ads",
+      //     value: "v1:169688089407904299",
+      //     domain: new URL(url).hostname,
+      //   },
+      //   {
+      //     name: "guest_id_marketing",
+      //     value: "v1:169688089407904299",
+      //     domain: new URL(url).hostname,
+      //   }
+      // );
+
+      // await page.goto(url);
+
+      // await page.cookies().then((cookies) => {
+      //   console.log(cookies);
+      // });
+
+      // console.log(await page.content());
+
+      // const html = await page.content();
+
+      // await browser.close();
+
+      const html = scrapeWebsite(url);
+
+      console.log(html);
+
+      const { JSDOM } = require("jsdom");
+      const dom = new JSDOM(html);
+      const document: Document = dom.window.document;
+
+      const title = await getTitle(url, document);
+      const faviconUrl = await getFaviconUrl(url, document);
+      const ogImageUrl = await getOgImageUrl(url, document);
+
+      return {
+        title,
+        faviconUrl,
+        ogImageUrl,
+      };
     }
 
     const html = await response.text();
@@ -174,9 +227,6 @@ const getOgImageUrl = async (
 
   if (!ogImageUrl) {
     const imageElement = document.querySelector("img");
-
-    console.log(imageElement);
-    console.log(imageElement?.getAttribute("src"));
 
     if (imageElement) {
       const imageResponse = await fetch(
