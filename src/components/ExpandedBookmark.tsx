@@ -30,26 +30,28 @@ export const ExpandedBookmark = ({
             setIsHovering(bookmark.id);
           }}
           onMouseLeave={() => setIsHovering("")}
-          className="relative border-y-8 border-transparent hover:cursor-pointer"
+          className={`relative border-y-8 border-transparent hover:cursor-pointer`}
           onClick={() => {
             window.open(bookmark.url, "_blank");
           }}
         >
           {isHovering === bookmark.id && (
             <motion.div
-              transition={{ duration: 0.4 }}
-              animate={{ opacity: 1 }}
+              transition={{ duration: 0.35 }}
               layoutId="bookmark"
-              className="absolute left-0 top-0 z-0 h-full w-full rounded-lg dark:bg-white/5 bg-black/5"
+              className="absolute left-0 top-0 z-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
             />
           )}
           <motion.div
-            whileHover={{ scale: 1.005 }}
+            whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
-            className="z-10 flex justify-between rounded-lg p-2 transition duration-500 ease-in-out"
+            className={`z-10 flex justify-between rounded-lg p-2 transition duration-500 ease-in-out`}
           >
             <div className={`flex items-center gap-6 md:w-full`}>
-              {bookmark.ogImageUrl && !imageError && bookmark.ogImageUrl !== "https://raw.githubusercontent.com/spacedriveapp/.github/main/profile/spacedrive_icon.png" ? (
+              {bookmark.ogImageUrl &&
+              !imageError &&
+              bookmark.ogImageUrl !==
+                "https://raw.githubusercontent.com/spacedriveapp/.github/main/profile/spacedrive_icon.png" ? (
                 <Image
                   src={String(bookmark.ogImageUrl)}
                   alt={bookmark.title}
@@ -66,7 +68,7 @@ export const ExpandedBookmark = ({
                 />
               ) : bookmark.id !== "temp" ? (
                 <div
-                  className="hidden rounded-md bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c] md:block"
+                  className="hidden rounded-md bg-gradient-to-br from-[#e0e0e0] to-[#dad7d7] dark:from-[#1a1a1a] dark:to-[#2d2c2c] md:block"
                   style={{
                     height: "4rem",
                     width: "12rem",
@@ -74,7 +76,7 @@ export const ExpandedBookmark = ({
                 />
               ) : (
                 <div
-                  className="hidden animate-pulse rounded-md bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c] md:block trasition duration-100 ease-in-out"
+                  className="trasition hidden animate-pulse rounded-md bg-gradient-to-br from-[#bdbdbd] to-[#ececec] duration-100 ease-in-out dark:from-[#1a1a1a] dark:to-[#2d2c2c] md:block"
                   style={{
                     height: "4rem",
                     width: "12rem",
@@ -82,7 +84,7 @@ export const ExpandedBookmark = ({
                 />
               )}
               <div className="flex flex-col gap-2">
-                <p className="max-w-lg truncate text-lg font-bold dark:text-white text-black">
+                <p className="max-w-lg truncate text-lg font-bold text-black dark:text-white">
                   {bookmark.title}
                 </p>
                 <div className="flex items-center gap-2 align-middle">

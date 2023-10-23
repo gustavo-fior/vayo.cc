@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useTheme } from "next-themes";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -7,8 +8,10 @@ import { DirectionButton } from "~/components/DirectionButton";
 import { EmptyState } from "~/components/EmptyState";
 import { ExpandedBookmark } from "~/components/ExpandedBookmark";
 import { RectangleSkeleton } from "~/components/RectangleSkeleton";
+import { Separator } from "~/components/Separator";
 import { ShareLinkButton } from "~/components/ShareLinkButton";
 import { SkeletonList } from "~/components/SkeletonList";
+import { ThemeButton } from "~/components/ThemeButton";
 import { ViewButton } from "~/components/ViewButton";
 import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
 import { api } from "~/utils/api";
@@ -18,6 +21,7 @@ export default function Bookmarks() {
   const { folderId } = router.query;
   const [isOpen, setIsOpen] = useState(false);
   const utils = api.useContext();
+  const { theme, setTheme } = useTheme();
   const [direction, setDirection] = useState<"asc" | "desc">("desc");
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
@@ -51,6 +55,10 @@ export default function Bookmarks() {
     void utils.bookmarks.findByFolderId.invalidate();
   };
 
+  const handleChangeTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
   useEffect(() => {
     if (!bookmarksLoading && bookmarks?.length && !folderLoading) {
       setIsOpen(true);
@@ -63,10 +71,10 @@ export default function Bookmarks() {
         <title>{folder?.name ?? "Bookmarks"}</title>
         <link rel="icon" href={getFaviconForFolder(folder)} />
       </Head>
-      <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
+      <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#dfdfdf] to-[#f5f5f5] dark:from-[#202020] dark:to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
           <AnimatePresence mode="wait">
-            <div className="flex items-center justify-between px-2 align-middle font-semibold text-white">
+            <div className="flex items-center justify-between px-2 align-middle font-semibold text-black dark:text-white">
               {folderLoading ? (
                 <motion.div
                   key="loading"
@@ -131,13 +139,22 @@ export default function Bookmarks() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                   >
+                    <ThemeButton theme={theme ?? ""} handleChangeTheme={handleChangeTheme} />
+                  </motion.div>
+                  <motion.div
+                    key="loaded"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <ShareLinkButton folderId={folderId as string} />
                   </motion.div>
                 </div>
               )}
             </div>
           </AnimatePresence>
-          <div className="my-6 h-[2px] w-full rounded-full bg-white/5" />
+          <Separator height={2} mx={2} my={6} />
           {bookmarksLoading && <SkeletonList viewStyle={viewStyle} />}
           {folder?.isShared && (
             <motion.div

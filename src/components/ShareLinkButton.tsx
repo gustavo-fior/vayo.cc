@@ -25,7 +25,7 @@ export const ShareLinkButton = ({ folderId }: { folderId: string }) => {
         onClick={() => {
           void handleCopyToClipboard();
         }}
-        className="rounded-full bg-white/10 p-3 font-semibold text-white no-underline transition hover:bg-white/20"
+        className="rounded-full dark:bg-white/10 bg-black/10 p-3 font-semibold dark:text-white text-black no-underline transition dark:hover:bg-white/20 hover:bg-black/20"
       >
         {copied ? (
           <motion.div

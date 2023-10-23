@@ -18,7 +18,7 @@ export const DirectionButton = ({
         scale: 0.8,
       }}
       onClick={() => void handleChangeDirection()}
-      className="rounded-full bg-white/10 p-3 text-white no-underline transition hover:bg-white/20"
+      className="rounded-full dark:bg-white/10 bg-black/10 p-3 dark:text-white text-black no-underline transition dark:hover:bg-white/20 hover:bg-black/20"
     >
       <AnimatePresence mode="popLayout">
         {direction === "asc" ? (

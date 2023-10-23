@@ -365,7 +365,7 @@ export const ProfileMenu = () => {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                  <p className="text-sm font-normal">View style</p>
+                  <p className="text-sm font-normal">View</p>
                 </div>
                 <ToggleGroup.Root
                   type="single"
