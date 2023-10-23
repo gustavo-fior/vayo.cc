@@ -69,7 +69,7 @@ export const CompactBookmark = ({
                 </p>
               </div>
             </div>
-            {onRemove && (
+            {onRemove && bookmark.id !== "temp" && (
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0 }}

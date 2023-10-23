@@ -37,7 +37,7 @@ export const ExpandedBookmark = ({
         >
           {isHovering === bookmark.id && (
             <motion.div
-            transition={{ duration: 0.4 }}
+              transition={{ duration: 0.4 }}
               animate={{ opacity: 1 }}
               layoutId="bookmark"
               className="absolute left-0 top-0 z-0 h-full w-full rounded-lg bg-white/5"
@@ -46,10 +46,10 @@ export const ExpandedBookmark = ({
           <motion.div
             whileHover={{ scale: 1.005 }}
             whileTap={{ scale: 0.98 }}
-            className="flex justify-between rounded-lg z-10 p-2 transition duration-500 ease-in-out"
+            className="z-10 flex justify-between rounded-lg p-2 transition duration-500 ease-in-out"
           >
             <div className={`flex items-center gap-6 md:w-full`}>
-              {bookmark.ogImageUrl && !imageError && bookmark.ogImageUrl !== 'https://raw.githubusercontent.com/spacedriveapp/.github/main/profile/spacedrive_icon.png' ? (
+              {bookmark.ogImageUrl && !imageError && bookmark.ogImageUrl !== "https://raw.githubusercontent.com/spacedriveapp/.github/main/profile/spacedrive_icon.png" ? (
                 <Image
                   src={String(bookmark.ogImageUrl)}
                   alt={bookmark.title}
@@ -64,9 +64,17 @@ export const ExpandedBookmark = ({
                   }}
                   onError={handleImageError}
                 />
-              ) : (
+              ) : bookmark.id !== "temp" ? (
                 <div
                   className="hidden rounded-md bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c] md:block"
+                  style={{
+                    height: "4rem",
+                    width: "12rem",
+                  }}
+                />
+              ) : (
+                <div
+                  className="hidden animate-pulse rounded-md bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c] md:block trasition duration-100 ease-in-out"
                   style={{
                     height: "4rem",
                     width: "12rem",
@@ -99,7 +107,7 @@ export const ExpandedBookmark = ({
                 </div>
               </div>
             </div>
-            {onRemove && (
+            {onRemove && bookmark.id !== "temp" && (
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0 }}

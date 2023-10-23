@@ -24,7 +24,7 @@ import {
   viewStyleAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
-import { getCommonFavicons } from "~/helpers/getCommonFavicons";
+import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
 import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
 import { api } from "~/utils/api";
 
@@ -71,19 +71,7 @@ export default function Bookmarks() {
           const newBookmark: Bookmark = {
             id: "temp",
             url: inputUrl,
-            title:
-              inputUrl.split("/")[2]?.split(".")[0] === "www" ||
-              inputUrl.split("/")[2]?.split(".")[0] === "m" ||
-              inputUrl.split("/")[2]?.split(".")[0] === "mobile" ||
-              inputUrl.split("/")[2]?.split(".")[0] === "en" ||
-              inputUrl.split("/")[2]?.split(".")[0] === "br" ||
-              inputUrl.split("/")[2]?.split(".")[0] === "open"
-                ? capitalizeFirstLetter(
-                    inputUrl.split("/")[2]?.split(".")[1] ?? ""
-                  )
-                : capitalizeFirstLetter(
-                    inputUrl.split("/")[2]?.split(".")[0] ?? ""
-                  ),
+            title: capitalizeFirstLetter(getWebsiteName(inputUrl)),
             folderId: "temp",
             faviconUrl: getCommonFavicons(inputUrl),
             ogImageUrl: null,

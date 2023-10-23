@@ -1,49 +1,93 @@
 export const getCommonFavicons = (url: string): string | null => {
-  console.log("hostname: ", new URL(url).hostname);
+  const host = getWebsiteName(url);
 
-  switch (new URL(url).hostname) {
-    case "www.youtube.com" || "youtube.com" || "youtu.be" || "www.youtu.be":
-      return "https://www.youtube.com/s/desktop/d7e8df8d/img/favicon_144x144.png";
-    case "www.reddit.com" || "reddit.com":
-      return "https://www.redditstatic.com/desktop2x/img/favicon/apple-icon-180x180.png";
-    case "www.twitter.com" || "twitter.com" || "x.com" || "www.x.com":
+  switch (host) {
+    case "youtube" || "youtu.be":
+      return "https://youtube.com/s/desktop/d7e8df8d/img/favicon_144x144.png";
+    case "reddit":
+      return "https://redditstatic.com/desktop2x/img/favicon/apple-icon-180x180.png";
+    case "twitter" || "x":
       return "https://abs.twimg.com/responsive-web/client-web/icon-ios.77d25eba.png";
-    case "www.facebook.com" || "facebook.com":
+    case "facebook":
       return "https://static.xx.fbcdn.net/rsrc.php/yk/r/TYhiZ_A7dmu.ico?_nc_eui2=AeELWzzclFoqXRmOGSkBK_HTQSByOY5TAQZBIHI5jlMBBmYQAX8a7Ss93kTcZM45VBym6Ey-Bj9gc09mk2qlb-B2";
-    case "www.instagram.com" || "instagram.com":
+    case "instagram":
       return "https://static.cdninstagram.com/rsrc.php/v3/yG/r/De-Dwpd5CHc.png";
-    case "www.amazon.com" || "amazon.com":
-      return "https://www.amazon.com/favicon.ico";
-    case "www.netflix.com" || "netflix.com":
+    case "amazon":
+      return "https://amazon.com/favicon.ico";
+    case "netflix":
       return "https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico";
-    case "www.wikipedia.org" ||
-      "wikipedia.org" ||
-      "en.wikipedia.org" ||
-      "www.en.wikipedia.org" ||
-      "m.wikipedia.org" ||
-      "www.m.wikipedia.org" ||
-      "br.wikipedia.org" ||
-      "www.br.wikipedia.org":
+    case "wikipedia":
       return "https://en.wikipedia.org/static/apple-touch/wikipedia.png";
-    case "www.substack.com" || "substack.com":
+    case "substack":
       return "https://substackcdn.com/icons/substack/apple-touch-icon-1024x1024.png";
-    case "www.medium.com" || "medium.com" || "www.**.medium.com":
+    case "medium":
       return "https://miro.medium.com/v2/resize:fill:152:152/1*sHhtYhaCe2Uc3IU0IgKwIQ.png";
-    case "www.nytimes.com" || "nytimes.com":
+    case "nytimes.com":
       return "https://static.nytimes.com/favicon.ico";
-    case "www.wsj.com" || "wsj.com":
+    case "wsj.com":
       return "https://s.wsj.net/media/wsj_apple-touch-icon.png";
-    case "www.apple.com" || "apple.com":
-      return "https://www.apple.com/favicon.ico";
-    case "www.microsoft.com" || "microsoft.com":
-      return "https://www.microsoft.com/favicon.ico";
-    case "www.google.com" || "google.com":
-      return "https://www.google.com/favicon.ico";
-    case "www.yahoo.com" || "yahoo.com":
-      return "https://www.yahoo.com/favicon.ico";
-    case "www.bing.com" || "bing.com":
-      return "https://www.bing.com/favicon.ico";
+    case "apple.com":
+      return "https://apple.com/favicon.ico";
+    case "microsoft.com":
+      return "https://microsoft.com/favicon.ico";
+    case "google.com":
+      return "https://google.com/favicon.ico";
+    case "yahoo.com":
+      return "https://yahoo.com/favicon.ico";
+    case "bing.com":
+      return "https://bing.com/favicon.ico";
     default:
       return null;
   }
+};
+
+export const getWebsiteName = (url: string) => {
+  let websiteName = "";
+  try {
+    const parsedURL = new URL(url);
+    const hostnameParts = parsedURL.hostname.split(".");
+    let domainName = "";
+    if (hostnameParts.length >= 2) {
+      if (
+        hostnameParts[0]?.toLowerCase() === "www" ||
+        hostnameParts[0]?.toLowerCase() === "m" ||
+        hostnameParts[0]?.toLowerCase() === "mobile" ||
+        hostnameParts[0]?.toLowerCase() === "en" ||
+        hostnameParts[0]?.toLowerCase() === "br" ||
+        hostnameParts[0]?.toLowerCase() === "es" ||
+        hostnameParts[0]?.toLowerCase() === "fr" ||
+        hostnameParts[0]?.toLowerCase() === "de" ||
+        hostnameParts[0]?.toLowerCase() === "it" ||
+        hostnameParts[0]?.toLowerCase() === "ja" ||
+        hostnameParts[0]?.toLowerCase() === "ru" ||
+        hostnameParts[0]?.toLowerCase() === "zh" ||
+        hostnameParts[0]?.toLowerCase() === "ar" ||
+        hostnameParts[0]?.toLowerCase() === "hi" ||
+        hostnameParts[0]?.toLowerCase() === "pt" ||
+        hostnameParts[0]?.toLowerCase() === "ko" ||
+        hostnameParts[0]?.toLowerCase() === "id" ||
+        hostnameParts[0]?.toLowerCase() === "tr" ||
+        hostnameParts[0]?.toLowerCase() === "pl"
+      ) {
+        domainName = hostnameParts[1] ?? "";
+      } else {
+        if (hostnameParts[1]?.toLowerCase() !== "com") {
+          domainName = hostnameParts[1] ?? "";
+        } else {
+          domainName = hostnameParts[0] ?? "";
+        }
+      }
+      if (domainName.includes("com")) {
+        const index = domainName.indexOf("com");
+        websiteName = domainName.slice(0, index + 3);
+      } else {
+        websiteName = domainName;
+      }
+    } else {
+      websiteName = parsedURL.hostname;
+    }
+  } catch (error) {
+    console.error("Error parsing URL:", error);
+  }
+  return websiteName;
 };

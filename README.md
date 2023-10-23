@@ -21,6 +21,8 @@
 - ✅  add some common favicons to speed up insert (maybe a problem if the website changes the logo, but i think it's worth it) 
 - ✅  focus when adding a new bookmark
 - ✅  add confirmation when deleting a folder (deleted my whole list one time :´/)
+- ✅  improve hover on bookmarks (keep only one bar that flows)
+- ✅  update skeletons to last view style
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌  add the last opened folder (folders are already sorted by the last update)
 
@@ -37,7 +39,6 @@
 - 🟢  shared folder
 - 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
 - 🟢  maybe fetch folders with the bookmarks instead of creating 2 queries
-- 🟢  improve hover on bookmarks (keep only one bar that flows)
 - 🟢  instantly change to other folder when one is deleted
-- 🟢  update skeletons to last view style
+
 

@@ -13,15 +13,15 @@ export const getBookmarkMetadata = async (
   options?: RequestInit
 ): Promise<BookmarkMetadata> => {
   try {
-
     const response = await fetch(
       url,
       options ?? {
         redirect: "follow",
         follow: 1,
         headers: {
-          "mode": "same-origin",
-          "Cookie": "guest_id=v1%3A169688089407904299; guest_id_ads=v1%3A169688089407904299; guest_id_marketing=v1%3A169688089407904299;",
+          mode: "same-origin",
+          Cookie:
+            "guest_id=v1%3A169688089407904299; guest_id_ads=v1%3A169688089407904299; guest_id_marketing=v1%3A169688089407904299;",
         },
       }
     );
@@ -105,8 +105,14 @@ export const getBookmarkMetadata = async (
     const document: Document = dom.window.document;
 
     const title = await getTitle(url, document);
-    const faviconUrl = await getFaviconUrl(url, document);
     const ogImageUrl = await getOgImageUrl(url, document);
+    let faviconUrl = null;
+
+    faviconUrl = getCommonFavicons(url);
+
+    if (!faviconUrl) {
+      faviconUrl = await getFaviconUrl(url, document);
+    }
 
     return {
       title,
@@ -144,8 +150,6 @@ const getFaviconUrl = async (
   );
 
   let faviconUrl: string | null = null;
-
-  faviconUrl = getCommonFavicons(url);
 
   // First try to get the apple touch icon
   if (appleTouchIconElement) {
