@@ -194,7 +194,7 @@ export default function Bookmarks() {
         <title>{currentFolder?.name ?? "Bookmarks"}</title>
         <link rel="icon" href={getFaviconForFolder(currentFolder)} />
       </Head>
-      <main className="relative min-h-screen w-full bg-gradient-to-br dark:from-[#202020] dark:to-[black] from-[#dfdfdf] to-[#f5f5f5]">
+      <main className="relative min-h-screen w-full bg-gradient-to-br from-[#dfdfdf] to-[#f5f5f5] dark:from-[#202020] dark:to-[black]">
         <div className="flex flex-col items-center">
           <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
             <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
@@ -230,7 +230,7 @@ export default function Bookmarks() {
                     disabled={addBookmark.isLoading || !currentFolder}
                     onChange={(e) => setInputUrl(e.target.value)}
                     placeholder="https://..."
-                    className={`w-72 rounded-full dark:bg-white/10 bg-black/10 px-6 py-2 font-semibold dark:text-white text-black no-underline placeholder-slate-500 transition duration-300 ease-in-out placeholder:font-normal dark:hover:bg-white/20 hover:bg-black/20 md:w-96 ${
+                    className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-slate-500 transition duration-300 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
                       isDuplicate ? "ring-2 ring-red-500" : ""
                     }`}
                   />
@@ -244,16 +244,16 @@ export default function Bookmarks() {
                       addBookmark.isLoading ||
                       !currentFolder
                     }
-                    className={`duration-300'hover:bg-white/20 rounded-full dark:bg-white/10 bg-black/10 p-3 transition ${
+                    className={`duration-300'hover:bg-white/20 rounded-full bg-black/10 p-3 transition dark:bg-white/10 ${
                       inputUrl.length === 0 || addBookmark.isLoading
-                        ? "dark:bg-white/5 bg-black/5"
+                        ? "bg-black/5 dark:bg-white/5"
                         : null
                     }`}
                   >
                     {addBookmark.isLoading ? (
                       <Spinner size="sm" />
                     ) : (
-                      <PlusIcon className="h-4 w-4 dark:text-white text-black" />
+                      <PlusIcon className="h-4 w-4 text-black dark:text-white" />
                     )}
                   </motion.button>
                 </div>
@@ -265,7 +265,9 @@ export default function Bookmarks() {
               </div>
             </div>
 
-            <Separator height={2} mx={2} my={6} />
+            <div className={`mx-2 my-6`}>
+              <Separator />
+            </div>
 
             <div className="flex justify-between px-2 pb-4 align-middle">
               <motion.div
@@ -293,8 +295,10 @@ export default function Bookmarks() {
                       }}
                       key={folder.id}
                       className={`${
-                        currentFolder?.id === folder.id ? "dark:bg-white/30 bg-black/30" : ""
-                      } group flex items-center gap-2 rounded-full dark:bg-white/10 bg-black/10 px-4 py-2 align-middle font-semibold text-black dark:text-white no-underline transition hover:cursor-pointer dark:hover:bg-white/20 hover:bg-black/20`}
+                        currentFolder?.id === folder.id
+                          ? "bg-black/30 dark:bg-white/30"
+                          : ""
+                      } group flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 align-middle font-semibold text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20`}
                     >
                       {folder.icon && <div>{folder.icon}</div>}
                       <div>{folder.name}</div>

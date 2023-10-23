@@ -36,7 +36,7 @@ export const ProfileMenu = () => {
   const [signinOut, setSigninOut] = useState(false);
   const [direction, setDirection] = useAtom(directionAtom);
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [viewStyle, setViewStyle] = useAtom(viewStyleAtom);
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
   const [allowDuplicate, setAllowDuplicate] = useState(
@@ -213,7 +213,7 @@ export const ProfileMenu = () => {
               <div className="flex w-72 flex-row justify-between align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
                   <AnimatePresence mode="popLayout">
-                    {theme === "light" ? (
+                    {resolvedTheme === "light" ? (
                       <motion.div
                         key="light"
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -237,10 +237,10 @@ export const ProfileMenu = () => {
                 </div>
                 <ToggleGroup.Root
                   type="single"
-                  defaultValue={theme}
+                  defaultValue={resolvedTheme}
                   className="flex items-center gap-x-2 align-middle"
                   onValueChange={(value) => {
-                    if (value !== theme && value !== "") {
+                    if (value !== resolvedTheme && value !== "") {
                       handleChangeTheme(value as "light" | "dark");
                     }
                   }}
@@ -251,7 +251,7 @@ export const ProfileMenu = () => {
                   >
                     <p
                       className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
-                        theme === "light"
+                        resolvedTheme === "light"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
                       }`}
@@ -265,7 +265,7 @@ export const ProfileMenu = () => {
                   >
                     <p
                       className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
-                        theme === "dark"
+                        resolvedTheme === "dark"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
                       }`}

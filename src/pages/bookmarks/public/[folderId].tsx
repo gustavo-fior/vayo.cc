@@ -139,7 +139,10 @@ export default function Bookmarks() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <ThemeButton theme={theme ?? ""} handleChangeTheme={handleChangeTheme} />
+                    <ThemeButton
+                      theme={theme ?? ""}
+                      handleChangeTheme={handleChangeTheme}
+                    />
                   </motion.div>
                   <motion.div
                     key="loaded"
@@ -154,7 +157,11 @@ export default function Bookmarks() {
               )}
             </div>
           </AnimatePresence>
-          <Separator height={2} mx={2} my={6} />
+
+          <div className={`mx-2 my-6`}>
+            <Separator />
+          </div>
+          
           {bookmarksLoading && <SkeletonList viewStyle={viewStyle} />}
           {folder?.isShared && (
             <motion.div

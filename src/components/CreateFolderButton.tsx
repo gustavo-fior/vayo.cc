@@ -133,7 +133,7 @@ export const CreateFolderButton = () => {
                   <p>New folder</p>
                 </div>
               </div>
-              <Separator height={2} />
+              <Separator />
               <div className="flex flex-row items-center gap-2 align-middle px-1">
                 <div className="flex flex-col">
                   <label className="text-sm font-normal text-gray-500">

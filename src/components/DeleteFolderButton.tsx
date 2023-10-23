@@ -111,7 +111,7 @@ export const DeleteFolderButton = () => {
                   <p>Delete folder</p>
                 </div>
               </div>
-              <Separator height={2} />
+              <Separator />
               <p className="text-xs font-normal dark:text-gray-400 text-gray-800 px-1">
                 Are you sure? All bookmarks in this folder will be deleted...
               </p>
