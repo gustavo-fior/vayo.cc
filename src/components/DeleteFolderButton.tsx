@@ -18,9 +18,6 @@ export const DeleteFolderButton = () => {
 
   const { mutate: deleteFolder, isLoading: isDeletingFolder } =
     api.folders.delete.useMutation({
-      onMutate: () => {
-        setCurrentFolder(utils.folders.findByUserId.getData()?.[0] ?? null);
-      },
       onSuccess: async () => {
         await utils.bookmarks.findByFolderId.invalidate({
           folderId: currentFolder?.id,
@@ -42,6 +39,10 @@ export const DeleteFolderButton = () => {
     });
 
   const handleDelete = async () => {
+
+    const otherFolder = utils.folders.findByUserId.getData({ userId: String(session?.data?.user?.id) })?.[0]?.id === currentFolder?.id ? utils.folders.findByUserId.getData({ userId: String(session?.data?.user?.id) })?.[1] : utils.folders.findByUserId.getData({ userId: String(session?.data?.user?.id) })?.[0];
+    setCurrentFolder(otherFolder ?? null);
+
     await utils.folders.findByUserId.cancel();
 
     const previousFolders = utils.folders.findByUserId.getData();

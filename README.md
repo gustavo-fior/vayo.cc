@@ -25,6 +25,7 @@
 - ✅  update skeletons to last view style
 - ✅  add light mode
 - ✅  figure out why <img> tags are not being found
+- ✅  instantly change to other folder when one is deleted
 - ✅  make UI better and create a pattern (paddings, animations, texts) (probably have a menu that contains view style, direction, and sign out)
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌  add the last opened folder (folders are already sorted by the last update)
@@ -40,5 +41,4 @@
 - 🟢  shared folder
 - 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
 - 🟢  maybe fetch folders with the bookmarks instead of creating 2 queries
-- 🟢  instantly change to other folder when one is deleted
 - 🟢  add smooth appearance to shared hover state

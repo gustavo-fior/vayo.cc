@@ -296,7 +296,7 @@ export default function Bookmarks() {
                       key={folder.id}
                       className={`${
                         currentFolder?.id === folder.id
-                          ? "bg-black/30 dark:bg-white/30"
+                          ? "bg-black/20 dark:bg-white/30"
                           : ""
                       } group flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 align-middle font-semibold text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20`}
                     >
