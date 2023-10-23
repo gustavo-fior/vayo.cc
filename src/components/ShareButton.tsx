@@ -70,12 +70,12 @@ export const ShareButton = () => {
       </Popover.Trigger>
       {currentFolder?.id && (
         <Popover.Portal>
-          <Popover.Content className="z-50">
+          <Popover.Content className="z-50 md:mr-40 ml-4">
             <motion.div
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
-              className="mr-40 mt-4 flex flex-col gap-3 rounded-md dark:bg-white/10 bg-black/5 p-4 align-middle font-semibold text-black dark:text-white no-underline backdrop-blur-lg"
+              className="mt-4 flex flex-col gap-3 rounded-md dark:bg-white/10 bg-black/5 p-4 align-middle font-semibold text-black dark:text-white no-underline backdrop-blur-lg"
             >
               <div className="flex items-center justify-between gap-2 align-middle px-1">
                 <div className="flex items-center gap-2 align-middle">
@@ -124,7 +124,7 @@ export const ShareButton = () => {
                 </div>
                 <Checkbox.Root
                   defaultChecked={isShared}
-                  className="flex h-6 w-6 items-center justify-center rounded-md dark:bg-white/10 bg-black/10 transition duration-300 ease-in-out hover:bg-white/20 hover:bg-black/20"
+                  className="flex h-6 w-6 items-center justify-center rounded-md dark:bg-white/10 bg-black/10 transition duration-300 ease-in-out dark:hover:bg-white/20 hover:bg-black/20"
                   onCheckedChange={() => {
                     handleUpdateFolder();
                   }}

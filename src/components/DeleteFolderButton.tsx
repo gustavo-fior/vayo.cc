@@ -98,7 +98,7 @@ export const DeleteFolderButton = () => {
           </motion.button>
         </Popover.Trigger>
         <Popover.Portal>
-          <Popover.Content className="z-40 mr-36">
+          <Popover.Content className="z-40 md:mr-36 mr-6">
             <motion.div
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}

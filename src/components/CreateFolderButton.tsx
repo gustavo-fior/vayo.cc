@@ -116,7 +116,7 @@ export const CreateFolderButton = () => {
           </motion.button>
         </Popover.Trigger>
         <Popover.Portal>
-          <Popover.Content className="z-40 mr-60">
+          <Popover.Content className="z-40 md:mr-60 mr-12">
             <motion.form
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}

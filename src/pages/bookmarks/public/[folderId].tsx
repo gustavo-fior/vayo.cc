@@ -74,7 +74,7 @@ export default function Bookmarks() {
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#dfdfdf] to-[#f5f5f5] dark:from-[#202020] dark:to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
           <AnimatePresence mode="wait">
-            <div className="flex items-center justify-between px-2 align-middle font-semibold text-black dark:text-white">
+            <div className="flex flex-col md:flex-row items-center justify-between px-2 md:gap-0 gap-8 align-middle font-semibold text-black dark:text-white">
               {folderLoading ? (
                 <motion.div
                   key="loading"
@@ -107,7 +107,7 @@ export default function Bookmarks() {
                 </motion.div>
               )}
               {folder?.isShared && (
-                <div className="flex items-center gap-2 align-middle">
+                <div className="flex items-center gap-6 md:gap-2 align-middle">
                   <motion.div
                     key="loaded"
                     initial={{ opacity: 0 }}

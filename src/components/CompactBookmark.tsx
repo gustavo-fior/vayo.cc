@@ -61,7 +61,7 @@ export const CompactBookmark = ({
                     style={{ height: "1.9rem", width: "1.9rem" }}
                   />
                 )}
-                <p className={`max-w-sm truncate font-semibold dark:text-white text-black`}>
+                <p className={`md:max-w-sm w-64 truncate font-semibold dark:text-white text-black`}>
                   {bookmark.title}
                 </p>
                 <p className="hidden w-72 truncate text-sm text-slate-500 md:block">

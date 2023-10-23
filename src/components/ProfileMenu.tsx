@@ -151,7 +151,7 @@ export const ProfileMenu = () => {
         </motion.button>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content className="z-50 mr-64">
+        <Popover.Content className="md:z-50 md:mr-64 mr-6">
           <motion.div
             initial={{ opacity: 0, y: 3 }}
             animate={{ opacity: 1, y: 0 }}

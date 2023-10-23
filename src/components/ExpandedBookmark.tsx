@@ -84,7 +84,7 @@ export const ExpandedBookmark = ({
                 />
               )}
               <div className="flex flex-col gap-2">
-                <p className="max-w-lg truncate text-lg font-bold text-black dark:text-white">
+                <p className="md:max-w-lg w-72 truncate text-lg font-bold text-black dark:text-white">
                   {bookmark.title}
                 </p>
                 <div className="flex items-center gap-2 align-middle">
