@@ -61,7 +61,7 @@ export const ShareButton = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="rounded-full bg-white/10 p-3 text-white no-underline transition hover:bg-white/20"
+          className="rounded-full dark:bg-white/10 bg-black/10 p-3 black:text-white text-black dark:text-white no-underline transition dark:hover:bg-white/20 hover:bg-black/20"
         >
           <div className="flex items-center gap-x-2 align-middle">
             <Share2Icon className="h-4 w-4" />
@@ -75,11 +75,11 @@ export const ShareButton = () => {
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
-              className="mr-40 mt-4 flex flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold text-white no-underline backdrop-blur-lg"
+              className="mr-40 mt-4 flex flex-col gap-3 rounded-md dark:bg-white/10 bg-black/5 p-4 align-middle font-semibold text-black dark:text-white no-underline backdrop-blur-lg"
             >
               <div className="flex items-center justify-between gap-2 align-middle px-1">
                 <div className="flex items-center gap-2 align-middle">
-                  <GlobeIcon className="h-4 w-4 text-gray-400" />
+                  <GlobeIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                   <p>Share</p>
                 </div>
                 <span className="relative mr-2 mt-0.5 flex h-2 w-2">
@@ -107,7 +107,7 @@ export const ShareButton = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <LockOpen1Icon className="h-4 w-4 text-gray-400" />
+                        <LockOpen1Icon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -116,7 +116,7 @@ export const ShareButton = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <LockClosedIcon className="h-4 w-4 text-gray-400" />
+                        <LockClosedIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -124,7 +124,7 @@ export const ShareButton = () => {
                 </div>
                 <Checkbox.Root
                   defaultChecked={isShared}
-                  className="flex h-6 w-6 items-center justify-center rounded-md bg-white/10 transition duration-300 ease-in-out hover:bg-white/20"
+                  className="flex h-6 w-6 items-center justify-center rounded-md dark:bg-white/10 bg-black/10 transition duration-300 ease-in-out hover:bg-white/20 hover:bg-black/20"
                   onCheckedChange={() => {
                     handleUpdateFolder();
                   }}
@@ -140,13 +140,13 @@ export const ShareButton = () => {
                   </motion.div>
                 </Checkbox.Root>
               </div>
-              <p className="text-xs font-normal text-gray-400 px-1">
+              <p className="text-xs font-normal dark:text-gray-400 text-gray-800 px-1">
                 Here&apos;s your magic link:
               </p>
               <div className="flex items-center gap-2 align-middle">
                 <input
-                  className={`rounded-md bg-white/10 px-3 py-2 text-sm font-normal no-underline transition duration-300  ease-in-out ${
-                    !isShared ? "text-zinc-600/50" : "text-white"
+                  className={`rounded-md dark:bg-white/10 bg-black/10 px-3 py-2 text-sm font-normal no-underline transition duration-300  ease-in-out ${
+                    !isShared ? "dark:text-zinc-600/50 text-zinc-600/10" : "dark:text-white text-black"
                   }`}
                   type="text"
                   value={
@@ -171,7 +171,7 @@ export const ShareButton = () => {
 
                       void handleCopyToClipboard();
                     }}
-                    className="rounded-md bg-white/10 px-4 py-2.5 font-semibold text-white no-underline transition ease-in-out hover:bg-white/20"
+                    className="rounded-md dark:bg-white/10 bg-black/10 px-4 py-2.5 font-semibold dark:text-white text-black no-underline transition ease-in-out hover:bg-black/20 dark:hover:bg-white/20"
                   >
                     {copied ? (
                       <motion.div
@@ -180,7 +180,7 @@ export const ShareButton = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1 }}
                       >
-                        <CheckIcon className="h-4 w-4" />
+                        <CheckIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -191,7 +191,7 @@ export const ShareButton = () => {
                       >
                         <Link1Icon
                           className={`h-4 w-4 transition duration-300 ease-in-out ${
-                            isShared ? "text-white" : "text-zinc-600/50"
+                            isShared ? "dark:text-white text-black" : "text-zinc-600/50"
                           }`}
                         />
                       </motion.div>

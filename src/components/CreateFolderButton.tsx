@@ -103,7 +103,7 @@ export const CreateFolderButton = () => {
             }}
             type="submit"
             disabled={isCreatingFolder}
-            className="rounded-full bg-white/10 p-3 align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20"
+            className="rounded-full dark:bg-white/10 bg-black/10 p-3 align-middle font-semibold dark:text-white text-black no-underline transition hover:cursor-pointer dark:hover:bg-white/20 hover:bg-black/20"
             onClick={() => {
               setPopverOpen(true);
             }}
@@ -121,7 +121,7 @@ export const CreateFolderButton = () => {
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
-              className="mt-4 flex w-72 flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold text-white no-underline backdrop-blur-lg"
+              className="mt-4 flex w-72 flex-col gap-3 rounded-md dark:bg-white/10 bg-black/5 p-4 align-middle font-semibold dark:text-white text-black no-underline backdrop-blur-lg"
               onSubmit={(e) => {
                 setPopverOpen(false);
                 void handleSubmit(e);
@@ -129,7 +129,7 @@ export const CreateFolderButton = () => {
             >
               <div className="flex items-center justify-between gap-2 align-middle">
                 <div className="flex items-center gap-2 align-middle px-1">
-                  <ArchiveIcon className="h-4 w-4 text-gray-400" />
+                  <ArchiveIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                   <p>New folder</p>
                 </div>
               </div>
@@ -153,8 +153,8 @@ export const CreateFolderButton = () => {
                             scale: 0.9,
                           }}
                           value={icon}
-                          className="w-10 rounded-md bg-white/10 py-1.5 text-center text-white placeholder-zinc-600 placeholder-opacity-50"
-                          placeholder="🪴"
+                          className="w-10 rounded-md dark:bg-white/10 bg-black/10 py-1.5 text-center text-white placeholder-zinc-600 placeholder-opacity-50"
+                          placeholder="?"
                           readOnly
                         />
                       </Popover.Trigger>
@@ -191,13 +191,13 @@ export const CreateFolderButton = () => {
                       type="button"
                       disabled={isCreatingFolder || icon.length === 0}
                       className={`flex h-6 w-6 items-center justify-center rounded-md ${
-                        icon.length === 0 ? "bg-white/5" : "bg-white/10"
+                        icon.length === 0 ? "dark:bg-white/5 bg-black/5" : "dark:bg-white/10 bg-black/10"
                       } p-1.5 align-middle font-semibold text-white no-underline transition hover:bg-white/20`}
                       onClick={() => setIcon("")}
                     >
                       <Cross1Icon
                         className={`h-3 w-3 ${
-                          icon.length === 0 ? "text-white/20" : "text-white"
+                          icon.length === 0 ? "dark:text-white/20 text-black/20" : "dark:text-white text-black"
                         }`}
                       />
                     </motion.button>
@@ -210,7 +210,7 @@ export const CreateFolderButton = () => {
                   </label>
                   <input
                     type="text"
-                    className="mt-1 w-40 rounded-md bg-white/10 px-3 py-1.5 font-normal text-white placeholder-zinc-600"
+                    className="mt-1 w-40 rounded-md dark:bg-white/10 bg-black/10 px-3 py-2 font-normal text-sm dark:text-white text-black placeholder-zinc-600"
                     placeholder="Awesome refs"
                     required
                     autoFocus
@@ -227,9 +227,9 @@ export const CreateFolderButton = () => {
                 disabled={isCreatingFolder}
                 className={`${
                   name.length > 0
-                    ? "bg-white/10 text-white"
-                    : "bg-white/5 text-zinc-600"
-                } items mt-2 rounded-md px-4 py-2 text-center align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20`}
+                    ? "dark:bg-white/10 bg-black/10 dark:text-white text-black"
+                    : "dark:bg-white/5 bg-black/5 dark:text-zinc-600 text-zinc-400"
+                } items mt-2 rounded-md px-4 py-2 text-center align-middle font-semibold dark:text-white text-black no-underline transition hover:cursor-pointer dark:hover:bg-white/20 hover:bg-black/20`}
               >
                 <p>Create</p>
               </motion.button>

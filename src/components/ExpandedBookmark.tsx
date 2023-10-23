@@ -40,7 +40,7 @@ export const ExpandedBookmark = ({
               transition={{ duration: 0.4 }}
               animate={{ opacity: 1 }}
               layoutId="bookmark"
-              className="absolute left-0 top-0 z-0 h-full w-full rounded-lg bg-white/5"
+              className="absolute left-0 top-0 z-0 h-full w-full rounded-lg dark:bg-white/5 bg-black/5"
             />
           )}
           <motion.div
@@ -82,7 +82,7 @@ export const ExpandedBookmark = ({
                 />
               )}
               <div className="flex flex-col gap-2">
-                <p className="max-w-lg truncate text-lg font-bold text-white">
+                <p className="max-w-lg truncate text-lg font-bold dark:text-white text-black">
                   {bookmark.title}
                 </p>
                 <div className="flex items-center gap-2 align-middle">

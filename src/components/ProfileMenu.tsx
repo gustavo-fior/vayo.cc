@@ -9,6 +9,8 @@ import {
   HamburgerMenuIcon,
   RowsIcon,
   ViewHorizontalIcon,
+  SunIcon,
+  MoonIcon,
 } from "@radix-ui/react-icons";
 import * as Popover from "@radix-ui/react-popover";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
@@ -26,6 +28,7 @@ import {
 import { api } from "~/utils/api";
 import { Separator } from "./Separator";
 import { Spinner } from "./Spinner";
+import { useTheme } from "next-themes";
 
 export const ProfileMenu = () => {
   const session = useSession();
@@ -33,6 +36,7 @@ export const ProfileMenu = () => {
   const [signinOut, setSigninOut] = useState(false);
   const [direction, setDirection] = useAtom(directionAtom);
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
+  const { theme, setTheme } = useTheme();
   const [viewStyle, setViewStyle] = useAtom(viewStyleAtom);
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
   const [allowDuplicate, setAllowDuplicate] = useState(
@@ -67,6 +71,10 @@ export const ProfileMenu = () => {
       lastDirection: newDirection,
       lastViewStyle: viewStyle,
     });
+  };
+
+  const handleChangeTheme = (newTheme: "light" | "dark") => {
+    setTheme(newTheme);
   };
 
   const handleSignOut = () => {
@@ -125,7 +133,7 @@ export const ProfileMenu = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="rounded-full bg-white/10 p-2 text-white no-underline transition hover:bg-white/20"
+          className="rounded-full dark:bg-white/10 bg-black/10 p-2 dark:text-white text-black no-underline transition dark:dark:hover:bg-white/20 hover:bg-black/20"
         >
           <div className="flex items-center gap-x-2 align-middle">
             {session.data?.user?.image ? (
@@ -137,7 +145,7 @@ export const ProfileMenu = () => {
                 alt="Profile Picture"
               />
             ) : (
-              <div className="h-6 w-6 rounded-full bg-white/20" />
+              <div className="h-6 w-6 rounded-full  dark:bg-white/20 bg-black/20" />
             )}
           </div>
         </motion.button>
@@ -148,11 +156,11 @@ export const ProfileMenu = () => {
             initial={{ opacity: 0, y: 3 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -3 }}
-            className="mt-4 flex flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold text-white no-underline backdrop-blur-lg"
+            className="mt-4 flex flex-col gap-3 rounded-md dark:bg-white/10 bg-black/5 p-4 align-middle font-semibold dark:text-white text-black no-underline backdrop-blur-lg"
           >
             <div className="flex items-center gap-2 px-1 align-middle">
               <div className="flex items-center gap-2 align-middle">
-                <GearIcon className="h-4 w-4 text-gray-400" />
+                <GearIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                 <p>Settings</p>
               </div>
             </div>
@@ -168,7 +176,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <CopyIcon className="h-4 w-4 text-gray-400" />
+                        <CopyIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -177,7 +185,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <ViewHorizontalIcon className="h-4 w-4 text-gray-400" />
+                        <ViewHorizontalIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -185,7 +193,7 @@ export const ProfileMenu = () => {
                 </div>
                 <Checkbox.Root
                   defaultChecked={allowDuplicate}
-                  className="flex h-6 w-6 items-center justify-center rounded-md bg-white/10 transition duration-300 ease-in-out hover:bg-white/20"
+                  className="flex h-6 w-6 items-center justify-center rounded-md dark:bg-white/10 bg-black/10  transition duration-300 ease-in-out dark:hover:bg-white/20 hover:bg-black/20 "
                   onCheckedChange={() => {
                     handleUpdateFolder();
                   }}
@@ -205,6 +213,72 @@ export const ProfileMenu = () => {
               <div className="flex w-72 flex-row justify-between align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
                   <AnimatePresence mode="popLayout">
+                    {theme === "light" ? (
+                      <motion.div
+                        key="light"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <SunIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="dark"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <MoonIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <p className="text-sm font-normal">Day or night</p>
+                </div>
+                <ToggleGroup.Root
+                  type="single"
+                  defaultValue={theme}
+                  className="flex items-center gap-x-2 align-middle"
+                  onValueChange={(value) => {
+                    if (value !== theme && value !== "") {
+                      handleChangeTheme(value as "light" | "dark");
+                    }
+                  }}
+                >
+                  <ToggleGroup.Item
+                    value="light"
+                    className="flex items-center gap-x-2 align-middle"
+                  >
+                    <p
+                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
+                        theme === "light"
+                          ? "font-semibold"
+                          : "font-normal text-gray-400"
+                      }`}
+                    >
+                      Day
+                    </p>
+                  </ToggleGroup.Item>
+                  <ToggleGroup.Item
+                    value="dark"
+                    className="flex items-center gap-x-2 align-middle"
+                  >
+                    <p
+                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
+                        theme === "dark"
+                          ? "font-semibold"
+                          : "font-normal text-gray-400"
+                      }`}
+                    >
+                      Night
+                    </p>
+                  </ToggleGroup.Item>
+                </ToggleGroup.Root>
+              </div>
+
+              <div className="flex w-72 flex-row justify-between align-middle">
+                <div className="flex items-center gap-x-3 align-middle">
+                  <AnimatePresence mode="popLayout">
                     {direction === "asc" ? (
                       <motion.div
                         key="asc"
@@ -212,7 +286,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <ArrowUpIcon className="h-4 w-4 text-gray-400" />
+                        <ArrowUpIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -221,7 +295,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <ArrowDownIcon className="h-4 w-4 text-gray-400" />
+                        <ArrowDownIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -242,7 +316,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out hover:text-white ${
+                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
                         direction === "asc"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -256,7 +330,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out hover:text-white ${
+                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
                         direction === "desc"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -278,7 +352,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <HamburgerMenuIcon className="h-4 w-4 text-gray-400" />
+                        <HamburgerMenuIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -287,7 +361,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <RowsIcon className="h-4 w-4 text-gray-400" />
+                        <RowsIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -308,7 +382,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out hover:text-white ${
+                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
                         viewStyle === "compact"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -322,7 +396,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out hover:text-white ${
+                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
                         viewStyle === "expanded"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -336,7 +410,7 @@ export const ProfileMenu = () => {
 
               <div className="flex items-center justify-between gap-x-2 align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
-                  <ExitIcon className="h-4 w-4 text-gray-400" />
+                  <ExitIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                   <p className="text-sm font-normal">Sign out</p>
                 </div>
                 <motion.button
@@ -345,12 +419,12 @@ export const ProfileMenu = () => {
                   }}
                   disabled={signinOut}
                   onClick={handleSignOut}
-                  className={`flex h-6 w-8 items-center justify-center rounded-md bg-white/10 font-semibold text-white no-underline transition ease-in-out hover:bg-white/20 `}
+                  className={`flex h-6 w-8 items-center justify-center rounded-md dark:bg-white/10 bg-black/10 font-semibold dark:text-white text-black no-underline transition ease-in-out dark:hover:bg-white/20 hover:bg-black/20  `}
                 >
                   {signinOut ? (
                     <Spinner size="sm" />
                   ) : (
-                    <p className="text-sm font-normal">{"->"}</p>
+                    <p className="text-sm font-normal ">{"->"}</p>
                   )}
                 </motion.button>
               </div>

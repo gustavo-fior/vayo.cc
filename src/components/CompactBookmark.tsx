@@ -34,7 +34,7 @@ export const CompactBookmark = ({
             <motion.div
               transition={{ duration: 0.4 }}
               layoutId="bookmark"
-              className="absolute left-0 top-0 z-0 h-full w-full rounded-lg bg-white/5"
+              className="absolute left-0 top-0 z-0 h-full w-full rounded-lg dark:bg-white/5 bg-black/5"
             />
           )}
           <motion.div
@@ -45,7 +45,7 @@ export const CompactBookmark = ({
             <div className="flex w-full items-center justify-between align-middle">
               <div className="z-10 flex flex-row items-center gap-3 align-middle">
                 {bookmark.faviconUrl ? (
-                  <div className="rounded-lg bg-white/10 p-2">
+                  <div className="rounded-lg dark:bg-white/10 p-2 bg-black/10">
                     <Image
                       src={String(bookmark.faviconUrl)}
                       alt={bookmark.title}
@@ -61,7 +61,7 @@ export const CompactBookmark = ({
                     style={{ height: "1.9rem", width: "1.9rem" }}
                   />
                 )}
-                <p className={`max-w-sm truncate font-semibold text-white `}>
+                <p className={`max-w-sm truncate font-semibold dark:text-white text-black`}>
                   {bookmark.title}
                 </p>
                 <p className="hidden w-72 truncate text-sm text-slate-500 md:block">

@@ -85,7 +85,7 @@ export const DeleteFolderButton = () => {
             exit={{ opacity: 0, scale: 0.9 }}
             type="submit"
             disabled={isDeletingFolder}
-            className="rounded-full bg-white/10 p-3 align-middle font-semibold text-white no-underline transition hover:cursor-pointer hover:bg-white/20"
+            className="rounded-full dark:bg-white/10 bg-black/10 p-3 align-middle font-semibold dark:text-white text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:hover:bg-white/20"
             onClick={() => {
               setPopverOpen(true);
             }}
@@ -93,7 +93,7 @@ export const DeleteFolderButton = () => {
             {isDeletingFolder ? (
               <Spinner size="sm" />
             ) : (
-              <Cross1Icon className="h-4 w-4" />
+              <Cross1Icon className="h-4 w-4 dark:text-white text-black" />
             )}
           </motion.button>
         </Popover.Trigger>
@@ -103,16 +103,16 @@ export const DeleteFolderButton = () => {
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
-              className="mt-4 flex w-72 flex-col gap-3 rounded-md bg-white/10 p-4 align-middle font-semibold text-white no-underline backdrop-blur-lg"
+              className="mt-4 flex w-72 flex-col gap-3 rounded-md dark:bg-white/10 bg-black/5 p-4 align-middle font-semibold dark:text-white text-black no-underline backdrop-blur-lg"
             >
               <div className="flex items-center justify-between gap-2 align-middle">
                 <div className="flex items-center gap-2 align-middle px-1">
-                  <TrashIcon className="h-4 w-4 text-gray-400" />
+                  <TrashIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
                   <p>Delete folder</p>
                 </div>
               </div>
               <Separator height={2} />
-              <p className="text-xs font-normal text-gray-400 px-1">
+              <p className="text-xs font-normal dark:text-gray-400 text-gray-800 px-1">
                 Are you sure? All bookmarks in this folder will be deleted...
               </p>
               <div className="flex gap-2 w-full">
@@ -121,7 +121,7 @@ export const DeleteFolderButton = () => {
                     scale: 0.8,
                   }}
                   type="button"
-                  className="rounded-md bg-white/10 px-3 py-2  w-full align-middle text-sm text-white no-underline transition hover:cursor-pointer hover:bg-white/20"
+                  className="rounded-md dark:bg-white/10 bg-black/10 px-3 py-2 w-full align-middle text-sm no-underline transition hover:cursor-pointer dark:hover:bg-white/20 hover:bg-black/20"
                   onClick={() => {
                     setPopverOpen(false);
                   }}
@@ -133,7 +133,7 @@ export const DeleteFolderButton = () => {
                     scale: 0.8,
                   }}
                   type="button"
-                  className="rounded-md bg-red-500 px-3 py-2  align-middle w-full text-sm font-normal text-white no-underline transition hover:cursor-pointer hover:bg-red-600"
+                  className="rounded-md bg-red-500 px-3 py-2  align-middle w-full text-sm font-normal no-underline transition hover:cursor-pointer hover:bg-red-600"
                   onClick={() => {
                     void handleDelete();
                     setPopverOpen(false);

@@ -40,5 +40,7 @@
 - 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
 - 🟢  maybe fetch folders with the bookmarks instead of creating 2 queries
 - 🟢  instantly change to other folder when one is deleted
+- 🟢  add smooth appearance to shared hover state
+
 
 
