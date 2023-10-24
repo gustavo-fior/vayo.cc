@@ -135,7 +135,7 @@ export const ExpandedBookmark = ({
       <ContextMenu.Portal>
         <ContextMenu.Content className="rounded-md bg-white/10 px-4 py-2 align-middle text-white no-underline backdrop-blur-lg transition duration-300 ease-in-out hover:cursor-pointer hover:bg-white/20">
           <ContextMenu.Item
-            className="text-white outline-none focus:outline-none"
+            className="dark:text-white text-black outline-none focus:outline-none"
             onClick={() => {
               void navigator.clipboard.writeText(bookmark.url);
             }}

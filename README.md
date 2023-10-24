@@ -44,3 +44,4 @@
 - 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
 - 🟢  maybe fetch folders with the bookmarks instead of creating 2 queries
 - 🟢  add smooth appearance to shared hover state
+- 🟢  update things in db after 2 secs of no changes, not in every change

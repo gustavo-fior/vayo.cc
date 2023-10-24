@@ -71,7 +71,16 @@ export const getWebsiteName = (url: string) => {
       ) {
         domainName = hostnameParts[1] ?? "";
       } else {
-        if (hostnameParts[1]?.toLowerCase() !== "com") {
+        if (
+          hostnameParts[1]?.toLowerCase() !== "com" &&
+          hostnameParts[1]?.toLowerCase() !== "co" &&
+          hostnameParts[1]?.toLowerCase() !== "org" &&
+          hostnameParts[1]?.toLowerCase() !== "net" &&
+          hostnameParts[1]?.toLowerCase() !== "gov" &&
+          hostnameParts[1]?.toLowerCase() !== "edu" &&
+          hostnameParts[1]?.toLowerCase() !== "io" &&
+          hostnameParts[1]?.toLowerCase() !== "dev"
+        ) {
           domainName = hostnameParts[1] ?? "";
         } else {
           domainName = hostnameParts[0] ?? "";

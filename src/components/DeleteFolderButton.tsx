@@ -86,7 +86,7 @@ export const DeleteFolderButton = () => {
             exit={{ opacity: 0, scale: 0.9 }}
             type="submit"
             disabled={isDeletingFolder}
-            className="rounded-full dark:bg-white/10 bg-black/10 p-3 align-middle font-semibold dark:text-white text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:hover:bg-white/20"
+            className="rounded-full dark:bg-white/10 bg-black/10 p-3.5 align-middle font-semibold dark:text-white text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:hover:bg-white/20"
             onClick={() => {
               setPopverOpen(true);
             }}
@@ -94,7 +94,7 @@ export const DeleteFolderButton = () => {
             {isDeletingFolder ? (
               <Spinner size="sm" />
             ) : (
-              <Cross1Icon className="h-4 w-4 dark:text-white text-black" />
+              <Cross1Icon className="h-3 w-3 dark:text-white text-black" />
             )}
           </motion.button>
         </Popover.Trigger>
