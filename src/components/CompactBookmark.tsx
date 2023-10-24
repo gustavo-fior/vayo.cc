@@ -32,9 +32,10 @@ export const CompactBookmark = ({
         >
           {isHovering === bookmark.id && (
             <motion.div
+            whileHover={{ scale: 1.015 }}
               transition={{ duration: 0.4 }}
               layoutId="bookmark"
-              className="absolute left-0 top-0 z-0 h-full w-full rounded-lg dark:bg-white/5 bg-black/5"
+              className="absolute left-0 top-0  z-0 h-full w-full rounded-lg dark:bg-white/5 bg-black/5"
             />
           )}
           <motion.div

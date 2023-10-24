@@ -45,7 +45,7 @@ export const ExpandedBookmark = ({
           <motion.div
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
-            className={`z-10 flex justify-between rounded-lg p-2 transition duration-500 ease-in-out`}
+            className={`z-10 flex justify-between rounded-lg py-2 px-3 transition duration-500 ease-in-out`}
           >
             <div className={`flex items-center gap-6 md:w-full`}>
               {bookmark.ogImageUrl &&
