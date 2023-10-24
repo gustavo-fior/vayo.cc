@@ -257,12 +257,11 @@ const getOgImageUrl = async (
 const getTitle = async (url: string, document: Document): Promise<string> => {
   let title: string | null | undefined = null;
 
-  title = document.querySelector("title")?.textContent;
+  title = document.querySelector("meta[property='og:title']")?.getAttribute("content");
 
   if (!title)
     title = document
-      .querySelector("meta[property='og:title']")
-      ?.getAttribute("content");
+      .querySelector("title")?.textContent;
 
   const rootUrl = new URL("/", url).href;
 
@@ -273,12 +272,11 @@ const getTitle = async (url: string, document: Document): Promise<string> => {
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
-    title = document.querySelector("title")?.textContent;
+    title = document.querySelector("meta[property='og:title']")?.getAttribute("content");
 
     if (!title)
       title = document
-        .querySelector("meta[property='og:title']")
-        ?.getAttribute("content");
+        .querySelector("title")?.textContent;
   }
 
   if (!title) {
