@@ -57,11 +57,11 @@ export const CompactBookmark = ({
                   </div>
                 ) : (
                   <div
-                    className="rounded-lg bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"
+                    className="rounded-lg bg-gradient-to-br dark:from-[#1a1a1a] dark:to-[#2d2c2c] from-[#d2d1d1] to-[#dad7d7]"
                     style={{ height: "1.9rem", width: "1.9rem" }}
                   />
                 )}
-                <p className={`md:max-w-sm w-64 truncate font-semibold dark:text-white text-black`}>
+                <p className={`truncate font-semibold dark:text-white text-black w-64 md:w-max`}>
                   {bookmark.title}
                 </p>
                 <p className="hidden w-72 truncate text-sm text-slate-500 md:block">
@@ -93,7 +93,7 @@ export const CompactBookmark = ({
         </motion.li>
       </ContextMenu.Trigger>
       <ContextMenu.Portal>
-        <ContextMenu.Content className="rounded-md bg-white/10 px-4 py-2 align-middle text-white no-underline backdrop-blur-lg transition duration-300 ease-in-out hover:cursor-pointer hover:bg-white/20">
+        <ContextMenu.Content className="rounded-md dark:bg-white/10 bg-black/10 px-4 py-2 align-middle no-underline backdrop-blur-lg transition duration-300 ease-in-out hover:cursor-pointer dark:hover:bg-white/20 hover:bg-black/20">
           <ContextMenu.Item
             className="text-white outline-none focus:outline-none"
             onClick={() => {
