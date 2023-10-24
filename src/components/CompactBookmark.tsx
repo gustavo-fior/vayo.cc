@@ -40,12 +40,12 @@ export const CompactBookmark = ({
           <motion.div
             whileHover={{ scale: 1.015 }}
             whileTap={{ scale: 0.98 }}
-            className="flex rounded-lg px-4 py-3 align-middle transition duration-500 ease-in-out"
+            className="flex rounded-lg px-2 md:px-4 py-3 align-middle transition duration-500 ease-in-out"
           >
             <div className="flex w-full items-center justify-between align-middle">
               <div className="z-10 flex flex-row items-center gap-3 align-middle">
                 {bookmark.faviconUrl ? (
-                  <div className="rounded-lg dark:bg-white/10 p-2 bg-black/10">
+                  <div className="rounded-lg dark:bg-white/10 p-2 bg-black/10 min-w-[1.9rem] min-h-[1.9rem]">
                     <Image
                       src={String(bookmark.faviconUrl)}
                       alt={bookmark.title}
@@ -61,7 +61,7 @@ export const CompactBookmark = ({
                     style={{ height: "1.9rem", width: "1.9rem" }}
                   />
                 )}
-                <p className={`truncate font-semibold dark:text-white text-black w-64 md:w-max`}>
+                <p className={`truncate font-semibold dark:text-white text-black max-w-[16rem] md:max-w-sm`}>
                   {bookmark.title}
                 </p>
                 <p className="hidden w-72 truncate text-sm text-slate-500 md:block">

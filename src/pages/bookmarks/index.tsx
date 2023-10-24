@@ -269,7 +269,7 @@ export default function Bookmarks() {
               <Separator />
             </div>
 
-            <div className="flex justify-between px-2 pb-4 align-middle">
+            <div className="flex justify-between px-0 md:px-2 pb-4 align-middle">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
