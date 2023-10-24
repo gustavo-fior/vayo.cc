@@ -36,6 +36,8 @@
 - 🔴  animate direction button
 - 🟡  allow users to edit and have a custom sort for folders
 - 🟡  add month separation
+- 🟡  add commons favicons as assets
+- 🟢  add funny image at the end if list is long
 - 🟢  add search
 - 🟢  maybe insert AI-generated og images when one can't be found (too crazy?)
 - 🟢  shared folder
