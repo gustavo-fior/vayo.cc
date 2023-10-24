@@ -99,7 +99,7 @@ export const ExpandedBookmark = ({
                     />
                   ) : (
                     <div
-                      className="rounded-sm bg-gradient-to-br from-[#1a1a1a] to-[#2d2c2c]"
+                      className="rounded-sm bg-gradient-to-br from-[#bdbdbd] to-[#ececec] dark:from-[#1a1a1a] dark:to-[#2d2c2c]"
                       style={{ height: "0.9rem", width: "0.9rem" }}
                     />
                   )}
