@@ -52,8 +52,7 @@ export const CompactBookmark = ({
                       alt={bookmark.title}
                       width={12}
                       height={12}
-                      className="rounded-sm"
-                      style={{ height: "0.9rem", width: "0.9rem" }}
+                      style={{ height: "0.9rem", width: "0.9rem", borderRadius: "0.2rem" }}
                     />
                   </div>
                 ) : (

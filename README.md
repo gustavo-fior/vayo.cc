@@ -27,8 +27,12 @@
 - ✅  figure out why <img> tags are not being found
 - ✅  instantly change to other folder when one is deleted
 - ✅  make UI better and create a pattern (paddings, animations, texts) (probably have a menu that contains view style, direction, and sign out)
+- ✅  add commons favicons as assets
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌  add the last opened folder (folders are already sorted by the last update)
+- ❌  add funny image at the end if list is long (didn´t like it)
+- ❌  maybe insert AI-generated og images when one can't be found (too crazy? yes u dumbass, definetily not a good idea + what if it's a bad image...)
+- ❌  add search (why not just ctrl+f?)
 
 # TODO
 
@@ -36,10 +40,6 @@
 - 🔴  animate direction button
 - 🟡  allow users to edit and have a custom sort for folders
 - 🟡  add month separation
-- 🟡  add commons favicons as assets
-- 🟢  add funny image at the end if list is long
-- 🟢  add search
-- 🟢  maybe insert AI-generated og images when one can't be found (too crazy?)
 - 🟢  shared folder
 - 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
 - 🟢  maybe fetch folders with the bookmarks instead of creating 2 queries

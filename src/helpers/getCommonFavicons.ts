@@ -3,39 +3,45 @@ export const getCommonFavicons = (url: string): string | null => {
 
   switch (host) {
     case "youtube" || "youtu.be":
-      return "https://youtube.com/s/desktop/d7e8df8d/img/favicon_144x144.png";
+      return "/favicons/youtube.png";
     case "reddit":
-      return "https://redditstatic.com/desktop2x/img/favicon/apple-icon-180x180.png";
+      return "/favicons/reddit.png";
     case "twitter" || "x":
-      return "https://abs.twimg.com/responsive-web/client-web/icon-ios.77d25eba.png";
+      return "/favicons/x.png";
     case "facebook":
-      return "https://static.xx.fbcdn.net/rsrc.php/yk/r/TYhiZ_A7dmu.ico?_nc_eui2=AeELWzzclFoqXRmOGSkBK_HTQSByOY5TAQZBIHI5jlMBBmYQAX8a7Ss93kTcZM45VBym6Ey-Bj9gc09mk2qlb-B2";
+      return "/favicons/facebook.ico";
     case "instagram":
-      return "https://static.cdninstagram.com/rsrc.php/v3/yG/r/De-Dwpd5CHc.png";
+      return "/favicons/instagram.png";
     case "amazon":
-      return "https://amazon.com/favicon.ico";
+      return "/favicons/amazon.ico";
     case "netflix":
-      return "https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico";
+      return "/favicons/netflix.ico";
     case "wikipedia":
-      return "https://en.wikipedia.org/static/apple-touch/wikipedia.png";
+      return "/favicons/wikipedia.png";
     case "substack":
-      return "https://substackcdn.com/icons/substack/apple-touch-icon-1024x1024.png";
+      return "/favicons/substack.png";
     case "medium":
-      return "https://miro.medium.com/v2/resize:fill:152:152/1*sHhtYhaCe2Uc3IU0IgKwIQ.png";
-    case "nytimes.com":
-      return "https://static.nytimes.com/favicon.ico";
-    case "wsj.com":
-      return "https://s.wsj.net/media/wsj_apple-touch-icon.png";
-    case "apple.com":
-      return "https://apple.com/favicon.ico";
-    case "microsoft.com":
-      return "https://microsoft.com/favicon.ico";
-    case "google.com":
-      return "https://google.com/favicon.ico";
-    case "yahoo.com":
-      return "https://yahoo.com/favicon.ico";
-    case "bing.com":
-      return "https://bing.com/favicon.ico";
+      return "/favicons/medium.png";
+    case "nytimes":
+      return "/favicons/nytimes.ico";
+    case "wsj":
+      return "/favicons/wsj.png";
+    case "apple":
+      return "/favicons/apple.ico";
+    case "microsoft":
+      return "/favicons/microsoft.ico";
+    case "google":
+      return "/favicons/google.ico";
+    case "yahoo":
+      return "/favicons/yahoo.ico";
+    case "bing":
+      return "/favicons/bing.ico";
+    case "openai":
+      return "/favicons/openai.png";
+    case "spotify":
+      return "/favicons/spotify.png";
+    case "github":
+      return "/favicons/github.svg";
     default:
       return null;
   }

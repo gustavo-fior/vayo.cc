@@ -38,7 +38,7 @@ export const ProfileMenu = () => {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const { resolvedTheme, setTheme } = useTheme();
   const [viewStyle, setViewStyle] = useAtom(viewStyleAtom);
-  const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
+  const [currentFolder] = useAtom(currentFolderAtom);
   const [allowDuplicate, setAllowDuplicate] = useState(
     currentFolder?.allowDuplicate
   );
@@ -50,8 +50,7 @@ export const ProfileMenu = () => {
   const updateUser = api.users.update.useMutation({});
 
   const mutate = api.folders.update.useMutation({
-    onSuccess: (data) => {
-      setCurrentFolder(data);
+    onSuccess: () => {
       void utils.folders.findById.invalidate();
     },
   });
@@ -59,12 +58,8 @@ export const ProfileMenu = () => {
   const handleChangeDirection = (newDirection: "asc" | "desc") => {
     setDirection(newDirection);
 
-    const currentBookmarks = utils.bookmarks.findByFolderId.getData();
-
-    utils.bookmarks.findByFolderId.setData(
-      { folderId: String(currentFolder?.id), direction: direction },
-      currentBookmarks?.reverse()
-    );
+    if (currentFolder)
+      currentFolder.bookmarks = currentFolder.bookmarks.reverse();
 
     updateUser.mutate({
       id: String(user.data?.id),
@@ -133,7 +128,7 @@ export const ProfileMenu = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="rounded-full dark:bg-white/10 bg-black/10 p-2 dark:text-white text-black no-underline transition dark:dark:hover:bg-white/20 hover:bg-black/20"
+          className="rounded-full bg-black/10 p-2 text-black no-underline transition hover:bg-black/20 dark:bg-white/10 dark:text-white dark:dark:hover:bg-white/20"
         >
           <div className="flex items-center gap-x-2 align-middle">
             {session.data?.user?.image ? (
@@ -145,22 +140,22 @@ export const ProfileMenu = () => {
                 alt="Profile Picture"
               />
             ) : (
-              <div className="h-6 w-6 rounded-full  dark:bg-white/20 bg-black/20" />
+              <div className="h-6 w-6 rounded-full  bg-black/20 dark:bg-white/20" />
             )}
           </div>
         </motion.button>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content className="md:z-50 md:mr-64 mr-6">
+        <Popover.Content className="mr-6 md:z-50 md:mr-64">
           <motion.div
             initial={{ opacity: 0, y: 3 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -3 }}
-            className="mt-4 flex flex-col gap-3 rounded-md dark:bg-white/10 bg-black/5 p-4 align-middle font-semibold dark:text-white text-black no-underline backdrop-blur-lg"
+            className="mt-4 flex flex-col gap-3 rounded-md bg-black/5 p-4 align-middle font-semibold text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white"
           >
             <div className="flex items-center gap-2 px-1 align-middle">
               <div className="flex items-center gap-2 align-middle">
-                <GearIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                <GearIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                 <p>Settings</p>
               </div>
             </div>
@@ -176,7 +171,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <CopyIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <CopyIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -185,7 +180,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <ViewHorizontalIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <ViewHorizontalIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -193,7 +188,7 @@ export const ProfileMenu = () => {
                 </div>
                 <Checkbox.Root
                   defaultChecked={allowDuplicate}
-                  className="flex h-6 w-6 items-center justify-center rounded-md dark:bg-white/10 bg-black/10  transition duration-300 ease-in-out dark:hover:bg-white/20 hover:bg-black/20 "
+                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
                   onCheckedChange={() => {
                     handleUpdateFolder();
                   }}
@@ -220,7 +215,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <SunIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <SunIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -229,7 +224,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <MoonIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <MoonIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -250,7 +245,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
                         resolvedTheme === "light"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -264,7 +259,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
                         resolvedTheme === "dark"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -286,7 +281,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <ArrowUpIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <ArrowUpIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -295,7 +290,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <ArrowDownIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <ArrowDownIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -316,7 +311,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
                         direction === "asc"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -330,7 +325,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
                         direction === "desc"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -352,7 +347,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <HamburgerMenuIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <HamburgerMenuIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -361,7 +356,7 @@ export const ProfileMenu = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <RowsIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <RowsIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -382,7 +377,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
                         viewStyle === "compact"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -396,7 +391,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out dark:hover:text-white hover:text-black ${
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
                         viewStyle === "expanded"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -410,7 +405,7 @@ export const ProfileMenu = () => {
 
               <div className="flex items-center justify-between gap-x-2 align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
-                  <ExitIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                  <ExitIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                   <p className="text-sm font-normal">Sign out</p>
                 </div>
                 <motion.button
@@ -419,7 +414,7 @@ export const ProfileMenu = () => {
                   }}
                   disabled={signinOut}
                   onClick={handleSignOut}
-                  className={`flex h-6 w-8 items-center justify-center rounded-md dark:bg-white/10 bg-black/10 font-semibold dark:text-white text-black no-underline transition ease-in-out dark:hover:bg-white/20 hover:bg-black/20  `}
+                  className={`flex h-6 w-8 items-center justify-center rounded-md bg-black/10 font-semibold text-black no-underline transition ease-in-out hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20  `}
                 >
                   {signinOut ? (
                     <Spinner size="sm" />
