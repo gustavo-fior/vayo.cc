@@ -30,7 +30,7 @@
 - ✅  add commons favicons as assets
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌  add the last opened folder (folders are already sorted by the last update)
-- ❌  add funny image at the end if list is long (didn´t like it)
+- ❌  add a funny image at the end if list is long (didn´t like it)
 - ❌  maybe insert AI-generated og images when one can't be found (too crazy? yes u dumbass, definetily not a good idea + what if it's a bad image...)
 - ❌  add search (why not just ctrl+f?)
 
@@ -38,6 +38,7 @@
 
 - 🔴  x, airbnb and docs links don't work (tks Elon) (check https://www.pexels.com/@googledeepmind/)
 - 🔴  animate direction button
+- 🟡  fix sun and moon icons in public pages
 - 🟡  allow users to edit and have a custom sort for folders
 - 🟡  add month separation
 - 🟢  add animation to the creation and deletion of a bookmark
