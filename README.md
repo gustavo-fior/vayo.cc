@@ -40,6 +40,7 @@
 - 🔴  animate direction button
 - 🟡  allow users to edit and have a custom sort for folders
 - 🟡  add month separation
+- 🟢  add animation to the creation and deletion of a bookmark
 - 🟢  shared folder
 - 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
 - 🟢  maybe fetch folders with the bookmarks instead of creating 2 queries
