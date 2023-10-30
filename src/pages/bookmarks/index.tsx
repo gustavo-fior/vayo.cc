@@ -43,11 +43,16 @@ export default function Bookmarks() {
       { userId: String(session.data?.user.id) },
       {
         onSuccess: (data) => {
-
-          console.log("data", data);
-
-          if (data && data?.length > 0 && !currentFolder) {
-            setCurrentFolder(data[0] ?? null);
+          if (data && data?.length > 0) {
+            if (currentFolder) {
+              setCurrentFolder(
+                data.find((folder) => folder.id === currentFolder.id) ??
+                  data[0] ??
+                  null
+              );
+            } else {
+              setCurrentFolder(data[0] ?? null);
+            }
           }
         },
       }
@@ -75,7 +80,7 @@ export default function Bookmarks() {
       }
     },
     onSettled: () => {
-      void utils.folders.findByUserId.invalidate();
+      void utils.folders.findByUserId.refetch();
     },
     onError: (context) => {
       const previousBookmarks =
@@ -90,25 +95,20 @@ export default function Bookmarks() {
   });
 
   const deleteBookmark = api.bookmarks.delete.useMutation({
-    onMutate: async ({ id }) => {
-      await utils.bookmarks.findByFolderId.cancel();
-
-      const previousBookmarks = utils.bookmarks.findByFolderId.getData();
-
-      utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolder?.id), direction: direction },
-        (previousBookmarks: Bookmark[] | undefined) =>
-          [
-            ...(previousBookmarks?.filter((bookmark) => bookmark.id !== id) ??
-              []),
-          ] as Bookmark[]
+    onMutate: ({ id }) => {
+      const listWithoutDeletedBookmark = currentFolder?.bookmarks?.filter(
+        (bookmark) => bookmark.id !== id
       );
 
-      return { previousBookmarks };
+      if (listWithoutDeletedBookmark) {
+        setCurrentFolder({
+          ...currentFolder!,
+          bookmarks: listWithoutDeletedBookmark,
+        });
+      }
     },
-
     onSettled: () => {
-      void utils.bookmarks.findByFolderId.invalidate();
+      void utils.folders.findByUserId.refetch();
     },
     onError: (context) => {
       const previousBookmarks =
@@ -164,7 +164,7 @@ export default function Bookmarks() {
         elementToScrollTo.scrollIntoView({ behavior: "smooth" });
       }
     }
-  }, [currentFolder?.bookmarks]);
+  }, [currentFolder?.bookmarks?.length]);
 
   return (
     <>
@@ -232,7 +232,7 @@ export default function Bookmarks() {
                       }`}
                     >
                       {addBookmark.isLoading ? (
-                        <Spinner size="sm" />
+                        <Spinner size="md" />
                       ) : (
                         <PlusIcon className="h-4 w-4 text-black dark:text-white" />
                       )}
@@ -268,10 +268,12 @@ export default function Bookmarks() {
                           scale: 0.8,
                         }}
                         onClick={() => {
-                          if (currentFolder?.id !== folder.id) {
+                          if (
+                            currentFolder?.id !== folder.id &&
+                            folder.id !== "temp"
+                          ) {
                             setCurrentFolder(folder);
                             setIsOpen(false);
-                            void utils.bookmarks.findByFolderId.invalidate();
                           }
                         }}
                         key={folder.id}
@@ -328,7 +330,16 @@ export default function Bookmarks() {
                     ) : currentFolder?.bookmarks &&
                       currentFolder?.bookmarks?.length > 0 ? (
                       currentFolder?.bookmarks.map((bookmark) => (
-                        <div key={bookmark.id} id={bookmark.id}>
+                        <motion.div
+                          key={bookmark.id}
+                          id={bookmark.id}
+                          initial={{
+                            opacity: bookmark.id === "temp" ? 0 : 1,
+                            y: bookmark.id === "temp" ? -10 : 0,
+                          }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4 }}
+                        >
                           {viewStyle === "compact" ? (
                             <CompactBookmark
                               onRemove={handleDeleteBookmark}
@@ -340,7 +351,7 @@ export default function Bookmarks() {
                               bookmark={bookmark}
                             />
                           )}
-                        </div>
+                        </motion.div>
                       ))
                     ) : (
                       currentFolder?.bookmarks?.length === 0 && <EmptyState />
@@ -349,7 +360,7 @@ export default function Bookmarks() {
                 </motion.div>
               </AnimatePresence>
             </div>
-            {/* {bookmarks && bookmarks?.length > 30 && <ListLongImage />} */}
+            {/* {bookmarks && bookmarks?.length > 30 && <ListLongImage />} */} 
           </div>
         </div>
       </main>

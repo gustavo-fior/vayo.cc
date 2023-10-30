@@ -120,7 +120,7 @@ export const ExpandedBookmark = ({
                     : { opacity: 0 }
                 }
                 exit={{ opacity: 0 }}
-                className="z-50 pr-4 font-bold text-slate-500 duration-300 ease-in-out hover:text-white"
+                className="z-50 pr-4 font-bold text-slate-500 duration-300 ease-in-out dark:hover:text-white hover:text-black"
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent the click event from propagating
                   onRemove ? onRemove(bookmark.id) : null;

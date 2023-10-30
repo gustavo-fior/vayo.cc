@@ -62,7 +62,7 @@ export default function Home() {
               >
                 {signingInGoogle ? (
                   <div className="px-12">
-                    <Spinner size="sm" />
+                    <Spinner size="md" />
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ export default function Home() {
               >
                 {signingInGithub ? (
                   <div className="px-12">
-                    <Spinner size="sm" />
+                    <Spinner size="md" />
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
