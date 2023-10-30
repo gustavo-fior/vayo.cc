@@ -2,18 +2,17 @@ import * as Checkbox from "@radix-ui/react-checkbox";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
+  CalendarIcon,
   CheckIcon,
   CopyIcon,
   ExitIcon,
   GearIcon,
   HamburgerMenuIcon,
+  LayoutIcon,
   MoonIcon,
   RowsIcon,
   SunIcon,
   ViewHorizontalIcon,
-  CalendarIcon,
-  TableIcon,
-  LayoutIcon,
 } from "@radix-ui/react-icons";
 import * as Popover from "@radix-ui/react-popover";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
@@ -27,8 +26,8 @@ import {
   currentFolderAtom,
   directionAtom,
   isOpenAtom,
-  viewStyleAtom,
   showMonthsAtom,
+  viewStyleAtom,
 } from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { Separator } from "./Separator";
@@ -39,7 +38,7 @@ export const ProfileMenu = () => {
   const utils = api.useContext();
   const [signinOut, setSigninOut] = useState(false);
   const [direction, setDirection] = useAtom(directionAtom);
-  const [isOpen, setIsOpen] = useAtom(isOpenAtom);
+  const [, setIsOpen] = useAtom(isOpenAtom);
   const { resolvedTheme, setTheme } = useTheme();
   const [viewStyle, setViewStyle] = useAtom(viewStyleAtom);
   const [showMonths, setShowMonths] = useAtom(showMonthsAtom);
@@ -152,7 +151,8 @@ export const ProfileMenu = () => {
       user.data?.lastViewStyle !== viewStyle &&
       setViewStyle(user.data?.lastViewStyle as "compact" | "expanded");
     user.data?.lastShowMonths !== showMonths &&
-      setShowMonths(user.data?.lastShowMonths as boolean);
+      setShowMonths(Boolean(user.data?.lastShowMonths));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.data]);
 
   return (
