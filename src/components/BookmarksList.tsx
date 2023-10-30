@@ -1,5 +1,5 @@
 import { type Bookmark } from "@prisma/client";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { showMonthsAtom, viewStyleAtom } from "~/helpers/atoms";
 import { CompactBookmark } from "./CompactBookmark";
 import { ExpandedBookmark } from "./ExpandedBookmark";
@@ -63,30 +63,34 @@ export const BookmarksList = ({
                 </motion.h2>
               )}
             </motion.div>
-            {groupedBookmarks[month]?.map((bookmark) => (
-              <motion.div
-                key={bookmark.id}
-                id={bookmark.id}
-                initial={{
-                  opacity: bookmark.id === "temp" ? 0 : 1,
-                  y: bookmark.id === "temp" ? -10 : 0,
-                }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                {viewStyle === "compact" ? (
-                  <CompactBookmark
-                    onRemove={handleDeleteBookmark}
-                    bookmark={bookmark}
-                  />
-                ) : (
-                  <ExpandedBookmark
-                    onRemove={handleDeleteBookmark}
-                    bookmark={bookmark}
-                  />
-                )}
-              </motion.div>
-            ))}
+            <AnimatePresence mode="wait">
+              {groupedBookmarks[month]?.map((bookmark) => (
+                <motion.div
+                  key={bookmark.id}
+                  id={bookmark.id}
+                  initial={{
+                    opacity: bookmark.id === "temp" ? 0 : 1,
+                    y: bookmark.id === "temp" ? -10 : 0,
+                  }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  
+                >
+                  {viewStyle === "compact" ? (
+                    <CompactBookmark
+                      onRemove={handleDeleteBookmark}
+                      bookmark={bookmark}
+                    />
+                  ) : (
+                    <ExpandedBookmark
+                      onRemove={handleDeleteBookmark}
+                      bookmark={bookmark}
+                    />
+                  )}
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </motion.div>
         ))}
       </>
