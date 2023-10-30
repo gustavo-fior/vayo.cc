@@ -7,16 +7,20 @@ import {
   ExitIcon,
   GearIcon,
   HamburgerMenuIcon,
-  RowsIcon,
-  ViewHorizontalIcon,
-  SunIcon,
   MoonIcon,
+  RowsIcon,
+  SunIcon,
+  ViewHorizontalIcon,
+  CalendarIcon,
+  TableIcon,
+  LayoutIcon,
 } from "@radix-ui/react-icons";
 import * as Popover from "@radix-ui/react-popover";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { signOut, useSession } from "next-auth/react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
@@ -24,11 +28,11 @@ import {
   directionAtom,
   isOpenAtom,
   viewStyleAtom,
+  showMonthsAtom,
 } from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { Separator } from "./Separator";
 import { Spinner } from "./Spinner";
-import { useTheme } from "next-themes";
 
 export const ProfileMenu = () => {
   const session = useSession();
@@ -38,18 +42,20 @@ export const ProfileMenu = () => {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const { resolvedTheme, setTheme } = useTheme();
   const [viewStyle, setViewStyle] = useAtom(viewStyleAtom);
-  const [currentFolder] = useAtom(currentFolderAtom);
-  const [allowDuplicate, setAllowDuplicate] = useState(
-    currentFolder?.allowDuplicate
-  );
+  const [showMonths, setShowMonths] = useAtom(showMonthsAtom);
+  const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
 
   const user = api.users.findByUserId.useQuery({
     userId: session.data?.user?.id ?? "",
   });
 
-  const updateUser = api.users.update.useMutation({});
+  const updateUser = api.users.update.useMutation({
+    onSuccess: () => {
+      void utils.users.findByUserId.invalidate();
+    },
+  });
 
-  const mutate = api.folders.update.useMutation({
+  const updateFolder = api.folders.update.useMutation({
     onSuccess: () => {
       void utils.folders.findById.invalidate();
     },
@@ -65,6 +71,7 @@ export const ProfileMenu = () => {
       id: String(user.data?.id),
       lastDirection: newDirection,
       lastViewStyle: viewStyle,
+      lastShowMonths: showMonths,
     });
   };
 
@@ -78,13 +85,25 @@ export const ProfileMenu = () => {
   };
 
   const handleUpdateFolder = () => {
-    const updated = !currentFolder?.allowDuplicate;
+    const updatedDuplicate = !currentFolder?.allowDuplicate;
 
-    setAllowDuplicate(updated);
-
-    mutate.mutate({
+    const updatedFolder = {
       id: String(currentFolder?.id),
-      allowDuplicate: updated,
+      isShared: Boolean(currentFolder?.isShared),
+      allowDuplicate: updatedDuplicate,
+      name: String(currentFolder?.name),
+      icon: String(currentFolder?.icon),
+      createdAt: currentFolder?.createdAt ?? new Date(),
+      updatedAt: currentFolder?.updatedAt ?? new Date(),
+      bookmarks: currentFolder?.bookmarks ?? [],
+      userId: String(currentFolder?.userId),
+    };
+
+    setCurrentFolder(updatedFolder);
+
+    updateFolder.mutate({
+      id: String(currentFolder?.id),
+      allowDuplicate: updatedDuplicate,
       icon: null,
       isShared: null,
       name: null,
@@ -104,19 +123,37 @@ export const ProfileMenu = () => {
       id: String(user.data?.id),
       lastDirection: direction,
       lastViewStyle: newViewStyle,
+      lastShowMonths: showMonths,
+    });
+  };
+
+  const handleUpdateShowMonths = () => {
+    setIsOpen(false);
+
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 10);
+
+    setShowMonths(!showMonths);
+
+    updateUser.mutate({
+      id: String(user.data?.id),
+      lastDirection: direction,
+      lastViewStyle: viewStyle,
+      lastShowMonths: !showMonths,
     });
   };
 
   useEffect(() => {
-    setAllowDuplicate(currentFolder?.allowDuplicate);
-  }, [currentFolder]);
-
-  useEffect(() => {
     user.data?.lastDirection &&
+      user.data?.lastDirection !== direction &&
       setDirection(user.data?.lastDirection as "asc" | "desc");
     user.data?.lastViewStyle &&
+      user.data?.lastViewStyle !== viewStyle &&
       setViewStyle(user.data?.lastViewStyle as "compact" | "expanded");
-  }, [user.data, setDirection, setViewStyle]);
+    user.data?.lastShowMonths !== showMonths &&
+      setShowMonths(user.data?.lastShowMonths as boolean);
+  }, [user.data]);
 
   return (
     <Popover.Root>
@@ -164,7 +201,7 @@ export const ProfileMenu = () => {
               <div className="flex items-center justify-between gap-x-2 align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
                   <AnimatePresence mode="popLayout">
-                    {allowDuplicate ? (
+                    {currentFolder?.allowDuplicate ? (
                       <motion.div
                         key="allowDuplicate"
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -187,10 +224,54 @@ export const ProfileMenu = () => {
                   <p className="text-sm font-normal">Allow duplicates?</p>
                 </div>
                 <Checkbox.Root
-                  defaultChecked={allowDuplicate}
+                  defaultChecked={currentFolder?.allowDuplicate}
                   className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
                   onCheckedChange={() => {
                     handleUpdateFolder();
+                  }}
+                >
+                  <motion.div
+                    whileTap={{
+                      scale: 0.8,
+                    }}
+                  >
+                    <Checkbox.Indicator>
+                      <CheckIcon className="h-4 w-4" />
+                    </Checkbox.Indicator>
+                  </motion.div>
+                </Checkbox.Root>
+              </div>
+
+              <div className="flex items-center justify-between gap-x-2 align-middle">
+                <div className="flex items-center gap-x-3 align-middle">
+                  <AnimatePresence mode="popLayout">
+                    {showMonths ? (
+                      <motion.div
+                        key="showMonths"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <CalendarIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="notShowMonths"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <LayoutIcon className="h-4 w-4 rotate-90 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <p className="text-sm font-normal">Show months?</p>
+                </div>
+                <Checkbox.Root
+                  defaultChecked={showMonths}
+                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
+                  onCheckedChange={() => {
+                    handleUpdateShowMonths();
                   }}
                 >
                   <motion.div

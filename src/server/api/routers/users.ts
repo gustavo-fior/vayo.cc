@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure
+  publicProcedure,
 } from "~/server/api/trpc";
 
 export const usersRouter = createTRPCRouter({
@@ -21,12 +21,13 @@ export const usersRouter = createTRPCRouter({
         },
       });
     }),
-    update: protectedProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
         lastViewStyle: z.string(),
         lastDirection: z.string(),
+        lastShowMonths: z.boolean(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -37,6 +38,7 @@ export const usersRouter = createTRPCRouter({
         data: {
           lastViewStyle: input.lastViewStyle,
           lastDirection: input.lastDirection,
+          lastShowMonths: input.lastShowMonths,
         },
       });
     }),

@@ -6,6 +6,7 @@ import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
+import { BookmarksList } from "~/components/BookmarksList";
 import { CompactBookmark } from "~/components/CompactBookmark";
 import { CreateFolderButton } from "~/components/CreateFolderButton";
 import { DeleteFolderButton } from "~/components/DeleteFolderButton";
@@ -175,7 +176,7 @@ export default function Bookmarks() {
       <main className="relative min-h-screen w-full bg-gradient-to-br from-[#dfdfdf] to-[#f5f5f5] dark:from-[#202020] dark:to-[black]">
         <div className="flex flex-col items-center">
           <div className="w-[20rem]  sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-            <div className="py-16">
+            <div className="pt-16 pb-32">
               <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
                 <motion.form
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -250,7 +251,7 @@ export default function Bookmarks() {
                 <Separator />
               </div>
 
-              <div className="flex justify-between px-0 pb-4 align-middle md:px-2">
+              <div className="flex justify-between px-0 align-middle md:px-2">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -329,30 +330,10 @@ export default function Bookmarks() {
                       <SkeletonList viewStyle={viewStyle} />
                     ) : currentFolder?.bookmarks &&
                       currentFolder?.bookmarks?.length > 0 ? (
-                      currentFolder?.bookmarks.map((bookmark) => (
-                        <motion.div
-                          key={bookmark.id}
-                          id={bookmark.id}
-                          initial={{
-                            opacity: bookmark.id === "temp" ? 0 : 1,
-                            y: bookmark.id === "temp" ? -10 : 0,
-                          }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4 }}
-                        >
-                          {viewStyle === "compact" ? (
-                            <CompactBookmark
-                              onRemove={handleDeleteBookmark}
-                              bookmark={bookmark}
-                            />
-                          ) : (
-                            <ExpandedBookmark
-                              onRemove={handleDeleteBookmark}
-                              bookmark={bookmark}
-                            />
-                          )}
-                        </motion.div>
-                      ))
+                      <BookmarksList
+                        bookmarks={currentFolder?.bookmarks}
+                        handleDeleteBookmark={handleDeleteBookmark}
+                      />
                     ) : (
                       currentFolder?.bookmarks?.length === 0 && <EmptyState />
                     )}
@@ -360,7 +341,7 @@ export default function Bookmarks() {
                 </motion.div>
               </AnimatePresence>
             </div>
-            {/* {bookmarks && bookmarks?.length > 30 && <ListLongImage />} */} 
+            {/* {bookmarks && bookmarks?.length > 30 && <ListLongImage />} */}
           </div>
         </div>
       </main>

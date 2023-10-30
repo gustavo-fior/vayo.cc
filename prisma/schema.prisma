@@ -47,6 +47,7 @@ model User {
     firstAccess   Boolean   @default(true)
     lastDirection String?
     lastViewStyle String?
+    lastShowMonths Boolean? @default(false)
     accounts      Account[]
     sessions      Session[]
     folders       Folder[]
