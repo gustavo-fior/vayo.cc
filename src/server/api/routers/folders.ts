@@ -47,9 +47,24 @@ export const foldersRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const userId = input.userId ?? ctx.session.user.id;
 
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+
+      const lastDirection : "asc" | "desc" = user?.lastDirection as "asc" | "desc" ?? "desc";
+
       return await ctx.prisma.folder.findMany({
         where: {
           userId: userId,
+        },
+        include: {
+          bookmarks: {
+            orderBy: {
+              createdAt: lastDirection,
+            },
+          },
         },
         orderBy: {
           updatedAt: "asc",

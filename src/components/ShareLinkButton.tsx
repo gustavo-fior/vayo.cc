@@ -1,4 +1,4 @@
-import { CheckIcon, CopyIcon, Share2Icon } from "@radix-ui/react-icons";
+import { CheckIcon, Share2Icon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 

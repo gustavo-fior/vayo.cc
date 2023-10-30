@@ -9,23 +9,22 @@ import {
 } from "@radix-ui/react-icons";
 import * as Popover from "@radix-ui/react-popover";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { useState } from "react";
+import { currentFolderAtom } from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { Separator } from "./Separator";
-import { currentFolderAtom } from "~/helpers/atoms";
-import { useAtom } from "jotai";
 
 export const ShareButton = () => {
-  const [currentFolder] = useAtom(currentFolderAtom);
-
-  const { data: folder } = api.folders.findById.useQuery({
-    id: currentFolder?.id ?? "",
-  });
-
-  const { mutate: updateFolder } = api.folders.update.useMutation({});
-
+  const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
   const [copied, setCopied] = useState(false);
-  const [isShared, setIsShared] = useState(currentFolder?.isShared ?? false);
+  const utils = api.useContext();
+
+  const updateFolder = api.folders.update.useMutation({
+    onSuccess: () => {
+      void utils.folders.findByUserId.invalidate();
+    },
+  });
 
   const handleCopyToClipboard = async () => {
     const url =
@@ -34,22 +33,30 @@ export const ShareButton = () => {
   };
 
   const handleUpdateFolder = () => {
-    const updatedIsShared = !isShared;
+    const updatedShared = !currentFolder?.isShared;
 
-    setIsShared(updatedIsShared);
+    const updatedFolder = {
+      id: String(currentFolder?.id),
+      isShared: updatedShared,
+      allowDuplicate: Boolean(currentFolder?.allowDuplicate),
+      name: String(currentFolder?.name),
+      icon: String(currentFolder?.icon),
+      createdAt: currentFolder?.createdAt ?? new Date(),
+      updatedAt: currentFolder?.updatedAt ?? new Date(),
+      bookmarks: currentFolder?.bookmarks ?? [],
+      userId: String(currentFolder?.userId),
+    };
 
-    updateFolder({
-      id: currentFolder?.id ?? "",
-      isShared: updatedIsShared,
-      icon: folder?.icon ?? null,
-      name: folder?.name ?? null,
-      allowDuplicate: folder?.allowDuplicate ?? false,
+    setCurrentFolder(updatedFolder);
+
+    updateFolder.mutate({
+      id: String(currentFolder?.id),
+      isShared: updatedShared,
+      allowDuplicate: Boolean(currentFolder?.allowDuplicate),
+      name: String(currentFolder?.name),
+      icon: String(currentFolder?.icon),
     });
   };
-
-  useEffect(() => {
-    setIsShared(folder?.isShared ?? false);
-  }, [folder]);
 
   return (
     <Popover.Root>
@@ -61,7 +68,7 @@ export const ShareButton = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="rounded-full dark:bg-white/10 bg-black/10 p-3 black:text-white text-black dark:text-white no-underline transition dark:hover:bg-white/20 hover:bg-black/20"
+          className="black:text-white rounded-full bg-black/10 p-3 text-black no-underline transition hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
         >
           <div className="flex items-center gap-x-2 align-middle">
             <Share2Icon className="h-4 w-4" />
@@ -70,44 +77,44 @@ export const ShareButton = () => {
       </Popover.Trigger>
       {currentFolder?.id && (
         <Popover.Portal>
-          <Popover.Content className="z-50 md:mr-40 ml-4">
+          <Popover.Content className="z-50 ml-4 md:mr-40">
             <motion.div
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
-              className="mt-4 flex flex-col gap-3 rounded-md dark:bg-white/10 bg-black/5 p-4 align-middle font-semibold text-black dark:text-white no-underline backdrop-blur-lg"
+              className="mt-4 flex flex-col gap-3 rounded-md bg-black/5 p-4 align-middle font-semibold text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white"
             >
-              <div className="flex items-center justify-between gap-2 align-middle px-1">
+              <div className="flex items-center justify-between gap-2 px-1 align-middle">
                 <div className="flex items-center gap-2 align-middle">
-                  <GlobeIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                  <GlobeIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                   <p>Share</p>
                 </div>
                 <span className="relative mr-2 mt-0.5 flex h-2 w-2">
                   <span
                     className={`absolute inline-flex h-full w-full ${
-                      isShared ? "animate-ping bg-green-500" : "bg-gray-700"
+                      currentFolder?.isShared ? "animate-ping bg-green-500" : "bg-gray-700"
                     }  rounded-full opacity-75 transition duration-300 ease-in-out`}
                   />
                   <span
                     className={`relative inline-flex h-2 w-2 rounded-full transition duration-300 ease-in-out ${
-                      isShared ? "bg-green-500" : "bg-gray-700"
+                      currentFolder?.isShared ? "bg-green-500" : "bg-gray-700"
                     }`}
                   />
                 </span>
               </div>
               <Separator />
 
-              <div className="flex items-center justify-between gap-x-2 align-middle px-1">
+              <div className="flex items-center justify-between gap-x-2 px-1 align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
                   <AnimatePresence mode="popLayout">
-                    {isShared ? (
+                    {currentFolder?.isShared ? (
                       <motion.div
                         key="allowDuplicate"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <LockOpen1Icon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <LockOpen1Icon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -116,15 +123,15 @@ export const ShareButton = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <LockClosedIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <LockClosedIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     )}
                   </AnimatePresence>
-                  <p className="text-sm font-normal">Public?</p>
+                  <p className="text-sm font-normal">Public</p>
                 </div>
                 <Checkbox.Root
-                  defaultChecked={isShared}
-                  className="flex h-6 w-6 items-center justify-center rounded-md dark:bg-white/10 bg-black/10 transition duration-300 ease-in-out dark:hover:bg-white/20 hover:bg-black/20"
+                  defaultChecked={currentFolder?.isShared}
+                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
                   onCheckedChange={() => {
                     handleUpdateFolder();
                   }}
@@ -140,13 +147,15 @@ export const ShareButton = () => {
                   </motion.div>
                 </Checkbox.Root>
               </div>
-              <p className="text-xs font-normal dark:text-gray-400 text-gray-800 px-1">
+              <p className="px-1 text-xs font-normal text-gray-800 dark:text-gray-400">
                 Here&apos;s your magic link:
               </p>
               <div className="flex items-center gap-2 align-middle">
                 <input
-                  className={`rounded-md dark:bg-white/10 bg-black/10 px-3 py-2 text-sm font-normal no-underline transition duration-300  ease-in-out ${
-                    !isShared ? "dark:text-zinc-600/50 text-zinc-600/10" : "dark:text-white text-black"
+                  className={`rounded-md bg-black/10 px-3 py-2 text-sm font-normal no-underline transition duration-300 ease-in-out  dark:bg-white/10 ${
+                    !currentFolder?.isShared
+                      ? "text-zinc-600/10 dark:text-zinc-600/50"
+                      : "text-black dark:text-white"
                   }`}
                   type="text"
                   value={
@@ -161,7 +170,7 @@ export const ShareButton = () => {
                     whileTap={{
                       scale: 0.8,
                     }}
-                    disabled={!isShared}
+                    disabled={!currentFolder?.isShared}
                     onClick={() => {
                       setCopied(true);
 
@@ -171,7 +180,7 @@ export const ShareButton = () => {
 
                       void handleCopyToClipboard();
                     }}
-                    className="rounded-md dark:bg-white/10 bg-black/10 px-4 py-2.5 font-semibold dark:text-white text-black no-underline transition ease-in-out hover:bg-black/20 dark:hover:bg-white/20"
+                    className="rounded-md bg-black/10 px-4 py-2.5 font-semibold text-black no-underline transition ease-in-out hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
                   >
                     {copied ? (
                       <motion.div
@@ -180,7 +189,7 @@ export const ShareButton = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1 }}
                       >
-                        <CheckIcon className="h-4 w-4 dark:text-gray-400 text-gray-800" />
+                        <CheckIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -191,7 +200,9 @@ export const ShareButton = () => {
                       >
                         <Link1Icon
                           className={`h-4 w-4 transition duration-300 ease-in-out ${
-                            isShared ? "dark:text-white text-black" : "text-zinc-600/50"
+                            currentFolder?.isShared
+                              ? "text-black dark:text-white"
+                              : "text-zinc-600/50"
                           }`}
                         />
                       </motion.div>

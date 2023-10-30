@@ -1,10 +1,14 @@
-export const Spinner = ({ size }: { size: "sm" | "md" }) => {
+export const Spinner = ({ size }: { size: "xs" |"sm" | "md" }) => {
+  const classes = {
+    xs: "h-2 w-2",
+    sm: "h-3 w-3",
+    md: "h-4 w-4",
+  };
+
   return (
     <svg
       aria-hidden="true"
-      className={`${
-        size === "sm" ? "" : "mx-6 my-1"
-      } h-4 w-4 animate-spin fill-white dark:text-gray-600`}
+      className={`${classes[size]} animate-spin fill-white dark:text-gray-600`}
       viewBox="0 0 100 101"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

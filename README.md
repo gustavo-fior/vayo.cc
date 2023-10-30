@@ -28,22 +28,23 @@
 - ✅  instantly change to other folder when one is deleted
 - ✅  make UI better and create a pattern (paddings, animations, texts) (probably have a menu that contains view style, direction, and sign out)
 - ✅  add commons favicons as assets
+- ✅  fix sun and moon icons in public pages
+- ✅  maybe fetch folders with the bookmarks instead of creating 2 queries
+- ✅  add month separation
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌  add the last opened folder (folders are already sorted by the last update)
 - ❌  add a funny image at the end if list is long (didn´t like it)
 - ❌  maybe insert AI-generated og images when one can't be found (too crazy? yes u dumbass, definetily not a good idea + what if it's a bad image...)
 - ❌  add search (why not just ctrl+f?)
+- ❌  update things in db after 2 secs of no changes, not right after in every change (overengineering as fuck)
 
 # TODO
 
 - 🔴  x, airbnb and docs links don't work (tks Elon) (check https://www.pexels.com/@googledeepmind/)
 - 🔴  animate direction button
-- 🟡  fix sun and moon icons in public pages
-- 🟡  allow users to edit and have a custom sort for folders
-- 🟡  add month separation
-- 🟢  add animation to the creation and deletion of a bookmark
+- 🔴  fix ghost bookmarks when deleting (maybe useDebounce)
+- 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders)
+- 🟢  add animation to the deletion of a bookmark
 - 🟢  shared folder
 - 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
-- 🟢  maybe fetch folders with the bookmarks instead of creating 2 queries
 - 🟢  add smooth appearance to shared hover state
-- 🟢  update things in db after 2 secs of no changes, not in every change
