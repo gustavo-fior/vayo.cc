@@ -40,13 +40,13 @@ export const ExpandedBookmark = ({
               <motion.div
                 transition={{ duration: 0.35 }}
                 layoutId="bookmark"
-                className="absolute left-0 top-0 z-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
+                className="absolute left-0 top-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
               />
             )}
             <motion.div
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
-              className={`z-10 flex justify-between rounded-lg px-3 py-2 transition duration-500 ease-in-out`}
+              className={`flex justify-between z-10 rounded-lg px-3 py-2 transition duration-500 ease-in-out`}
             >
               <div className={`flex items-center gap-6 md:w-full`}>
                 {bookmark.ogImageUrl &&
@@ -57,6 +57,7 @@ export const ExpandedBookmark = ({
                     animate={{ opacity: 1 }}
                     initial={{ opacity: 0 }}
                     transition={{ duration: 0.4 }}
+                    className="hidden rounded-md md:block"
                   >
                     <Image
                       src={String(bookmark.ogImageUrl)}
@@ -95,7 +96,7 @@ export const ExpandedBookmark = ({
                     animate={{ opacity: 1 }}
                     initial={{ opacity: 0 }}
                     transition={{ duration: 0.4 }}
-                    className="max-w-xs truncate text-lg font-bold text-black dark:text-white md:max-w-lg"
+                    className="max-w-[16rem] truncate text-lg font-bold text-black dark:text-white sm:max-w-sm md:max-w-lg"
                   >
                     {bookmark.title}
                   </motion.p>
@@ -115,7 +116,7 @@ export const ExpandedBookmark = ({
                         style={{ height: "0.9rem", width: "0.9rem" }}
                       />
                     )}
-                    <p className="w-72 truncate text-sm text-slate-500 md:w-96 md:max-w-sm">
+                    <p className="w-64 truncate text-sm text-slate-500 sm:w-72 md:w-96 md:max-w-sm">
                       {bookmark.url}
                     </p>
                   </div>

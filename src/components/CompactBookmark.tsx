@@ -35,7 +35,7 @@ export const CompactBookmark = ({
               whileHover={{ scale: 1.015 }}
               transition={{ duration: 0.4 }}
               layoutId="bookmark"
-              className="absolute left-0 top-0  z-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
+              className="absolute left-0 top-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
             />
           )}
           <motion.div
@@ -69,7 +69,7 @@ export const CompactBookmark = ({
                   animate={{ opacity: 1 }}
                   initial={{ opacity: 0 }}
                   transition={{ duration: 0.4 }}
-                  className={`max-w-[16rem] truncate font-semibold text-black dark:text-white md:max-w-sm`}
+                  className={`max-w-[16rem] truncate font-semibold text-black dark:text-white sm:max-w-xs md:max-w-sm`}
                 >
                   {bookmark.title}
                 </motion.p>

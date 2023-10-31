@@ -1,23 +1,22 @@
 import { type Bookmark } from "@prisma/client";
-import { AnimatePresence, motion } from "framer-motion";
-import { showMonthsAtom, viewStyleAtom } from "~/helpers/atoms";
+import { motion } from "framer-motion";
 import { CompactBookmark } from "./CompactBookmark";
 import { ExpandedBookmark } from "./ExpandedBookmark";
-import { useAtom } from "jotai";
 
 export const BookmarksList = ({
   bookmarks,
+  showMonths,
+  viewStyle,
   handleDeleteBookmark,
 }: {
   bookmarks: Bookmark[];
-  handleDeleteBookmark: (id: string) => void;
+  showMonths: boolean;
+  viewStyle: "expanded" | "compact";
+  handleDeleteBookmark?: (id: string) => void
 }) => {
-  const [viewStyle] = useAtom(viewStyleAtom);
-  const [includeMonths] = useAtom(showMonthsAtom);
-
   let groupedBookmarks: Record<string, Bookmark[]> = {};
 
-  if (includeMonths) {
+  if (showMonths) {
     groupedBookmarks = bookmarks.reduce((result, current) => {
       const date = new Date(current.createdAt);
       const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(
@@ -31,7 +30,7 @@ export const BookmarksList = ({
     }, {} as Record<string, Bookmark[]>);
   }
 
-  return includeMonths ? (
+  return showMonths ? (
     groupedBookmarks && (
       <>
         {Object.keys(groupedBookmarks).map((month) => (
@@ -63,34 +62,30 @@ export const BookmarksList = ({
                 </motion.h2>
               )}
             </motion.div>
-            <AnimatePresence mode="wait">
-              {groupedBookmarks[month]?.map((bookmark) => (
-                <motion.div
-                  key={bookmark.id}
-                  id={bookmark.id}
-                  initial={{
-                    opacity: bookmark.id === "temp" ? 0 : 1,
-                    y: bookmark.id === "temp" ? -10 : 0,
-                  }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  
-                >
-                  {viewStyle === "compact" ? (
-                    <CompactBookmark
-                      onRemove={handleDeleteBookmark}
-                      bookmark={bookmark}
-                    />
-                  ) : (
-                    <ExpandedBookmark
-                      onRemove={handleDeleteBookmark}
-                      bookmark={bookmark}
-                    />
-                  )}
-                </motion.div>
-              ))}
-            </AnimatePresence>
+            {groupedBookmarks[month]?.map((bookmark) => (
+              <motion.div
+                key={bookmark.id}
+                id={bookmark.id}
+                initial={{
+                  opacity: bookmark.id === "temp" ? 0 : 1,
+                  y: bookmark.id === "temp" ? -10 : 0,
+                }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                {viewStyle === "compact" ? (
+                  <CompactBookmark
+                    onRemove={handleDeleteBookmark}
+                    bookmark={bookmark}
+                  />
+                ) : (
+                  <ExpandedBookmark
+                    onRemove={handleDeleteBookmark}
+                    bookmark={bookmark}
+                  />
+                )}
+              </motion.div>
+            ))}
           </motion.div>
         ))}
       </>

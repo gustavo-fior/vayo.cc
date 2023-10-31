@@ -3,13 +3,13 @@ import { useTheme } from "next-themes";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { CompactBookmark } from "~/components/CompactBookmark";
+import { BookmarksList } from "~/components/BookmarksList";
 import { DirectionButton } from "~/components/DirectionButton";
 import { EmptyState } from "~/components/EmptyState";
-import { ExpandedBookmark } from "~/components/ExpandedBookmark";
 import { RectangleSkeleton } from "~/components/RectangleSkeleton";
 import { Separator } from "~/components/Separator";
 import { ShareLinkButton } from "~/components/ShareLinkButton";
+import { ShowMonthsButton } from "~/components/ShowMonthsButton";
 import { SkeletonList } from "~/components/SkeletonList";
 import { ThemeButton } from "~/components/ThemeButton";
 import { ViewButton } from "~/components/ViewButton";
@@ -18,27 +18,20 @@ import { api } from "~/utils/api";
 
 export default function Bookmarks() {
   const router = useRouter();
+  const utils = api.useContext();
   const { folderId } = router.query;
   const [isOpen, setIsOpen] = useState(false);
-  const utils = api.useContext();
   const { theme, setTheme } = useTheme();
+  const [showMonths, setShowMonths] = useState(false);
   const [direction, setDirection] = useState<"asc" | "desc">("desc");
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
   );
 
-  const { data: folder, isLoading: folderLoading } =
-    api.folders.findById.useQuery({
-      id: String(folderId),
-    });
-
-  if (folder?.isShared) {
-  }
-  const { data: bookmarks, isLoading: bookmarksLoading } =
-    api.bookmarks.findByFolderId.useQuery({
-      folderId: String(folderId),
-      direction: direction,
-    });
+  const folder = api.folders.findById.useQuery({
+    id: String(folderId),
+    direction,
+  });
 
   const handleChangeViewStyle = () => {
     setIsOpen(false);
@@ -51,6 +44,12 @@ export default function Bookmarks() {
   };
 
   const handleChangeDirection = () => {
+    setIsOpen(false);
+
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 10);
+
     setDirection(direction === "asc" ? "desc" : "asc");
     void utils.bookmarks.findByFolderId.invalidate();
   };
@@ -59,23 +58,33 @@ export default function Bookmarks() {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
+  const handleShowMonths = () => {
+    setIsOpen(false);
+
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 10);
+
+    setShowMonths(!showMonths);
+  };
+
   useEffect(() => {
-    if (!bookmarksLoading && bookmarks?.length && !folderLoading) {
+    if (folder.data?.isShared && !folder.isLoading) {
       setIsOpen(true);
     }
-  }, [bookmarksLoading, bookmarks, folderLoading]);
+  }, [folder]);
 
   return (
     <>
       <Head>
-        <title>{folder?.name ?? "Bookmarks"}</title>
-        <link rel="icon" href={getFaviconForFolder(folder)} />
+        <title>{folder?.data?.name ?? "Bookmarks"}</title>
+        <link rel="icon" href={getFaviconForFolder(folder.data)} />
       </Head>
       <main className="flex min-h-screen w-full flex-col items-center bg-gradient-to-b from-[#dfdfdf] to-[#f5f5f5] dark:from-[#202020] dark:to-[black]">
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
           <AnimatePresence mode="wait">
-            <div className="flex flex-col md:flex-row items-center justify-between px-2 md:gap-0 gap-8 align-middle font-semibold text-black dark:text-white">
-              {folderLoading ? (
+            <div className="flex flex-col items-center justify-between gap-8 px-2 align-middle font-semibold text-black dark:text-white md:flex-row md:gap-0">
+              {folder?.isLoading ? (
                 <motion.div
                   key="loading"
                   initial={{ opacity: 0 }}
@@ -94,10 +103,10 @@ export default function Bookmarks() {
                   exit={{ opacity: 0, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {folder?.isShared ? (
+                  {folder?.data?.isShared ? (
                     <div className="flex items-center gap-3 align-middle">
-                      <p className="text-3xl">{folder?.icon}</p>
-                      <p className="text-3xl">{folder?.name}</p>
+                      <p className="text-3xl">{folder?.data?.icon}</p>
+                      <p className="text-3xl">{folder?.data?.name}</p>
                     </div>
                   ) : (
                     <div className="flex items-center gap-3 align-middle">
@@ -106,8 +115,8 @@ export default function Bookmarks() {
                   )}
                 </motion.div>
               )}
-              {folder?.isShared && (
-                <div className="flex items-center gap-6 md:gap-2 align-middle">
+              {folder?.data?.isShared && (
+                <div className="flex items-center gap-6 align-middle md:gap-2">
                   <motion.div
                     key="loaded"
                     initial={{ opacity: 0 }}
@@ -151,6 +160,18 @@ export default function Bookmarks() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                   >
+                    <ShowMonthsButton
+                      showMonths={showMonths}
+                      handleShowMonths={handleShowMonths}
+                    />
+                  </motion.div>
+                  <motion.div
+                    key="loaded"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <ShareLinkButton folderId={folderId as string} />
                   </motion.div>
                 </div>
@@ -161,9 +182,9 @@ export default function Bookmarks() {
           <div className={`mx-2 my-6`}>
             <Separator />
           </div>
-          
-          {bookmarksLoading && <SkeletonList viewStyle={viewStyle} />}
-          {folder?.isShared && (
+
+          {folder?.isLoading && <SkeletonList viewStyle={viewStyle} />}
+          {folder?.data?.isShared && (
             <motion.div
               initial={false}
               animate={isOpen ? "open" : "closed"}
@@ -190,14 +211,9 @@ export default function Bookmarks() {
                   },
                 }}
               >
-                {bookmarks && bookmarks?.length > 0 ? (
-                  bookmarks?.map((bookmark) =>
-                    viewStyle === "compact" ? (
-                      <CompactBookmark bookmark={bookmark} key={bookmark.id} />
-                    ) : (
-                      <ExpandedBookmark bookmark={bookmark} key={bookmark.id} />
-                    )
-                  )
+                {folder?.data?.bookmarks &&
+                folder?.data?.bookmarks?.length > 0 ? (
+                  <BookmarksList bookmarks={folder?.data?.bookmarks} showMonths={showMonths} viewStyle={viewStyle} />
                 ) : (
                   <EmptyState />
                 )}

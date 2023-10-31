@@ -10,12 +10,20 @@ export const foldersRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
+        direction: z.enum(["asc", "desc"]).nullable(),
       })
     )
     .query(async ({ input, ctx }) => {
       return await ctx.prisma.folder.findUnique({
         where: {
           id: input.id,
+        },
+        include: {
+          bookmarks: {
+            orderBy: {
+              createdAt: input.direction ?? "desc",
+            },
+          },
         },
       });
     }),

@@ -21,6 +21,7 @@ import {
   directionAtom,
   isOpenAtom,
   viewStyleAtom,
+  showMonthsAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
@@ -35,6 +36,7 @@ export default function Bookmarks() {
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [viewStyle] = useAtom(viewStyleAtom);
   const [direction] = useAtom(directionAtom);
+  const [showMonths] = useAtom(showMonthsAtom);
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
 
   const { data: folders, isLoading: foldersLoading } =
@@ -330,6 +332,8 @@ export default function Bookmarks() {
                       currentFolder?.bookmarks?.length > 0 ? (
                       <BookmarksList
                         bookmarks={currentFolder?.bookmarks}
+                        showMonths={showMonths}
+                        viewStyle={viewStyle}
                         handleDeleteBookmark={handleDeleteBookmark}
                       />
                     ) : (
