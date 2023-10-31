@@ -46,6 +46,6 @@
 - 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders)
 - 🟢  add animation to the deletion of a bookmark
 - 🟢  shared folder
-- 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
+- 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension? google charges $5 for an account, fuck lp)
 - 🟢  keyboard shortcuts
 - 🟢  add smooth appearance to shared hover state (tried couple times, can't make it work :/)
