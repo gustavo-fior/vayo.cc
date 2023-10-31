@@ -47,4 +47,5 @@
 - 🟢  add animation to the deletion of a bookmark
 - 🟢  shared folder
 - 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension?)
-- 🟢  add smooth appearance to shared hover state
+- 🟢  keyboard shortcuts
+- 🟢  add smooth appearance to shared hover state (tried couple times, can't make it work :/)

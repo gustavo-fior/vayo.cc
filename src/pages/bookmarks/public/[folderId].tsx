@@ -179,7 +179,7 @@ export default function Bookmarks() {
             </div>
           </AnimatePresence>
 
-          <div className={`mx-2 my-6`}>
+          <div className={`mx-2 mt-6 mb-2`}>
             <Separator />
           </div>
 
@@ -188,7 +188,6 @@ export default function Bookmarks() {
             <motion.div
               initial={false}
               animate={isOpen ? "open" : "closed"}
-              className="flex flex-col gap-8"
             >
               <motion.ul
                 className={`flex flex-col`}
@@ -213,7 +212,11 @@ export default function Bookmarks() {
               >
                 {folder?.data?.bookmarks &&
                 folder?.data?.bookmarks?.length > 0 ? (
-                  <BookmarksList bookmarks={folder?.data?.bookmarks} showMonths={showMonths} viewStyle={viewStyle} />
+                  <BookmarksList
+                    bookmarks={folder?.data?.bookmarks}
+                    showMonths={showMonths}
+                    viewStyle={viewStyle}
+                  />
                 ) : (
                   <EmptyState />
                 )}
