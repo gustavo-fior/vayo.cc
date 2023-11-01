@@ -27,8 +27,8 @@
 - ✅  figure out why <img> tags are not being found
 - ✅  instantly change to other folder when one is deleted
 - ✅  make UI better and create a pattern (paddings, animations, texts) (probably have a menu that contains view style, direction, and sign out)
-- ✅  fix sun and moon icons in public pages
 - ✅  add commons favicons as assets
+- ✅  fix sun and moon icons in public pages
 - ✅  maybe fetch folders with the bookmarks instead of creating 2 queries
 - ✅  add month separation
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
