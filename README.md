@@ -37,15 +37,16 @@
 - ❌  maybe insert AI-generated og images when one can't be found (too crazy? yes u dumbass, definetily not a good idea + what if it's a bad image...)
 - ❌  add search (why not just ctrl+f?)
 - ❌  update things in db after 2 secs of no changes, not right after in every change (overengineering as fuck)
+- ❌  fix ghost bookmarks when deleting (maybe useDebounce) (not happening in production)
 
 # TODO
 
 - 🔴  x, airbnb and docs links don't work (tks Elon) (check https://www.pexels.com/@googledeepmind/)
 - 🔴  animate direction button
-- 🔴  fix ghost bookmarks when deleting (maybe useDebounce)
 - 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders)
 - 🟢  add animation to the deletion of a bookmark
 - 🟢  shared folder
 - 🟢  add a way to add a bookmark without opening the website (maybe a Chrome extension? google charges $5 for an account, fuck lp)
 - 🟢  keyboard shortcuts
+- 🟢  improve perfomance
 - 🟢  add smooth appearance to shared hover state (tried couple times, can't make it work :/)
