@@ -17,7 +17,3 @@ export default createNextApiHandler({
       : undefined,
 });
 
-export const config = {
-  runtime: 'edge',
-}
-
