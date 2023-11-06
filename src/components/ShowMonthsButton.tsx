@@ -27,7 +27,7 @@ export const ShowMonthsButton = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
           >
-            <LayoutIcon className="h-4 w-4 text-black dark:text-white" />
+            <LayoutIcon className="h-4 w-4 text-black rotate-90 dark:text-white" />
           </motion.div>
         ) : (
           <motion.div
@@ -36,7 +36,7 @@ export const ShowMonthsButton = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
           >
-            <CalendarIcon className="h-4 w-4 rotate-90 text-black dark:text-white" />
+            <CalendarIcon className="h-4 w-4 text-black dark:text-white" />
           </motion.div>
         )}
       </AnimatePresence>
