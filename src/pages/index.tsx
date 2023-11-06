@@ -42,8 +42,18 @@ export default function Home() {
           </h1>
 
           <p className="hidden pt-4 text-center text-slate-400 transition duration-500 md:block">
-            Simple bookmark manager with a focus on privacy.
+            Just a simple bookmark manager. If you want, we have a{" "}
+            <a
+              href="https://chromewebstore.google.com/detail/jaloallboddnknljngplmccchmncogeb?hl=pt-BR"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-200 transition duration-300 hover:text-white"
+            >
+              Chrome extension
+            </a>{" "}
+            too.
           </p>
+
           <p className=" pt-3 italic text-slate-400 transition duration-500">
             No tracking, no ads, no price.
           </p>
@@ -53,7 +63,7 @@ export default function Home() {
                 whileTap={{
                   scale: 0.8,
                 }}
-                className="flex items-center gap-2 rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+                className="flex items-center gap-2 rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline duration-300 transition hover:bg-white/20"
                 disabled={signingInGoogle || signingInGithub}
                 onClick={() => {
                   setSigningInGoogle(true);
@@ -75,7 +85,7 @@ export default function Home() {
                 whileTap={{
                   scale: 0.8,
                 }}
-                className=" rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+                className=" rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition duration-300 hover:bg-white/20"
                 disabled={signingInGoogle || signingInGithub}
                 onClick={() => {
                   setSigningInGithub(true);

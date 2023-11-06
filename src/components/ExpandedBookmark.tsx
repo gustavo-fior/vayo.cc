@@ -46,7 +46,7 @@ export const ExpandedBookmark = ({
             <motion.div
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
-              className={`flex justify-between z-10 rounded-lg px-3 py-2 transition duration-500 ease-in-out`}
+              className={`z-10 flex justify-between rounded-lg px-3 py-2 transition duration-500 ease-in-out`}
             >
               <div className={`flex items-center gap-6 md:w-full`}>
                 {bookmark.ogImageUrl &&
@@ -65,7 +65,7 @@ export const ExpandedBookmark = ({
                       width={320}
                       height={180}
                       className="hidden rounded-md md:block"
-                      priority
+                      sizes="(max-width: 320px) 100vw, 320px"
                       style={{
                         height: "4rem",
                         width: "12rem",
@@ -109,6 +109,7 @@ export const ExpandedBookmark = ({
                         height={12}
                         className="rounded-sm"
                         style={{ height: "0.9rem", width: "0.9rem" }}
+                        sizes="(max-width: 320px) 100vw, 48px"
                       />
                     ) : (
                       <div

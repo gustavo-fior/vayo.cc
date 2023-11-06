@@ -1,7 +1,8 @@
 import { type Bookmark } from "@prisma/client";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
+import { AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";

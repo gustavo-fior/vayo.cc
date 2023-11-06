@@ -1,4 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import Head from "next/head";
 import { useRouter } from "next/router";

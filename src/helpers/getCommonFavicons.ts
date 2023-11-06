@@ -42,6 +42,8 @@ export const getCommonFavicons = (url: string): string | null => {
       return "/favicons/spotify.png";
     case "github":
       return "/favicons/github.svg";
+    case "airbnb":
+      return "/favicons/airbnb.png";
     default:
       return null;
   }
@@ -91,7 +93,7 @@ export const getWebsiteName = (url: string) => {
           hostnameParts[1]?.toLowerCase() !== "me" &&
           hostnameParts[1]?.toLowerCase() !== "us" &&
           hostnameParts[1]?.toLowerCase() !== "uk" &&
-          hostnameParts[1]?.toLowerCase() !== "so" 
+          hostnameParts[1]?.toLowerCase() !== "so"
         ) {
           domainName = hostnameParts[1] ?? "";
         } else {

@@ -52,6 +52,7 @@ export const CompactBookmark = ({
                       alt={bookmark.title}
                       width={12}
                       height={12}
+                      sizes="24px"
                       style={{
                         height: "0.9rem",
                         width: "0.9rem",
