@@ -2,11 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { URL } from "url";
 import fetch, { type RequestInit } from "node-fetch";
+import { URL } from "url";
 import { capitalizeFirstLetter } from "./capitalizeFirstLetter";
 import { getCommonFavicons } from "./getCommonFavicons";
-import puppeteer from "puppeteer";
 
 export const getBookmarkMetadata = async (
   url: string,
@@ -16,8 +15,7 @@ export const getBookmarkMetadata = async (
     const response = await fetch(
       url,
       options ?? {
-        redirect: "follow",
-        follow: 1,
+        redirect: "manual",
         headers: {
           mode: "same-origin",
           Cookie:
@@ -45,52 +43,18 @@ export const getBookmarkMetadata = async (
     }
 
     if (response.status >= 400) {
-      const browser = await puppeteer.launch({ headless: true });
-      const page = await browser.newPage();
+      console.log("error: " + response.status);
 
-      await page.setUserAgent(
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"
-      );
+      const metadata = await getMetadataThroughLib(url);
 
-      await page.setCookie(
-        {
-          name: "guest_id",
-          value: "v1:169688089407904299",
-          domain: new URL(url).hostname,
-        },
-        {
-          name: "guest_id_ads",
-          value: "v1:169688089407904299",
-          domain: new URL(url).hostname,
-        },
-        {
-          name: "guest_id_marketing",
-          value: "v1:169688089407904299",
-          domain: new URL(url).hostname,
-        }
-      );
+      const title = metadata.pageTitle ?? "";
+      const ogImageUrl = metadata.image ?? "";
+      const faviconUrl = metadata.logo ?? "";
 
-      await page.goto(url);
-
-      await page.cookies().then((cookies) => {
-        console.log(cookies);
-      });
-
-      console.log(await page.content());
-
-      const html = await page.content();
-
-      await browser.close();
-
-      console.log(html);
-
-      const { JSDOM } = require("jsdom");
-      const dom = new JSDOM(html);
-      const document: Document = dom.window.document;
-
-      const title = await getTitle(url, document);
-      const faviconUrl = await getFaviconUrl(url, document);
-      const ogImageUrl = await getOgImageUrl(url, document);
+      console.log("title: " + title);
+      console.log("ogImageUrl: " + ogImageUrl);
+      console.log("faviconUrl: " + faviconUrl);
+      console.log(metadata);
 
       return {
         title,
@@ -100,18 +64,35 @@ export const getBookmarkMetadata = async (
     }
 
     const html = await response.text();
+
     const { JSDOM } = require("jsdom");
     const dom = new JSDOM(html);
     const document: Document = dom.window.document;
 
-    const title = await getTitle(url, document);
-    const ogImageUrl = await getOgImageUrl(url, document);
+    let title = await getTitle(url, document);
+    let ogImageUrl = await getOgImageUrl(url, document);
     let faviconUrl = null;
 
     faviconUrl = getCommonFavicons(url);
 
     if (!faviconUrl) {
       faviconUrl = await getFaviconUrl(url, document);
+    }
+
+    if (!faviconUrl || !title || !ogImageUrl) {
+      const { logo, image, pageTitle } = await getMetadataThroughLib(url);
+
+      if (!faviconUrl) {
+        faviconUrl = logo;
+      }
+
+      if (!ogImageUrl) {
+        ogImageUrl = image;
+      }
+
+      if (!title) {
+        title = pageTitle ?? "";
+      }
     }
 
     return {
@@ -133,6 +114,12 @@ export type BookmarkMetadata = {
   title: string;
   faviconUrl: string | null;
   ogImageUrl: string | null;
+};
+
+export type Metadata = {
+  pageTitle: string | null;
+  logo: string | null;
+  image: string | null;
 };
 
 // tries to get the favicon url from the given url, if it fails, it tries to get the favicon url from the root url
@@ -257,11 +244,11 @@ const getOgImageUrl = async (
 const getTitle = async (url: string, document: Document): Promise<string> => {
   let title: string | null | undefined = null;
 
-  title = document.querySelector("meta[property='og:title']")?.getAttribute("content");
+  title = document
+    .querySelector("meta[property='og:title']")
+    ?.getAttribute("content");
 
-  if (!title)
-    title = document
-      .querySelector("title")?.textContent;
+  if (!title) title = document.querySelector("title")?.textContent;
 
   const rootUrl = new URL("/", url).href;
 
@@ -272,11 +259,11 @@ const getTitle = async (url: string, document: Document): Promise<string> => {
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
-    title = document.querySelector("meta[property='og:title']")?.getAttribute("content");
+    title = document
+      .querySelector("meta[property='og:title']")
+      ?.getAttribute("content");
 
-    if (!title)
-      title = document
-        .querySelector("title")?.textContent;
+    if (!title) title = document.querySelector("title")?.textContent;
   }
 
   if (!title) {
@@ -297,4 +284,49 @@ export const requestOptions: RequestInit = {
     Cookie:
       "guest_id=v1%3A169688089407904299; guest_id_ads=v1%3A169688089407904299; guest_id_marketing=v1%3A169688089407904299;",
   },
+};
+
+const getMetadataThroughLib = async (
+  url: string
+): Promise<{
+  logo: string | null;
+  image: string | null;
+  pageTitle: string | null;
+}> => {
+  const getHTML = require("html-get");
+  const browserless = require("browserless")();
+
+  const getContent = (url: string) => {
+    // create a browser context inside the main Chromium process
+    const browserContext = browserless.createContext();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    const promise = getHTML(url, { getBrowserless: () => browserContext });
+    // close browser resources before return the result
+    promise
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      .then(() => browserContext)
+      .then((browser: { destroyContext: () => unknown }) =>
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        browser.destroyContext()
+      );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return promise;
+  };
+
+  const metascraper = require("metascraper")([
+    require("metascraper-author")(),
+    require("metascraper-image")(),
+    require("metascraper-logo")(),
+    require("metascraper-title")(),
+    require("metascraper-url")(),
+  ]);
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return await getContent(url)
+    .then(metascraper)
+    .then(browserless.close)
+    .then((metadata: Metadata) => {
+      console.log(metadata);
+      return metadata;
+    });
 };
