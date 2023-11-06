@@ -5,7 +5,7 @@
 import fetch, { type RequestInit } from "node-fetch";
 import { URL } from "url";
 import { capitalizeFirstLetter } from "./capitalizeFirstLetter";
-import { getCommonFavicons } from "./getCommonFavicons";
+import { getCommonFavicons, getWebsiteName } from "./getCommonFavicons";
 
 export const getBookmarkMetadata = async (
   url: string,
@@ -24,7 +24,7 @@ export const getBookmarkMetadata = async (
       }
     );
 
-    // If the response is a redirect, fetch the redirect URL
+    // REDIRECT
     if (response.status >= 300 && response.status < 400) {
       console.log("redirecting to : " + response.headers.get("location"));
 
@@ -42,19 +42,28 @@ export const getBookmarkMetadata = async (
       return getBookmarkMetadata(redirectUrl, requestOptions);
     }
 
+    // ERROR
     if (response.status >= 400) {
       console.log("error: " + response.status);
+      const { pageTitle, logo, image } = await getMetadataThroughLib(
+        url,
+        null,
+        null,
+        null
+      );
 
-      const metadata = await getMetadataThroughLib(url);
+      let faviconUrl = logo ?? getCommonFavicons(url);
+      const ogImageUrl = image;
+      let title = pageTitle;
 
-      const title = metadata.pageTitle ?? "";
-      const ogImageUrl = metadata.image ?? "";
-      const faviconUrl = metadata.logo ?? "";
+      if (!title) {
+        title = getWebsiteName(url);
+        title = capitalizeFirstLetter(title);
+      }
 
-      console.log("title: " + title);
-      console.log("ogImageUrl: " + ogImageUrl);
-      console.log("faviconUrl: " + faviconUrl);
-      console.log(metadata);
+      if (!faviconUrl) {
+        faviconUrl = "/images/logo.png";
+      }
 
       return {
         title,
@@ -79,20 +88,35 @@ export const getBookmarkMetadata = async (
       faviconUrl = await getFaviconUrl(url, document);
     }
 
-    if (!faviconUrl || !title || !ogImageUrl) {
-      const { logo, image, pageTitle } = await getMetadataThroughLib(url);
+    console.log("faviconUrl: " + faviconUrl);
 
-      if (!faviconUrl) {
-        faviconUrl = logo;
-      }
+    if (
+      !faviconUrl ||
+      !title ||
+      !ogImageUrl ||
+      getWebsiteName(url) === "x" ||
+      getWebsiteName(url) === "X" ||
+      getWebsiteName(url) === "twitter"
+    ) {
+      const { pageTitle, logo, image } = await getMetadataThroughLib(
+        url,
+        faviconUrl,
+        null,
+        null
+      );
 
-      if (!ogImageUrl) {
-        ogImageUrl = image;
-      }
+      faviconUrl = logo;
+      title = pageTitle ?? "";
+      ogImageUrl = image;
+    }
 
-      if (!title) {
-        title = pageTitle ?? "";
-      }
+    if (!title) {
+      title = getWebsiteName(url);
+      title = capitalizeFirstLetter(title);
+    }
+
+    if (!faviconUrl) {
+      faviconUrl = "/images/logo.png";
     }
 
     return {
@@ -114,12 +138,6 @@ export type BookmarkMetadata = {
   title: string;
   faviconUrl: string | null;
   ogImageUrl: string | null;
-};
-
-export type Metadata = {
-  pageTitle: string | null;
-  logo: string | null;
-  image: string | null;
 };
 
 // tries to get the favicon url from the given url, if it fails, it tries to get the favicon url from the root url
@@ -287,7 +305,10 @@ export const requestOptions: RequestInit = {
 };
 
 const getMetadataThroughLib = async (
-  url: string
+  url: string,
+  faviconUrl?: string | null,
+  title?: string | null,
+  ogImageUrl?: string | null
 ): Promise<{
   logo: string | null;
   image: string | null;
@@ -296,21 +317,16 @@ const getMetadataThroughLib = async (
   const getHTML = require("html-get");
   const browserless = require("browserless")();
 
-  const getContent = (url: string) => {
-    // create a browser context inside the main Chromium process
-    const browserContext = browserless.createContext();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    const promise = getHTML(url, { getBrowserless: () => browserContext });
-    // close browser resources before return the result
-    promise
+  const getContent = async (url: string) => {
+    const browserContext = await browserless.createContext();
+    try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      .then(() => browserContext)
-      .then((browser: { destroyContext: () => unknown }) =>
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        browser.destroyContext()
-      );
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return promise;
+      const html = await getHTML(url, { getBrowserless: () => browserContext });
+      return { html, browserContext };
+    } catch (error) {
+      console.error("Error retrieving HTML:", error);
+      return { html: null, browserContext };
+    }
   };
 
   const metascraper = require("metascraper")([
@@ -321,12 +337,44 @@ const getMetadataThroughLib = async (
     require("metascraper-url")(),
   ]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return await getContent(url)
-    .then(metascraper)
-    .then(browserless.close)
-    .then((metadata: Metadata) => {
-      console.log(metadata);
-      return metadata;
-    });
+  try {
+    const { html, browserContext } = await getContent(url);
+    const metadata = await metascraper(html);
+
+    console.log("metadata: " + JSON.stringify(metadata));
+
+    console.log("faviconUrl: " + faviconUrl);
+
+    if (!faviconUrl) {
+      faviconUrl = metadata.logo;
+    }
+
+    if (!ogImageUrl) {
+      ogImageUrl = metadata.image;
+    }
+
+    if (!title) {
+      title = metadata.title;
+    }
+
+    if (browserContext?.destroyContext) {
+      await browserContext.destroyContext();
+    }
+
+    browserless.close();
+
+    return {
+      logo: faviconUrl ?? null,
+      image: ogImageUrl ?? null,
+      pageTitle: title ?? null,
+    };
+  } catch (error) {
+    console.error("Error getting metadata:", error);
+    browserless.close();
+    return {
+      logo: null,
+      image: null,
+      pageTitle: null,
+    };
+  }
 };
