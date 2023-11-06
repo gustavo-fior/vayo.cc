@@ -43,7 +43,7 @@ export const BookmarksList = ({
                     x: -10,
                   }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
                   className="pb-2 pl-2 pt-4 text-2xl font-bold text-black dark:text-white"
                 >
                   {month}
@@ -55,7 +55,7 @@ export const BookmarksList = ({
                     x: -10,
                   }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
                   className="pb-2 pl-2 pt-4 text-2xl font-bold text-black dark:text-white"
                 >
                   {month}
