@@ -32,6 +32,8 @@ import {
 import { api } from "~/utils/api";
 import { Separator } from "./Separator";
 import { Spinner } from "./Spinner";
+import { useHotkeys } from "react-hotkeys-hook";
+import { Hotkey } from "./Hotkey";
 
 export const ProfileMenu = () => {
   const session = useSession();
@@ -43,6 +45,56 @@ export const ProfileMenu = () => {
   const [viewStyle, setViewStyle] = useAtom(viewStyleAtom);
   const [showMonths, setShowMonths] = useAtom(showMonthsAtom);
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
+
+  useHotkeys(
+    "k+t",
+    () => {
+      handleChangeTheme(resolvedTheme === "light" ? "dark" : "light");
+    },
+    {
+      enableOnFormTags: false,
+    }
+  );
+
+  useHotkeys(
+    "k+d",
+    () => {
+      handleUpdateFolder();
+    },
+    {
+      enableOnFormTags: false,
+    }
+  );
+
+  useHotkeys(
+    "k+m",
+    () => {
+      handleUpdateShowMonths();
+    },
+    {
+      enableOnFormTags: false,
+    }
+  );
+
+  useHotkeys(
+    "k+v",
+    () => {
+      handleChangeViewStyle(viewStyle === "compact" ? "expanded" : "compact");
+    },
+    {
+      enableOnFormTags: false,
+    }
+  );
+
+  useHotkeys(
+    "k+s",
+    () => {
+      handleChangeDirection(direction === "asc" ? "desc" : "asc");
+    },
+    {
+      enableOnFormTags: false,
+    }
+  );
 
   const user = api.users.findByUserId.useQuery({
     userId: session.data?.user?.id ?? "",
@@ -61,6 +113,12 @@ export const ProfileMenu = () => {
   });
 
   const handleChangeDirection = (newDirection: "asc" | "desc") => {
+    setIsOpen(false);
+
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 500);
+
     setDirection(newDirection);
 
     if (currentFolder)
@@ -118,7 +176,7 @@ export const ProfileMenu = () => {
 
     setViewStyle(newViewStyle);
 
-    updateUser.mutate({
+    void updateUser.mutateAsync({
       id: String(user.data?.id),
       lastDirection: direction,
       lastViewStyle: newViewStyle,
@@ -135,7 +193,7 @@ export const ProfileMenu = () => {
 
     setShowMonths(!showMonths);
 
-    updateUser.mutate({
+    void updateUser.mutateAsync({
       id: String(user.data?.id),
       lastDirection: direction,
       lastViewStyle: viewStyle,
@@ -183,7 +241,7 @@ export const ProfileMenu = () => {
         </motion.button>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content className="mr-6 z-50 md:mr-64">
+        <Popover.Content className="z-50 mr-6 md:mr-64">
           <motion.div
             initial={{ opacity: 0, y: 3 }}
             animate={{ opacity: 1, y: 0 }}
@@ -198,155 +256,68 @@ export const ProfileMenu = () => {
             </div>
             <Separator />
             <div className="flex flex-col gap-4 px-1">
-              <div className="flex items-center justify-between gap-x-2 align-middle">
+              <div className="flex items-center justify-between gap-x-2 pt-2 align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
                   <AnimatePresence mode="popLayout">
-                    {currentFolder?.allowDuplicate ? (
+                    {viewStyle === "compact" ? (
                       <motion.div
-                        key="allowDuplicate"
+                        key="compact"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <CopyIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                        <HamburgerMenuIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     ) : (
                       <motion.div
-                        key="notAllowDuplicate"
+                        key="expanded"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <ViewHorizontalIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                        <RowsIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     )}
                   </AnimatePresence>
-                  <p className="text-sm font-normal">Allow duplicates?</p>
-                </div>
-                <Checkbox.Root
-                  defaultChecked={currentFolder?.allowDuplicate}
-                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
-                  onCheckedChange={() => {
-                    handleUpdateFolder();
-                  }}
-                >
-                  <motion.div
-                    whileTap={{
-                      scale: 0.8,
-                    }}
-                  >
-                    <Checkbox.Indicator>
-                      <CheckIcon className="h-4 w-4" />
-                    </Checkbox.Indicator>
-                  </motion.div>
-                </Checkbox.Root>
-              </div>
-
-              <div className="flex items-center justify-between gap-x-2 align-middle">
-                <div className="flex items-center gap-x-3 align-middle">
-                  <AnimatePresence mode="popLayout">
-                    {showMonths ? (
-                      <motion.div
-                        key="showMonths"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                      >
-                        <CalendarIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="notShowMonths"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                      >
-                        <LayoutIcon className="h-4 w-4 rotate-90 text-gray-800 dark:text-gray-400" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <p className="text-sm font-normal">Show months?</p>
-                </div>
-                <Checkbox.Root
-                  defaultChecked={showMonths}
-                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
-                  onCheckedChange={() => {
-                    handleUpdateShowMonths();
-                  }}
-                >
-                  <motion.div
-                    whileTap={{
-                      scale: 0.8,
-                    }}
-                  >
-                    <Checkbox.Indicator>
-                      <CheckIcon className="h-4 w-4" />
-                    </Checkbox.Indicator>
-                  </motion.div>
-                </Checkbox.Root>
-              </div>
-
-              <div className="flex w-72 flex-row justify-between align-middle">
-                <div className="flex items-center gap-x-3 align-middle">
-                  <AnimatePresence mode="popLayout">
-                    {resolvedTheme === "light" ? (
-                      <motion.div
-                        key="light"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                      >
-                        <SunIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="dark"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                      >
-                        <MoonIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <p className="text-sm font-normal">Day or night</p>
+                  <p className="text-sm font-normal">View</p>
+                  <Hotkey key1="k" key2="v" />
                 </div>
                 <ToggleGroup.Root
                   type="single"
-                  defaultValue={resolvedTheme}
+                  defaultValue={viewStyle}
                   className="flex items-center gap-x-2 align-middle"
                   onValueChange={(value) => {
-                    if (value !== resolvedTheme && value !== "") {
-                      handleChangeTheme(value as "light" | "dark");
+                    if (value !== viewStyle && value !== "") {
+                      handleChangeViewStyle(value as "compact" | "expanded");
                     }
                   }}
                 >
                   <ToggleGroup.Item
-                    value="light"
+                    value="compact"
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
                       className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                        resolvedTheme === "light"
+                        viewStyle === "compact"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
                       }`}
                     >
-                      Day
+                      Compact
                     </p>
                   </ToggleGroup.Item>
                   <ToggleGroup.Item
-                    value="dark"
+                    value="expanded"
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
                       className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                        resolvedTheme === "dark"
+                        viewStyle === "expanded"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
                       }`}
                     >
-                      Night
+                      Expanded
                     </p>
                   </ToggleGroup.Item>
                 </ToggleGroup.Root>
@@ -376,6 +347,7 @@ export const ProfileMenu = () => {
                     )}
                   </AnimatePresence>
                   <p className="text-sm font-normal">Sort by</p>
+                  <Hotkey key1="k" key2="s" />
                 </div>
                 <ToggleGroup.Root
                   type="single"
@@ -418,70 +390,161 @@ export const ProfileMenu = () => {
                 </ToggleGroup.Root>
               </div>
 
-              <div className="flex items-center justify-between gap-x-2 align-middle">
+              <div className="flex w-72 flex-row justify-between align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
                   <AnimatePresence mode="popLayout">
-                    {viewStyle === "compact" ? (
+                    {resolvedTheme === "light" ? (
                       <motion.div
-                        key="compact"
+                        key="light"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <HamburgerMenuIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                        <SunIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     ) : (
                       <motion.div
-                        key="expanded"
+                        key="dark"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
                       >
-                        <RowsIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                        <MoonIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     )}
                   </AnimatePresence>
-                  <p className="text-sm font-normal">View</p>
+                  <p className="text-sm font-normal">Day or night</p>
+                  <Hotkey key1="k" key2="t" />
                 </div>
                 <ToggleGroup.Root
                   type="single"
-                  defaultValue={viewStyle}
+                  defaultValue={resolvedTheme}
                   className="flex items-center gap-x-2 align-middle"
                   onValueChange={(value) => {
-                    if (value !== viewStyle && value !== "") {
-                      handleChangeViewStyle(value as "compact" | "expanded");
+                    if (value !== resolvedTheme && value !== "") {
+                      handleChangeTheme(value as "light" | "dark");
                     }
                   }}
                 >
                   <ToggleGroup.Item
-                    value="compact"
+                    value="light"
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
                       className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                        viewStyle === "compact"
+                        resolvedTheme === "light"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
                       }`}
                     >
-                      Compact
+                      Day
                     </p>
                   </ToggleGroup.Item>
                   <ToggleGroup.Item
-                    value="expanded"
+                    value="dark"
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
                       className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                        viewStyle === "expanded"
+                        resolvedTheme === "dark"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
                       }`}
                     >
-                      Expanded
+                      Night
                     </p>
                   </ToggleGroup.Item>
                 </ToggleGroup.Root>
+              </div>
+
+              <div className="flex items-center justify-between gap-x-2 align-middle">
+                <div className="flex items-center gap-x-3 align-middle">
+                  <AnimatePresence mode="popLayout">
+                    {showMonths ? (
+                      <motion.div
+                        key="showMonths"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <CalendarIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="notShowMonths"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <LayoutIcon className="h-4 w-4 rotate-90 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <p className="text-sm font-normal">Show months?</p>
+                  <Hotkey key1="k" key2="m" />
+                </div>
+                <Checkbox.Root
+                  defaultChecked={showMonths}
+                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
+                  onCheckedChange={() => {
+                    handleUpdateShowMonths();
+                  }}
+                >
+                  <motion.div
+                    whileTap={{
+                      scale: 0.8,
+                    }}
+                  >
+                    <Checkbox.Indicator>
+                      <CheckIcon className="h-4 w-4" />
+                    </Checkbox.Indicator>
+                  </motion.div>
+                </Checkbox.Root>
+              </div>
+
+              <div className="flex items-center justify-between gap-x-2 align-middle">
+                <div className="flex items-center gap-x-3 align-middle">
+                  <AnimatePresence mode="popLayout">
+                    {currentFolder?.allowDuplicate ? (
+                      <motion.div
+                        key="allowDuplicate"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <CopyIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="notAllowDuplicate"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <ViewHorizontalIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <p className="text-sm font-normal">Allow duplicates?</p>
+                  <Hotkey key1="k" key2="d" />
+                </div>
+                <Checkbox.Root
+                  defaultChecked={currentFolder?.allowDuplicate}
+                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
+                  onCheckedChange={() => {
+                    handleUpdateFolder();
+                  }}
+                >
+                  <motion.div
+                    whileTap={{
+                      scale: 0.8,
+                    }}
+                  >
+                    <Checkbox.Indicator>
+                      <CheckIcon className="h-4 w-4" />
+                    </Checkbox.Indicator>
+                  </motion.div>
+                </Checkbox.Root>
               </div>
 
               <div className="flex items-center justify-between gap-x-2 align-middle">

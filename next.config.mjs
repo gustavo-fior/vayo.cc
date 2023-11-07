@@ -26,7 +26,9 @@ const config = {
   },
   experimental: {
     swcPlugins: [['@swc-jotai/react-refresh', {}]],
-    outputFileTracingIgnores: ['**canvas**'],
+    outputFileTracingExcludes: {
+      '**': ['node_modules/canvas/**'],
+    },
   }
 };
 

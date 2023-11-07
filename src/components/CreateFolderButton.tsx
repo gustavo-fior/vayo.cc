@@ -13,6 +13,8 @@ import { useState } from "react";
 import { api } from "~/utils/api";
 import { Separator } from "./Separator";
 import { Spinner } from "./Spinner";
+import { useHotkeys } from "react-hotkeys-hook";
+import { Hotkey } from "./Hotkey";
 
 export const CreateFolderButton = () => {
   const [name, setName] = useState("");
@@ -21,6 +23,16 @@ export const CreateFolderButton = () => {
   const [popverOpen, setPopverOpen] = useState(false);
   const session = useSession();
   const utils = api.useContext();
+
+  useHotkeys(
+    "k+c",
+    () => {
+      setPopverOpen(true);
+    },
+    {
+      enableOnFormTags: false,
+    }
+  );
 
   const { mutate: createFolder, isLoading: isCreatingFolder } =
     api.folders.create.useMutation({
@@ -130,11 +142,12 @@ export const CreateFolderButton = () => {
                 void handleSubmit(e);
               }}
             >
-              <div className="flex items-center justify-between gap-2 align-middle">
-                <div className="flex items-center gap-2 px-1 align-middle">
+              <div className="flex flex-row items-center justify-between px-1 align-middle">
+                <div className="flex flex-row items-center gap-2">
                   <ArchiveIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                   <p>New folder</p>
                 </div>
+                <Hotkey key1="k" key2="c" />
               </div>
               <Separator />
               <div className="flex flex-row items-center gap-2 px-1 align-middle">
@@ -220,7 +233,6 @@ export const CreateFolderButton = () => {
                     className="mt-1 w-40 rounded-md bg-black/10 px-3 py-2 text-sm font-normal text-black placeholder-zinc-600 dark:bg-white/10 dark:text-white"
                     placeholder="Awesome refs"
                     required
-                    autoFocus
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
