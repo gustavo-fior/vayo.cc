@@ -302,7 +302,7 @@ export default function Bookmarks() {
               </div>
               <AnimatePresence mode="wait">
                 <motion.div
-                  initial={false}
+                  initial={isOpen}
                   animate={isOpen ? "open" : "closed"}
                   className="flex flex-col gap-8"
                 >

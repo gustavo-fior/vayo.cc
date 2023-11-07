@@ -113,6 +113,12 @@ export const ProfileMenu = () => {
   });
 
   const handleChangeDirection = (newDirection: "asc" | "desc") => {
+    setIsOpen(false);
+
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 500);
+
     setDirection(newDirection);
 
     if (currentFolder)
@@ -250,252 +256,251 @@ export const ProfileMenu = () => {
             </div>
             <Separator />
             <div className="flex flex-col gap-4 px-1">
-
-            <div className="flex items-center justify-between gap-x-2 align-middle pt-2">
-              <div className="flex items-center gap-x-3 align-middle">
-                <AnimatePresence mode="popLayout">
-                  {viewStyle === "compact" ? (
-                    <motion.div
-                      key="compact"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                    >
-                      <HamburgerMenuIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="expanded"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                    >
-                      <RowsIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <p className="text-sm font-normal">View</p>
-                <Hotkey key1="k" key2="v" />
-              </div>
-              <ToggleGroup.Root
-                type="single"
-                defaultValue={viewStyle}
-                className="flex items-center gap-x-2 align-middle"
-                onValueChange={(value) => {
-                  if (value !== viewStyle && value !== "") {
-                    handleChangeViewStyle(value as "compact" | "expanded");
-                  }
-                }}
-              >
-                <ToggleGroup.Item
-                  value="compact"
+              <div className="flex items-center justify-between gap-x-2 pt-2 align-middle">
+                <div className="flex items-center gap-x-3 align-middle">
+                  <AnimatePresence mode="popLayout">
+                    {viewStyle === "compact" ? (
+                      <motion.div
+                        key="compact"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <HamburgerMenuIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="expanded"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <RowsIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <p className="text-sm font-normal">View</p>
+                  <Hotkey key1="k" key2="v" />
+                </div>
+                <ToggleGroup.Root
+                  type="single"
+                  defaultValue={viewStyle}
                   className="flex items-center gap-x-2 align-middle"
-                >
-                  <p
-                    className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                      viewStyle === "compact"
-                        ? "font-semibold"
-                        : "font-normal text-gray-400"
-                    }`}
-                  >
-                    Compact
-                  </p>
-                </ToggleGroup.Item>
-                <ToggleGroup.Item
-                  value="expanded"
-                  className="flex items-center gap-x-2 align-middle"
-                >
-                  <p
-                    className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                      viewStyle === "expanded"
-                        ? "font-semibold"
-                        : "font-normal text-gray-400"
-                    }`}
-                  >
-                    Expanded
-                  </p>
-                </ToggleGroup.Item>
-              </ToggleGroup.Root>
-            </div>
-
-            <div className="flex w-72 flex-row justify-between align-middle">
-              <div className="flex items-center gap-x-3 align-middle">
-                <AnimatePresence mode="popLayout">
-                  {direction === "asc" ? (
-                    <motion.div
-                      key="asc"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                    >
-                      <ArrowUpIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="desc"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                    >
-                      <ArrowDownIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <p className="text-sm font-normal">Sort by</p>
-                <Hotkey key1="k" key2="s" />
-              </div>
-              <ToggleGroup.Root
-                type="single"
-                defaultValue={direction}
-                className="flex items-center gap-x-2 align-middle"
-                onValueChange={(value) => {
-                  if (value !== direction && value !== "") {
-                    handleChangeDirection(value as "asc" | "desc");
-                  }
-                }}
-              >
-                <ToggleGroup.Item
-                  value="asc"
-                  className="flex items-center gap-x-2 align-middle"
-                >
-                  <p
-                    className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                      direction === "asc"
-                        ? "font-semibold"
-                        : "font-normal text-gray-400"
-                    }`}
-                  >
-                    Oldest
-                  </p>
-                </ToggleGroup.Item>
-                <ToggleGroup.Item
-                  value="desc"
-                  className="flex items-center gap-x-2 align-middle"
-                >
-                  <p
-                    className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                      direction === "desc"
-                        ? "font-semibold"
-                        : "font-normal text-gray-400"
-                    }`}
-                  >
-                    Newest
-                  </p>
-                </ToggleGroup.Item>
-              </ToggleGroup.Root>
-            </div>
-
-            <div className="flex w-72 flex-row justify-between align-middle">
-              <div className="flex items-center gap-x-3 align-middle">
-                <AnimatePresence mode="popLayout">
-                  {resolvedTheme === "light" ? (
-                    <motion.div
-                      key="light"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                    >
-                      <SunIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="dark"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                    >
-                      <MoonIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <p className="text-sm font-normal">Day or night</p>
-                <Hotkey key1="k" key2="t" />
-              </div>
-              <ToggleGroup.Root
-                type="single"
-                defaultValue={resolvedTheme}
-                className="flex items-center gap-x-2 align-middle"
-                onValueChange={(value) => {
-                  if (value !== resolvedTheme && value !== "") {
-                    handleChangeTheme(value as "light" | "dark");
-                  }
-                }}
-              >
-                <ToggleGroup.Item
-                  value="light"
-                  className="flex items-center gap-x-2 align-middle"
-                >
-                  <p
-                    className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                      resolvedTheme === "light"
-                        ? "font-semibold"
-                        : "font-normal text-gray-400"
-                    }`}
-                  >
-                    Day
-                  </p>
-                </ToggleGroup.Item>
-                <ToggleGroup.Item
-                  value="dark"
-                  className="flex items-center gap-x-2 align-middle"
-                >
-                  <p
-                    className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                      resolvedTheme === "dark"
-                        ? "font-semibold"
-                        : "font-normal text-gray-400"
-                    }`}
-                  >
-                    Night
-                  </p>
-                </ToggleGroup.Item>
-              </ToggleGroup.Root>
-            </div>
-
-            <div className="flex items-center justify-between gap-x-2 align-middle">
-              <div className="flex items-center gap-x-3 align-middle">
-                <AnimatePresence mode="popLayout">
-                  {showMonths ? (
-                    <motion.div
-                      key="showMonths"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                    >
-                      <CalendarIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="notShowMonths"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                    >
-                      <LayoutIcon className="h-4 w-4 rotate-90 text-gray-800 dark:text-gray-400" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <p className="text-sm font-normal">Show months?</p>
-                <Hotkey key1="k" key2="m" />
-              </div>
-              <Checkbox.Root
-                defaultChecked={showMonths}
-                className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
-                onCheckedChange={() => {
-                  handleUpdateShowMonths();
-                }}
-              >
-                <motion.div
-                  whileTap={{
-                    scale: 0.8,
+                  onValueChange={(value) => {
+                    if (value !== viewStyle && value !== "") {
+                      handleChangeViewStyle(value as "compact" | "expanded");
+                    }
                   }}
                 >
-                  <Checkbox.Indicator>
-                    <CheckIcon className="h-4 w-4" />
-                  </Checkbox.Indicator>
-                </motion.div>
-              </Checkbox.Root>
-            </div>
+                  <ToggleGroup.Item
+                    value="compact"
+                    className="flex items-center gap-x-2 align-middle"
+                  >
+                    <p
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
+                        viewStyle === "compact"
+                          ? "font-semibold"
+                          : "font-normal text-gray-400"
+                      }`}
+                    >
+                      Compact
+                    </p>
+                  </ToggleGroup.Item>
+                  <ToggleGroup.Item
+                    value="expanded"
+                    className="flex items-center gap-x-2 align-middle"
+                  >
+                    <p
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
+                        viewStyle === "expanded"
+                          ? "font-semibold"
+                          : "font-normal text-gray-400"
+                      }`}
+                    >
+                      Expanded
+                    </p>
+                  </ToggleGroup.Item>
+                </ToggleGroup.Root>
+              </div>
+
+              <div className="flex w-72 flex-row justify-between align-middle">
+                <div className="flex items-center gap-x-3 align-middle">
+                  <AnimatePresence mode="popLayout">
+                    {direction === "asc" ? (
+                      <motion.div
+                        key="asc"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <ArrowUpIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="desc"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <ArrowDownIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <p className="text-sm font-normal">Sort by</p>
+                  <Hotkey key1="k" key2="s" />
+                </div>
+                <ToggleGroup.Root
+                  type="single"
+                  defaultValue={direction}
+                  className="flex items-center gap-x-2 align-middle"
+                  onValueChange={(value) => {
+                    if (value !== direction && value !== "") {
+                      handleChangeDirection(value as "asc" | "desc");
+                    }
+                  }}
+                >
+                  <ToggleGroup.Item
+                    value="asc"
+                    className="flex items-center gap-x-2 align-middle"
+                  >
+                    <p
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
+                        direction === "asc"
+                          ? "font-semibold"
+                          : "font-normal text-gray-400"
+                      }`}
+                    >
+                      Oldest
+                    </p>
+                  </ToggleGroup.Item>
+                  <ToggleGroup.Item
+                    value="desc"
+                    className="flex items-center gap-x-2 align-middle"
+                  >
+                    <p
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
+                        direction === "desc"
+                          ? "font-semibold"
+                          : "font-normal text-gray-400"
+                      }`}
+                    >
+                      Newest
+                    </p>
+                  </ToggleGroup.Item>
+                </ToggleGroup.Root>
+              </div>
+
+              <div className="flex w-72 flex-row justify-between align-middle">
+                <div className="flex items-center gap-x-3 align-middle">
+                  <AnimatePresence mode="popLayout">
+                    {resolvedTheme === "light" ? (
+                      <motion.div
+                        key="light"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <SunIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="dark"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <MoonIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <p className="text-sm font-normal">Day or night</p>
+                  <Hotkey key1="k" key2="t" />
+                </div>
+                <ToggleGroup.Root
+                  type="single"
+                  defaultValue={resolvedTheme}
+                  className="flex items-center gap-x-2 align-middle"
+                  onValueChange={(value) => {
+                    if (value !== resolvedTheme && value !== "") {
+                      handleChangeTheme(value as "light" | "dark");
+                    }
+                  }}
+                >
+                  <ToggleGroup.Item
+                    value="light"
+                    className="flex items-center gap-x-2 align-middle"
+                  >
+                    <p
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
+                        resolvedTheme === "light"
+                          ? "font-semibold"
+                          : "font-normal text-gray-400"
+                      }`}
+                    >
+                      Day
+                    </p>
+                  </ToggleGroup.Item>
+                  <ToggleGroup.Item
+                    value="dark"
+                    className="flex items-center gap-x-2 align-middle"
+                  >
+                    <p
+                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
+                        resolvedTheme === "dark"
+                          ? "font-semibold"
+                          : "font-normal text-gray-400"
+                      }`}
+                    >
+                      Night
+                    </p>
+                  </ToggleGroup.Item>
+                </ToggleGroup.Root>
+              </div>
+
+              <div className="flex items-center justify-between gap-x-2 align-middle">
+                <div className="flex items-center gap-x-3 align-middle">
+                  <AnimatePresence mode="popLayout">
+                    {showMonths ? (
+                      <motion.div
+                        key="showMonths"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <CalendarIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="notShowMonths"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <LayoutIcon className="h-4 w-4 rotate-90 text-gray-800 dark:text-gray-400" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <p className="text-sm font-normal">Show months?</p>
+                  <Hotkey key1="k" key2="m" />
+                </div>
+                <Checkbox.Root
+                  defaultChecked={showMonths}
+                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
+                  onCheckedChange={() => {
+                    handleUpdateShowMonths();
+                  }}
+                >
+                  <motion.div
+                    whileTap={{
+                      scale: 0.8,
+                    }}
+                  >
+                    <Checkbox.Indicator>
+                      <CheckIcon className="h-4 w-4" />
+                    </Checkbox.Indicator>
+                  </motion.div>
+                </Checkbox.Root>
+              </div>
 
               <div className="flex items-center justify-between gap-x-2 align-middle">
                 <div className="flex items-center gap-x-3 align-middle">

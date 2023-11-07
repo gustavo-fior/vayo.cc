@@ -34,6 +34,7 @@
 - ✅  add a way to add a bookmark without opening the website (maybe a Chrome extension? google charges $5 for an account, fuck lp) (paid it) (waiting for approval) (done)
 - ✅  keyboard shortcuts
 - ✅  x, airbnb and docs links don't work (tks Elon) (check https://www.pexels.com/@googledeepmind/) (finally)
+- ✅  animate direction button
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌  add the last opened folder (folders are already sorted by the last update)
 - ❌  add a funny image at the end if list is long (didn´t like it)
@@ -44,7 +45,6 @@
 
 # TODO
 
-- 🔴  animate direction button
 - 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders)
 - 🟢  add animation to the deletion of a bookmark
 - 🟢  shared folder
