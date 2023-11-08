@@ -117,12 +117,14 @@ export const ProfileMenu = () => {
 
     setTimeout(() => {
       setIsOpen(true);
-    }, 500);
+    }, 300);
 
     setDirection(newDirection);
 
-    if (currentFolder)
-      currentFolder.bookmarks = currentFolder.bookmarks.reverse();
+    setTimeout(() => {
+      if (currentFolder)
+        currentFolder.bookmarks = currentFolder.bookmarks.reverse();
+    }, 100);
 
     updateUser.mutate({
       id: String(user.data?.id),

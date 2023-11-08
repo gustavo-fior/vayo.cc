@@ -14,7 +14,6 @@
 - ✅  fix scroll bug in emoji picker and exit when selected
 - ✅  add custom favicon and title to different folders
 - ✅  add direction button (asc, desc) (API already supports it)
-- ✅  default folder
 - ✅  migrate to jotai (migrated where global states are needed, really enjoyed it, made my life easier)  
 - ✅  add an option to verify duplicate
 - ✅  save last view style and last sorting
@@ -45,8 +44,10 @@
 
 # TODO
 
+- 🟡  default folder
 - 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders)
 - 🟢  add animation to the deletion of a bookmark
 - 🟢  shared folder
 - 🟢  improve perfomance
 - 🟢  add smooth appearance to shared hover state (tried couple times, can't make it work :/)
+

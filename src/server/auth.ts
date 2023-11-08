@@ -37,42 +37,51 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  // callbacks: {
+  //   async session({ session, user }) {
+  //     const dbUser = await prisma.user.findUnique({
+  //       where: { id: user.id },
+  //       select: { firstAccess: true },
+  //     });
+
+  //     if (dbUser?.firstAccess) {
+  //       try {
+  //         // Create a default folder for the user
+  //         await prisma.folder.create({
+  //           data: {
+  //             name: "Awesome stuff",
+  //             icon: "🐢",
+  //             userId: user.id,
+  //           },
+  //         });
+
+  //         // Update the user's firstAccess flag to false
+  //         await prisma.user.update({
+  //           where: { id: user.id },
+  //           data: { firstAccess: false },
+  //         });
+  //       } catch (error) {
+  //         console.error("Error creating default folder:", error);
+  //       }
+  //     }
+
+  //     return {
+  //       ...session,
+  //       user: {
+  //         ...session.user,
+  //         id: user.id,
+  //       },
+  //     };
+  //   },
+  // },
   callbacks: {
-    async session({ session, user }) {
-      const dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { firstAccess: true },
-      });
-
-      if (dbUser?.firstAccess) {
-        try {
-          // Create a default folder for the user
-          await prisma.folder.create({
-            data: {
-              name: "Awesome stuff",
-              icon: "🐢",
-              userId: user.id,
-            },
-          });
-
-          // Update the user's firstAccess flag to false
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { firstAccess: false },
-          });
-        } catch (error) {
-          console.error("Error creating default folder:", error);
-        }
-      }
-
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: user.id,
-        },
-      };
-    },
+    session: ({ session, user }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: user.id,
+      },
+    }),
   },
   adapter: PrismaAdapter(prisma),
   providers: [
