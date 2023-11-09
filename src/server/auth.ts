@@ -37,43 +37,6 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  // callbacks: {
-  //   async session({ session, user }) {
-  //     const dbUser = await prisma.user.findUnique({
-  //       where: { id: user.id },
-  //       select: { firstAccess: true },
-  //     });
-
-  //     if (dbUser?.firstAccess) {
-  //       try {
-  //         // Create a default folder for the user
-  //         await prisma.folder.create({
-  //           data: {
-  //             name: "Awesome stuff",
-  //             icon: "🐢",
-  //             userId: user.id,
-  //           },
-  //         });
-
-  //         // Update the user's firstAccess flag to false
-  //         await prisma.user.update({
-  //           where: { id: user.id },
-  //           data: { firstAccess: false },
-  //         });
-  //       } catch (error) {
-  //         console.error("Error creating default folder:", error);
-  //       }
-  //     }
-
-  //     return {
-  //       ...session,
-  //       user: {
-  //         ...session.user,
-  //         id: user.id,
-  //       },
-  //     };
-  //   },
-  // },
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
@@ -82,6 +45,33 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
+    async signIn({ user }) {
+      const dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { firstAccess: true },
+      });
+
+      if (dbUser?.firstAccess) {
+        try {
+          await prisma.folder.create({
+            data: {
+              name: "Awesome stuff",
+              icon: "🐢",
+              userId: user.id,
+            },
+          });
+
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { firstAccess: false },
+          });
+        } catch (error) {
+          console.error("Error creating default folder:", error);
+        }
+      }
+
+      return true;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -93,23 +83,9 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
   ],
 };
 
-/**
- * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
- *
- * @see https://next-auth.js.org/configuration/nextjs
- */
 export const getServerAuthSession = (ctx: {
   req: GetServerSidePropsContext["req"];
   res: GetServerSidePropsContext["res"];

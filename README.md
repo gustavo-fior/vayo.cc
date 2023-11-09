@@ -34,6 +34,7 @@
 - ✅  keyboard shortcuts
 - ✅  x, airbnb and docs links don't work (tks Elon) (check https://www.pexels.com/@googledeepmind/) (finally)
 - ✅  animate direction button
+- ✅  default folder
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌  add the last opened folder (folders are already sorted by the last update)
 - ❌  add a funny image at the end if list is long (didn´t like it)
@@ -44,7 +45,6 @@
 
 # TODO
 
-- 🟡  default folder
 - 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders)
 - 🟢  add animation to the deletion of a bookmark
 - 🟢  shared folder
