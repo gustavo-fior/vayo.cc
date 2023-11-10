@@ -32,7 +32,6 @@
 - ✅  add month separation
 - ✅  add a way to add a bookmark without opening the website (maybe a Chrome extension? google charges $5 for an account, fuck lp) (paid it) (waiting for approval) (done)
 - ✅  keyboard shortcuts
-- ✅  x, airbnb and docs links don't work (tks Elon) (check https://www.pexels.com/@googledeepmind/) (finally)
 - ✅  animate direction button
 - ✅  default folder
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
@@ -45,7 +44,8 @@
 
 # TODO
 
-- 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders)
+- 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders, maybe use [this](https://vaul.emilkowal.ski/))
+- 🟡  check why puppeteer does not work in production
 - 🟢  add animation to the deletion of a bookmark
 - 🟢  shared folder
 - 🟢  improve perfomance
