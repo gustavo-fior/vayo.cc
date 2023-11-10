@@ -23,8 +23,14 @@ export const ExpandedBookmark = ({
   const [isHovering, setIsHovering] = useState("");
 
   const handleImageError = () => {
+
+    console.log("error");
     setImageError(true);
   };
+
+  console.log(bookmark.ogImageUrl);
+
+  console.log(imageError);
 
   return (
     <ContextMenu.Root>

@@ -4,6 +4,7 @@
  */
 import "./src/env.mjs";
 
+
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
@@ -26,7 +27,9 @@ const config = {
   },
   experimental: {
     swcPlugins: [['@swc-jotai/react-refresh', {}]],
-    // outputFileTracingIgnores: ['**canvas**'],
+    outputFileTracingExcludes: {
+      '/api/trpc/[trpc]': ['./node_modules/canvas/build/**/*'],
+    },
   }
 };
 

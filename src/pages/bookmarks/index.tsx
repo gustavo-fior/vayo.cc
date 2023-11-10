@@ -174,7 +174,7 @@ export default function Bookmarks() {
         <title>{currentFolder?.name ?? "Bookmarks"}</title>
         <link rel="icon" href={getFaviconForFolder(currentFolder)} />
       </Head>
-      <main className="relative min-h-screen w-full bg-gradient-to-br from-[#dfdfdf] to-[#f5f5f5] dark:from-[#202020] dark:to-[black]">
+      <main className="relative min-h-screen w-full bg-[#e0e0e0] dark:bg-[#161616]">
         <div className="flex flex-col items-center">
           <div className="w-[20rem]  sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
             <div className="pt-16 pb-32">
