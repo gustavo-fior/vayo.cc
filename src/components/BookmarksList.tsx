@@ -1,4 +1,3 @@
-import { type Bookmark } from "@prisma/client";
 import { motion } from "framer-motion";
 import { CompactBookmark } from "./CompactBookmark";
 import { ExpandedBookmark } from "./ExpandedBookmark";
@@ -9,12 +8,26 @@ export const BookmarksList = ({
   viewStyle,
   handleDeleteBookmark,
 }: {
-  bookmarks: Bookmark[];
+  bookmarks: {
+    createdAt: Date;
+    id: string;
+    title: string;
+    url: string;
+    faviconUrl: string | null;
+    ogImageUrl: string | null;
+  }[];
   showMonths: boolean;
   viewStyle: "expanded" | "compact";
   handleDeleteBookmark?: (id: string) => void
 }) => {
-  let groupedBookmarks: Record<string, Bookmark[]> = {};
+  let groupedBookmarks: Record<string, {
+    createdAt: Date;
+    id: string;
+    title: string;
+    url: string;
+    faviconUrl: string | null;
+    ogImageUrl: string | null;
+  }[]> = {};
 
   if (showMonths) {
     groupedBookmarks = bookmarks.reduce((result, current) => {
@@ -27,7 +40,14 @@ export const BookmarksList = ({
       }
       result[month]?.push(current);
       return result;
-    }, {} as Record<string, Bookmark[]>);
+    }, {} as Record<string, {
+      createdAt: Date;
+      id: string;
+      title: string;
+      url: string;
+      faviconUrl: string | null;
+      ogImageUrl: string | null;
+    }[]>);
   }
 
   return showMonths ? (

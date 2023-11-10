@@ -1,16 +1,22 @@
-import { type Bookmark } from "@prisma/client";
 import * as ContextMenu from "@radix-ui/react-context-menu";
+import { Cross1Icon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { itemVariants } from "../helpers/animationVariants";
-import { Cross1Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
+import { itemVariants } from "../helpers/animationVariants";
 
 export const CompactBookmark = ({
   bookmark,
   onRemove,
 }: {
-  bookmark: Bookmark;
+  bookmark: {
+    createdAt: Date;
+    id: string;
+    title: string;
+    url: string;
+    faviconUrl: string | null;
+    ogImageUrl: string | null;
+  };
   onRemove?: (id: string) => void;
 }) => {
   const [isHovering, setIsHovering] = useState("");

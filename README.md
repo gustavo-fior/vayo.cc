@@ -14,7 +14,6 @@
 - ✅  fix scroll bug in emoji picker and exit when selected
 - ✅  add custom favicon and title to different folders
 - ✅  add direction button (asc, desc) (API already supports it)
-- ✅  default folder
 - ✅  migrate to jotai (migrated where global states are needed, really enjoyed it, made my life easier)  
 - ✅  add an option to verify duplicate
 - ✅  save last view style and last sorting
@@ -33,8 +32,8 @@
 - ✅  add month separation
 - ✅  add a way to add a bookmark without opening the website (maybe a Chrome extension? google charges $5 for an account, fuck lp) (paid it) (waiting for approval) (done)
 - ✅  keyboard shortcuts
-- ✅  x, airbnb and docs links don't work (tks Elon) (check https://www.pexels.com/@googledeepmind/) (finally)
 - ✅  animate direction button
+- ✅  default folder
 - ❌  preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌  add the last opened folder (folders are already sorted by the last update)
 - ❌  add a funny image at the end if list is long (didn´t like it)
@@ -45,8 +44,10 @@
 
 # TODO
 
-- 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders)
+- 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders, maybe use [this](https://vaul.emilkowal.ski/))
+- 🟡  check why puppeteer does not work in production
 - 🟢  add animation to the deletion of a bookmark
 - 🟢  shared folder
 - 🟢  improve perfomance
 - 🟢  add smooth appearance to shared hover state (tried couple times, can't make it work :/)
+

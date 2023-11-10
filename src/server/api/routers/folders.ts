@@ -59,9 +59,13 @@ export const foldersRouter = createTRPCRouter({
         where: {
           id: userId,
         },
+        select: {
+          lastDirection: true,
+        },
       });
 
-      const lastDirection : "asc" | "desc" = user?.lastDirection as "asc" | "desc" ?? "desc";
+      const lastDirection: "asc" | "desc" =
+        (user?.lastDirection as "asc" | "desc") ?? "desc";
 
       return await ctx.prisma.folder.findMany({
         where: {
@@ -69,6 +73,14 @@ export const foldersRouter = createTRPCRouter({
         },
         include: {
           bookmarks: {
+            select: {
+              id: true,
+              createdAt: true,
+              faviconUrl: true,
+              title: true,
+              ogImageUrl: true,
+              url: true,
+            },
             orderBy: {
               createdAt: lastDirection,
             },
