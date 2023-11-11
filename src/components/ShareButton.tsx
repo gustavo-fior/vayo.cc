@@ -189,7 +189,7 @@ export const ShareButton = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1 }}
                       >
-                        <CheckIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                        <CheckIcon className="h-4 w-4 text-gray-800 dark:text-white" />
                       </motion.div>
                     ) : (
                       <motion.div
