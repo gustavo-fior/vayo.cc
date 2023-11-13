@@ -44,6 +44,7 @@
 
 # TODO
 
+- 🟡  implement microlink api
 - 🟡  fix sort update animation in public pages 
 - 🟡  fix image error in public pages
 - 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders, maybe use [this](https://vaul.emilkowal.ski/))
