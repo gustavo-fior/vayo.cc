@@ -47,9 +47,7 @@
 - 🟡  fix sort update animation in public pages 
 - 🟡  fix image error in public pages
 - 🟡  allow users to edit and have a custom sort for folders (will need to redesign the folders, maybe use [this](https://vaul.emilkowal.ski/))
-- 🟡  check why puppeteer does not work in production
 - 🟢  add animation to the deletion of a bookmark
 - 🟢  shared folder
 - 🟢  improve perfomance
 - 🟢  add smooth appearance to shared hover state (tried couple times, can't make it work :/)
-

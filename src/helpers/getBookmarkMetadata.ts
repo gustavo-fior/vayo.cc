@@ -45,7 +45,7 @@ export const getBookmarkMetadata = async (
     // ERROR
     if (response.status >= 400) {
       console.log("error: " + response.status);
-      const { pageTitle, logo, image } = await getMetadataThroughLib(
+      const { pageTitle, logo, image } = getMetadataThroughMicrolinkAPI(
         url,
         null,
         null,
@@ -98,12 +98,16 @@ export const getBookmarkMetadata = async (
       getWebsiteName(url) === "X" ||
       getWebsiteName(url) === "twitter"
     ) {
-      const { pageTitle, logo, image } = await getMetadataThroughLib(
+      const { pageTitle, logo, image } = getMetadataThroughMicrolinkAPI(
         url,
         faviconUrl,
         null,
         null
       );
+
+      console.log("logo: " + logo);
+      console.log("image: " + image);
+      console.log("pageTitle: " + pageTitle);
 
       faviconUrl = logo;
       title = pageTitle ?? "";
@@ -288,8 +292,8 @@ const getTitle = async (url: string, document: Document): Promise<string> => {
     title =
       rootUrl.split("/")[2]?.split(".")[0] === "www"
         ? capitalizeFirstLetter(rootUrl.split("/")[2]?.split(".")[1] ?? "")
-        : capitalizeFirstLetter(rootUrl.split("/")[2]?.split(".")[0] ?? "");
-  }
+          : capitalizeFirstLetter(rootUrl.split("/")[2]?.split(".")[0] ?? "");
+    }
 
   return title;
 };
@@ -304,77 +308,80 @@ export const requestOptions: RequestInit = {
   },
 };
 
-const getMetadataThroughLib = async (
+const getMetadataThroughMicrolinkAPI = (
   url: string,
   faviconUrl?: string | null,
   title?: string | null,
   ogImageUrl?: string | null
-): Promise<{
+): {
   logo: string | null;
   image: string | null;
   pageTitle: string | null;
-}> => {
-  const getHTML = require("html-get");
-  const browserless = require("browserless")();
+} => {
+  fetch(`https://api.microlink.io/?url=${url}`)
+    .then((response) => response.json())
+    .then((data) => {
 
-  const getContent = async (url: string) => {
-    const browserContext = await browserless.createContext();
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      const html = await getHTML(url, { getBrowserless: () => browserContext });
-      return { html, browserContext };
-    } catch (error) {
-      console.error("Error retrieving HTML:", error);
-      return { html: null, browserContext };
-    }
+      const response = data as ApiResponse;
+
+      if (!faviconUrl) {
+        faviconUrl = response.data.logo.url;
+      }
+
+      if (!ogImageUrl) {
+        ogImageUrl = response.data.image.url;
+      }
+
+      if (!title) {
+        title = response.data.title;
+      }
+
+      return {
+        logo: faviconUrl ?? null,
+        image: ogImageUrl ?? null,
+        pageTitle: title ?? null,
+      };
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+
+
+  return {
+    logo: faviconUrl ?? null,
+    image: ogImageUrl ?? null,
+    pageTitle: title ?? null,
   };
+};
 
-  const metascraper = require("metascraper")([
-    require("metascraper-author")(),
-    require("metascraper-image")(),
-    require("metascraper-logo")(),
-    require("metascraper-title")(),
-    require("metascraper-url")(),
-  ]);
-
-  try {
-    const { html, browserContext } = await getContent(url);
-    const metadata = await metascraper(html);
-
-    console.log("metadata: " + JSON.stringify(metadata));
-
-    console.log("faviconUrl: " + faviconUrl);
-
-    if (!faviconUrl) {
-      faviconUrl = metadata.logo;
-    }
-
-    if (!ogImageUrl) {
-      ogImageUrl = metadata.image;
-    }
-
-    if (!title) {
-      title = metadata.title;
-    }
-
-    if (browserContext?.destroyContext) {
-      await browserContext.destroyContext();
-    }
-
-    browserless.close();
-
-    return {
-      logo: faviconUrl ?? null,
-      image: ogImageUrl ?? null,
-      pageTitle: title ?? null,
+type ApiResponse = {
+  status: string;
+  data: {
+    title: string;
+    description: string;
+    lang: string;
+    author: string | null;
+    publisher: string;
+    image: {
+      url: string;
+      type: string;
+      size: number;
+      height: number;
+      width: number;
+      size_pretty: string;
     };
-  } catch (error) {
-    console.error("Error getting metadata:", error);
-    browserless.close();
-    return {
-      logo: null,
-      image: null,
-      pageTitle: null,
+    date: string;
+    url: string;
+    logo: {
+      url: string;
+      type: string;
+      size: number;
+      height: number;
+      width: number;
+      size_pretty: string;
     };
-  }
+  };
+  statusCode: number;
+  headers: Record<string, string | number | null | string[] | undefined>;
 };
