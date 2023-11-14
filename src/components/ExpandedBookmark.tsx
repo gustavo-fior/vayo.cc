@@ -23,14 +23,8 @@ export const ExpandedBookmark = ({
   const [isHovering, setIsHovering] = useState("");
 
   const handleImageError = () => {
-
-    console.log("error");
     setImageError(true);
   };
-
-  console.log(bookmark.ogImageUrl);
-
-  console.log(imageError);
 
   return (
     <ContextMenu.Root>
@@ -72,6 +66,7 @@ export const ExpandedBookmark = ({
                     className="hidden rounded-md md:block"
                   >
                     <Image
+                    priority
                       src={String(bookmark.ogImageUrl)}
                       alt={bookmark.title}
                       width={320}

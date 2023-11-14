@@ -5,7 +5,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { BookmarksList } from "~/components/BookmarksList";
-import { DirectionButton } from "~/components/DirectionButton";
 import { EmptyState } from "~/components/EmptyState";
 import { RectangleSkeleton } from "~/components/RectangleSkeleton";
 import { Separator } from "~/components/Separator";
@@ -19,12 +18,11 @@ import { api } from "~/utils/api";
 
 export default function Bookmarks() {
   const router = useRouter();
-  const utils = api.useContext();
   const { folderId } = router.query;
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [showMonths, setShowMonths] = useState(false);
-  const [direction, setDirection] = useState<"asc" | "desc">("desc");
+  const [direction] = useState<"asc" | "desc">("desc");
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
   );
@@ -44,17 +42,6 @@ export default function Bookmarks() {
     setViewStyle(viewStyle === "compact" ? "expanded" : "compact");
   };
 
-  const handleChangeDirection = () => {
-    setIsOpen(false);
-
-    setTimeout(() => {
-      setIsOpen(true);
-    }, 10);
-
-    setDirection(direction === "asc" ? "desc" : "asc");
-    void utils.bookmarks.findByFolderId.invalidate();
-  };
-
   const handleChangeTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
@@ -70,7 +57,7 @@ export default function Bookmarks() {
   };
 
   useEffect(() => {
-    if (folder.data?.isShared && !folder.isLoading) {
+    if (folder.data?.isShared && !folder.isLoading && !isOpen) {
       setIsOpen(true);
     }
   }, [folder]);
@@ -87,7 +74,7 @@ export default function Bookmarks() {
             <div className="flex flex-col items-center justify-between gap-8 px-2 align-middle font-semibold text-black dark:text-white md:flex-row md:gap-0">
               {folder?.isLoading ? (
                 <motion.div
-                  key="loading"
+                  key="folderNameLoading"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -98,7 +85,7 @@ export default function Bookmarks() {
                 </motion.div>
               ) : (
                 <motion.div
-                  key="loaded"
+                  key="folderNameLoaded"
                   initial={{ opacity: 0, y: 2 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 0 }}
@@ -119,7 +106,7 @@ export default function Bookmarks() {
               {folder?.data?.isShared && (
                 <div className="flex items-center gap-6 align-middle md:gap-2">
                   <motion.div
-                    key="loaded"
+                    key="viewButtonLoaded"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -131,19 +118,7 @@ export default function Bookmarks() {
                     />
                   </motion.div>
                   <motion.div
-                    key="loaded"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <DirectionButton
-                      direction={direction}
-                      handleChangeDirection={handleChangeDirection}
-                    />
-                  </motion.div>
-                  <motion.div
-                    key="loaded"
+                    key="themeButtonLoaded"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -155,7 +130,7 @@ export default function Bookmarks() {
                     />
                   </motion.div>
                   <motion.div
-                    key="loaded"
+                    key="showMonthsButtonLoaded"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -167,7 +142,7 @@ export default function Bookmarks() {
                     />
                   </motion.div>
                   <motion.div
-                    key="loaded"
+                    key="shareLinkButtonLoaded"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -180,16 +155,13 @@ export default function Bookmarks() {
             </div>
           </AnimatePresence>
 
-          <div className={`mx-2 mt-6 mb-2`}>
+          <div className={`mx-2 mb-2 mt-6`}>
             <Separator />
           </div>
 
           {folder?.isLoading && <SkeletonList viewStyle={viewStyle} />}
           {folder?.data?.isShared && (
-            <motion.div
-              initial={false}
-              animate={isOpen ? "open" : "closed"}
-            >
+            <motion.div initial={false} animate={isOpen ? "open" : "closed"}>
               <motion.ul
                 className={`flex flex-col`}
                 variants={{

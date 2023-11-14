@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import fetch, { type RequestInit } from "node-fetch";
 import { URL } from "url";
 import { capitalizeFirstLetter } from "./capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "./getCommonFavicons";
+import { JSDOM } from "jsdom";
 
 export const getBookmarkMetadata = async (
   url: string,
@@ -45,7 +45,7 @@ export const getBookmarkMetadata = async (
     // ERROR
     if (response.status >= 400) {
       console.log("error: " + response.status);
-      const { pageTitle, logo, image } = getMetadataThroughMicrolinkAPI(
+      const { pageTitle, logo, image } = await getMetadataThroughMicrolinkAPI(
         url,
         null,
         null,
@@ -73,8 +73,6 @@ export const getBookmarkMetadata = async (
     }
 
     const html = await response.text();
-
-    const { JSDOM } = require("jsdom");
     const dom = new JSDOM(html);
     const document: Document = dom.window.document;
 
@@ -88,8 +86,6 @@ export const getBookmarkMetadata = async (
       faviconUrl = await getFaviconUrl(url, document);
     }
 
-    console.log("faviconUrl: " + faviconUrl);
-
     if (
       !faviconUrl ||
       !title ||
@@ -98,16 +94,12 @@ export const getBookmarkMetadata = async (
       getWebsiteName(url) === "X" ||
       getWebsiteName(url) === "twitter"
     ) {
-      const { pageTitle, logo, image } = getMetadataThroughMicrolinkAPI(
+      const { pageTitle, logo, image } = await getMetadataThroughMicrolinkAPI(
         url,
         faviconUrl,
         null,
         null
       );
-
-      console.log("logo: " + logo);
-      console.log("image: " + image);
-      console.log("pageTitle: " + pageTitle);
 
       faviconUrl = logo;
       title = pageTitle ?? "";
@@ -189,7 +181,6 @@ const getFaviconUrl = async (
   if (!faviconUrl && new URL(url).pathname !== "/") {
     const response = await fetch(new URL("/", url).href, requestOptions);
     const html = await response.text();
-    const { JSDOM } = require("jsdom");
     const dom = new JSDOM(html);
     const document: Document = dom.window.document;
 
@@ -250,7 +241,6 @@ const getOgImageUrl = async (
   if (!ogImageUrl && new URL(url).pathname !== "/") {
     const response = await fetch(new URL("/", url).href, requestOptions);
     const html = await response.text();
-    const { JSDOM } = require("jsdom");
     const dom = new JSDOM(html);
     const document: Document = dom.window.document;
 
@@ -277,7 +267,6 @@ const getTitle = async (url: string, document: Document): Promise<string> => {
   if (!title) {
     const response = await fetch(rootUrl, requestOptions);
     const html = await response.text();
-    const { JSDOM } = require("jsdom");
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
@@ -292,8 +281,8 @@ const getTitle = async (url: string, document: Document): Promise<string> => {
     title =
       rootUrl.split("/")[2]?.split(".")[0] === "www"
         ? capitalizeFirstLetter(rootUrl.split("/")[2]?.split(".")[1] ?? "")
-          : capitalizeFirstLetter(rootUrl.split("/")[2]?.split(".")[0] ?? "");
-    }
+        : capitalizeFirstLetter(rootUrl.split("/")[2]?.split(".")[0] ?? "");
+  }
 
   return title;
 };
@@ -308,45 +297,35 @@ export const requestOptions: RequestInit = {
   },
 };
 
-const getMetadataThroughMicrolinkAPI = (
+const getMetadataThroughMicrolinkAPI = async (
   url: string,
   faviconUrl?: string | null,
   title?: string | null,
   ogImageUrl?: string | null
-): {
+): Promise<{
   logo: string | null;
   image: string | null;
   pageTitle: string | null;
-} => {
-  fetch(`https://api.microlink.io/?url=${url}`)
-    .then((response) => response.json())
-    .then((data) => {
+}> => {
+  const response1 = await fetch(`https://api.microlink.io/?url=${url}`);
 
-      const response = data as ApiResponse;
+  if (!response1.ok) {
+    throw new Error("Microlink API error");
+  }
 
-      if (!faviconUrl) {
-        faviconUrl = response.data.logo.url;
-      }
+  const jsonResponse = (await response1.json()) as ApiResponse;
 
-      if (!ogImageUrl) {
-        ogImageUrl = response.data.image.url;
-      }
+  if (faviconUrl === null) {
+    faviconUrl = jsonResponse.data.logo.url;
+  }
 
-      if (!title) {
-        title = response.data.title;
-      }
+  if (title === null) {
+    title = jsonResponse.data.title;
+  }
 
-      return {
-        logo: faviconUrl ?? null,
-        image: ogImageUrl ?? null,
-        pageTitle: title ?? null,
-      };
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-
-
+  if (ogImageUrl === null) {
+    ogImageUrl = jsonResponse.data.image.url;
+  }
 
   return {
     logo: faviconUrl ?? null,

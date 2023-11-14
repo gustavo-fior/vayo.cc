@@ -27,10 +27,12 @@ export const CompactBookmark = ({
         <motion.li
           variants={itemVariants}
           key={bookmark.id}
-          onMouseEnter={() => {
+          onHoverStart={() => {
             setIsHovering(bookmark.id);
           }}
-          onMouseLeave={() => setIsHovering("")}
+          onHoverEnd={() => {
+            setIsHovering("");
+          }}
           className="relative border-b-4 border-transparent hover:cursor-pointer"
           onClick={() => {
             window.open(bookmark.url, "_blank");
@@ -40,6 +42,9 @@ export const CompactBookmark = ({
             <motion.div
               whileHover={{ scale: 1.015 }}
               transition={{ duration: 0.4 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               layoutId="bookmark"
               className="absolute left-0 top-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
             />

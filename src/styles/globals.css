@@ -30,4 +30,8 @@
   firefox-scrollbar-fix {
     scrollbar-width: none;
   }
+
+  .success-toast {
+    background-color: #4caf50;
+  }
 }
