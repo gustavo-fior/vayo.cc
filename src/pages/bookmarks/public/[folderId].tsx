@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { BookmarksList } from "~/components/BookmarksList";
 import { EmptyState } from "~/components/EmptyState";
 import { RectangleSkeleton } from "~/components/RectangleSkeleton";
+import { ScrollToTopButton } from "~/components/ScrollToTopButton";
 import { Separator } from "~/components/Separator";
 import { ShareLinkButton } from "~/components/ShareLinkButton";
 import { ShowMonthsButton } from "~/components/ShowMonthsButton";
@@ -69,6 +70,8 @@ export default function Bookmarks() {
         <link rel="icon" href={getFaviconForFolder(folder.data)} />
       </Head>
       <main className="flex min-h-screen w-full flex-col items-center bg-[#e0e0e0] dark:bg-[#161616]">
+      <ScrollToTopButton />
+
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
           <AnimatePresence mode="wait">
             <div className="flex flex-col items-center justify-between gap-8 px-2 align-middle font-semibold text-black dark:text-white md:flex-row md:gap-0">

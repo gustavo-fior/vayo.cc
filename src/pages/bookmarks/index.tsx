@@ -28,6 +28,7 @@ import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
 import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
 import { api } from "~/utils/api";
+import { ScrollToTopButton } from "~/components/ScrollToTopButton";
 
 export default function Bookmarks() {
   const session = useSession();
@@ -176,6 +177,7 @@ export default function Bookmarks() {
       </Head>
       <main className="relative min-h-screen w-full bg-[#e0e0e0] dark:bg-[#161616]">
         <div className="flex flex-col items-center">
+          <ScrollToTopButton />
           <div className="w-[20rem]  sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
             <div className="pb-32 pt-16">
               <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
