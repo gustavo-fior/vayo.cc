@@ -316,15 +316,15 @@ const getMetadataThroughMicrolinkAPI = async (
   const jsonResponse = (await response1.json()) as ApiResponse;
 
   if (faviconUrl === null) {
-    faviconUrl = jsonResponse.data.logo.url;
+    faviconUrl = jsonResponse.data?.logo?.url;
   }
 
   if (title === null) {
-    title = jsonResponse.data.title;
+    title = jsonResponse.data?.title;
   }
 
   if (ogImageUrl === null) {
-    ogImageUrl = jsonResponse.data.image.url;
+    ogImageUrl = jsonResponse.data?.image?.url;
   }
 
   return {

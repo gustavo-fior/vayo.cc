@@ -177,7 +177,7 @@ export default function Bookmarks() {
       <main className="relative min-h-screen w-full bg-[#e0e0e0] dark:bg-[#161616]">
         <div className="flex flex-col items-center">
           <div className="w-[20rem]  sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-            <div className="pt-16 pb-32">
+            <div className="pb-32 pt-16">
               <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
                 <motion.form
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -267,7 +267,7 @@ export default function Bookmarks() {
                     folders?.map((folder) => (
                       <motion.div
                         whileTap={{
-                          scale: 0.8,
+                          scale: 0.9,
                         }}
                         onClick={() => {
                           if (
@@ -282,8 +282,8 @@ export default function Bookmarks() {
                         className={`${
                           currentFolder?.id === folder.id
                             ? "bg-black/20 dark:bg-white/30"
-                            : ""
-                        } group flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 align-middle font-semibold text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20`}
+                            : "hover:bg-black/20 dark:hover:bg-white/20"
+                        } group flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 align-middle font-semibold text-black no-underline transition hover:cursor-pointer  dark:bg-white/10 dark:text-white `}
                       >
                         {folder.icon && <div>{folder.icon}</div>}
                         <div>{folder.name}</div>
