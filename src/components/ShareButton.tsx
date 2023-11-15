@@ -159,6 +159,7 @@ export const ShareButton = () => {
                   }`}
                   type="text"
                   value={
+                    "https://" +
                     window.location.hostname +
                     "/bookmarks/public/" +
                     currentFolder?.id
