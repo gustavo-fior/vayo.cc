@@ -50,5 +50,7 @@
 # TODO
 
 - 🟡 allow users to edit and have a custom sort for folders (will need to redesign the folders, maybe use [this](https://vaul.emilkowal.ski/))
+- 🟡 fix hover animations (try tailwind)
 - 🟢 improve perfomance (optimize font)
 - 🟢 add dynamic og to public pages
+
