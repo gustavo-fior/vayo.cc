@@ -28,6 +28,7 @@ export const ShareButton = () => {
 
   const handleCopyToClipboard = async () => {
     const url =
+    "https://" +
       window.location.hostname + "/bookmarks/public/" + currentFolder?.id;
     await navigator.clipboard.writeText(url);
   };
