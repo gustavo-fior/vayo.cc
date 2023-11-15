@@ -4,7 +4,7 @@ import { getSession, signIn } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
-import { BsGithub, BsGoogle } from "react-icons/bs";
+import { BsGithub, BsGoogle } from "react-icons/bs/";
 import { Spinner } from "~/components/Spinner";
 
 export default function Home() {

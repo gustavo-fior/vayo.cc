@@ -6,7 +6,7 @@ export const ScrollToTopButton = () => {
 
   const handleScroll = () => {
     const scrollY = window.scrollY;
-    setIsVisible(scrollY > 1000); // Adjust the threshold as needed
+    setIsVisible(scrollY > 1000); 
   };
 
   const scrollToTop = () => {
@@ -26,11 +26,11 @@ export const ScrollToTopButton = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-24 right-96 rounded-full dark:bg-white/10 bg-black/10 p-3 dark:text-white text-black transition-opacity duration-300 ${
+      className={`fixed bottom-[4rem] right-[7rem] hidden rounded-full bg-black/10 p-3 text-black transition duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 lg:block xl:bottom-[6rem] xl:right-[10rem] ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}
     >
-      <ArrowUpIcon className="h-4 w-4" />
+      <ArrowUpIcon className="h-4 w-4 text-black dark:text-white" />
     </button>
   );
 };
