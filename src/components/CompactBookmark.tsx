@@ -1,6 +1,6 @@
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Cross1Icon } from "@radix-ui/react-icons";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
 import { itemVariants } from "../helpers/animationVariants";
@@ -38,14 +38,18 @@ export const CompactBookmark = ({
             window.open(bookmark.url, "_blank");
           }}
         >
-          {isHovering === bookmark.id && (
-            <motion.div
-              whileHover={{ scale: 1.015 }}
-              transition={{ duration: 0.4 }}
-              layoutId="bookmark"
-              className="absolute left-0 top-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
-            />
-          )}
+          <AnimatePresence>
+            {isHovering === bookmark.id && (
+              <motion.div
+                transition={{ duration: 0.4 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                layoutId="bookmark"
+                className="absolute left-0 top-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
+              />
+            )}
+          </AnimatePresence>
           <motion.div
             whileHover={{ scale: 1.015 }}
             whileTap={{ scale: 0.98 }}
@@ -98,7 +102,7 @@ export const CompactBookmark = ({
                     : { opacity: 0 }
                 }
                 exit={{ opacity: 0 }}
-                className="z-50 pr-1 font-bold text-slate-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
+                className="z-50 pr-2 font-bold text-slate-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent the click event from propagating
                   onRemove ? onRemove(bookmark.id) : null;

@@ -4,7 +4,7 @@
 
 @layer components {
   ::selection {
-    background: #494949;
+    background: #6b6b6b;
   }
 
   ::-webkit-scrollbar {

@@ -216,7 +216,7 @@ export default function Bookmarks() {
                       onChange={(e) => setInputUrl(e.target.value)}
                       placeholder="https://..."
                       className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-slate-600 transition duration-300 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
-                        isDuplicate ? "ring-2 ring-red-500 focus:ring-0" : ""
+                        isDuplicate ? "ring-2 ring-red-500 focus:outline-none animate-shake" : ""
                       }`}
                     />
                     <motion.button

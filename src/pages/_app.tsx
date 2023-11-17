@@ -1,4 +1,3 @@
-import { GeistProvider } from "@geist-ui/core";
 import "@radix-ui/themes/styles.css";
 import { Analytics } from "@vercel/analytics/react";
 import "inter-ui/inter.css";
@@ -16,11 +15,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <ThemeProvider attribute="class" disableTransitionOnChange>
-        <GeistProvider>
           {/* <CssBaseline /> */}
           <Component {...pageProps} />
           <Analytics />
-        </GeistProvider>
       </ThemeProvider>
     </SessionProvider>
   );

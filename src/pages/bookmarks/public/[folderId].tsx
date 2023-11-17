@@ -68,9 +68,27 @@ export default function Bookmarks() {
       <Head>
         <title>{folder?.data?.name ?? "Bookmarks"}</title>
         <link rel="icon" href={getFaviconForFolder(folder.data)} />
+        <meta
+          name="description"
+          content="Looking for cool bookmarks? Check out this folder!"
+        />
+        <meta property="og:title" content={folder?.data?.name ?? "Bookmarks"} />
+        <meta
+          property="og:description"
+          content="Looking for cool bookmarks? Check out this folder!"
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content={`https://bookmarks.gustavofior.com/api/og?title=${
+            folder?.data?.icon
+              ? folder?.data?.icon + "  " + folder?.data?.name
+              : "Bookmarks"
+          }`}
+        />
       </Head>
       <main className="flex min-h-screen w-full flex-col items-center bg-[#e0e0e0] dark:bg-[#161616]">
-      <ScrollToTopButton />
+        <ScrollToTopButton />
 
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
           <AnimatePresence mode="wait">

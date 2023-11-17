@@ -36,6 +36,8 @@
 - ✅ default folder
 - ✅ implement microlink api
 - ✅ fix image error in public pages
+- ✅ add smooth appearance to shared hover state (tried couple times, can't make it work :/) FINALLY
+- ✅ add dynamic og to public pages
 - ❌ fix sort update animation in public pages (removed it)
 - ❌ preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌ add the last opened folder (folders are already sorted by the last update)
@@ -45,12 +47,9 @@
 - ❌ update things in db after 2 secs of no changes, not right after in every change (overengineering as fuck)
 - ❌ fix ghost bookmarks when deleting (maybe useDebounce) (not happening in production)
 - ⚠️ add animation to the deletion of a bookmark (tried a million times, need help)
-- ⚠️ add smooth appearance to shared hover state (tried couple times, can't make it work :/)
 
 # TODO
 
 - 🟡 allow users to edit and have a custom sort for folders (will need to redesign the folders, maybe use [this](https://vaul.emilkowal.ski/))
-- 🟡 fix hover animations (try tailwind)
-- 🟢 improve perfomance (optimize font)
-- 🟢 add dynamic og to public pages
+- 🟡 improve perfomance
 

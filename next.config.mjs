@@ -24,6 +24,7 @@ const config = {
         hostname: "**",
       },
     ],
+    
   },
   experimental: {
     swcPlugins: [['@swc-jotai/react-refresh', {}]],

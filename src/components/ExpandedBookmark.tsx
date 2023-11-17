@@ -42,15 +42,20 @@ export const ExpandedBookmark = ({
               window.open(bookmark.url, "_blank");
             }}
           >
-            {isHovering === bookmark.id && (
-              <motion.div
-                transition={{ duration: 0.35 }}
-                layoutId="bookmark"
-                className="absolute left-0 top-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
-              />
-            )}
+            <AnimatePresence>
+              {isHovering === bookmark.id && (
+                <motion.div
+                  transition={{ duration: 0.4 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  layoutId="bookmark"
+                  className="absolute left-0 top-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
+                />
+              )}
+            </AnimatePresence>
             <motion.div
-              whileHover={{ scale: 1.01 }}
+              whileHover={{ scale: 1.015 }}
               whileTap={{ scale: 0.98 }}
               className={`z-10 flex justify-between rounded-lg px-3 py-2 transition duration-500 ease-in-out`}
             >
@@ -66,7 +71,7 @@ export const ExpandedBookmark = ({
                     className="hidden rounded-md md:block"
                   >
                     <Image
-                    priority
+                      priority
                       src={String(bookmark.ogImageUrl)}
                       alt={bookmark.title}
                       width={320}
@@ -141,7 +146,7 @@ export const ExpandedBookmark = ({
                       : { opacity: 0 }
                   }
                   exit={{ opacity: 0 }}
-                  className="z-50 pr-4 font-bold text-slate-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
+                  className="z-50 pr-6 font-bold text-slate-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent the click event from propagating
                     onRemove ? onRemove(bookmark.id) : null;
