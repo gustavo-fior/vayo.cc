@@ -38,6 +38,7 @@
 - ✅ fix image error in public pages
 - ✅ add smooth appearance to shared hover state (tried couple times, can't make it work :/) FINALLY
 - ✅ add dynamic og to public pages
+- ✅ fix custom og image
 - ❌ fix sort update animation in public pages (removed it)
 - ❌ preview yt videos (figured out there's no reason to implement this, the user can literally click and watch it on yt)
 - ❌ add the last opened folder (folders are already sorted by the last update)
@@ -52,7 +53,6 @@
 
 - 🟡 allow users to edit and have a custom sort for folders (will need to redesign the folders, maybe use [this](https://vaul.emilkowal.ski/))
 - 🟡 improve perfomance
-- 🟡 fix custom og image
 - 🟡 fix duplicate save in extension
 - 🟡 cooldown in public page buttons
 - MAJOR redesign (use [rauno](https://twitter.com/raunofreiberg/status/1653471349854093327) as inspiration)

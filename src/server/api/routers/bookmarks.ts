@@ -15,6 +15,25 @@ export const bookmarksRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const folder = await ctx.prisma.folder.findUnique({
+        where: {
+          id: input.folderId,
+        },
+      });
+
+      if (!folder?.allowDuplicate) {
+        const existingBookmark = await ctx.prisma.bookmark.findFirst({
+          where: {
+            url: input.url,
+            folderId: input.folderId,
+          },
+        });
+
+        if (existingBookmark) {
+          return Error("Bookmark already exists");
+        }
+      }
+
       const { title, faviconUrl, ogImageUrl } = await getBookmarkMetadata(
         input.url
       );
