@@ -80,9 +80,7 @@ export default function Bookmarks() {
         <meta property="og:type" content="website" />
         <meta
           property="og:image"
-          content={`https://bookmarks.gustavofior.com/api/og?id=${
-            folderId as string
-          }`}
+          content={`https://bookmarks.gustavofior.com/api/og`}
         />
       </Head>
       <main className="flex min-h-screen w-full flex-col items-center bg-[#e0e0e0] dark:bg-[#161616]">

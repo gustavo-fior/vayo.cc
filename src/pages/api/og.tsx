@@ -1,31 +1,11 @@
-import { type Folder } from "@prisma/client";
 import { ImageResponse } from "@vercel/og";
-import { type NextRequest } from "next/server";
 
 export const config = {
   runtime: "edge",
 };
 
-export default async function handler(request: NextRequest) {
+export default async function handler() {
   try {
-    const { searchParams } = new URL(request.url);
-
-    const req = await fetch(
-      `https://bookmarks.gustavofior.com/api/trpc/folders.findNameAndIconById?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22id%22%3A%22${searchParams.get(
-        "id"
-      )}%22%7D%7D%7D`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const resp = await req.json();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const folder = resp[0].result.data.json as Folder;
-
     const fontData = await fetch(
       new URL("../../../assets/Inter-Bold.ttf", import.meta.url)
     ).then((res) => res.arrayBuffer());
@@ -34,8 +14,7 @@ export default async function handler(request: NextRequest) {
       (
         <div
           style={{
-            backgroundColor: "black",
-            backgroundSize: "150px 150px",
+            background: "linear-gradient(to bottom right, #000000, #111111)",
             height: "100%",
             width: "100%",
             display: "flex",
@@ -44,8 +23,22 @@ export default async function handler(request: NextRequest) {
             justifyContent: "center",
             flexDirection: "column",
             flexWrap: "nowrap",
+            position: "relative",
           }}
         >
+          {/* Texture overlay */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background: "url('https://img.freepik.com/premium-vector/abstract-dark-background-small-squares-pixels-shades-black-gray-colors_444390-496.jpg')", // Replace with the path to your texture image
+              opacity: 0.15, // Adjust the opacity as needed
+            }}
+          ></div>
+
           <div
             style={{
               display: "flex",
@@ -65,10 +58,10 @@ export default async function handler(request: NextRequest) {
               padding: "0 120px",
               lineHeight: 1.4,
               whiteSpace: "pre-wrap",
-              marginLeft: 40,
+              marginLeft: 48,
             }}
           >
-            {folder.icon ? folder?.icon + " " + folder?.name : folder?.name}
+            Bookmarks
           </div>
         </div>
       ),
