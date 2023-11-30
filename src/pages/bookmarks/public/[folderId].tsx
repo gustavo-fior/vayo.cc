@@ -83,7 +83,7 @@ export default function Bookmarks() {
           content={`https://bookmarks.gustavofior.com/api/og?title=${
             folder?.data?.icon
               ? folder?.data?.icon + "  " + folder?.data?.name
-              : "Bookmarks"
+              : folder?.data?.name ?? "Bookmarks"
           }`}
         />
       </Head>

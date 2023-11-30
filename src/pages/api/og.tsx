@@ -9,7 +9,6 @@ export default async function handler(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
 
-    // ?title=<title>
     const hasTitle = searchParams.has("title");
     const title = hasTitle
       ? searchParams.get("title")?.slice(0, 100)
@@ -29,24 +28,25 @@ export default async function handler(request: NextRequest) {
             width: "100%",
             display: "flex",
             textAlign: "center",
-            alignItems: "center",
+            alignItems: "flex-start",
             justifyContent: "center",
             flexDirection: "column",
             flexWrap: "nowrap",
+            
           }}
         >
           <div
             style={{
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              justifyItems: "center",
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+              justifyItems: "flex-start",
             }}
           ></div>
           <div
             tw="font-bold"
             style={{
-              fontSize: 72,
+              fontSize: 96,
               letterSpacing: "-0.025em",
               fontFamily: "Inter",
               color: "white",
@@ -54,6 +54,7 @@ export default async function handler(request: NextRequest) {
               padding: "0 120px",
               lineHeight: 1.4,
               whiteSpace: "pre-wrap",
+              marginLeft: 40,
             }}
           >
             {title}
