@@ -78,6 +78,7 @@ export default function Bookmarks() {
           content="Looking for cool bookmarks? Check out this folder!"
         />
         <meta property="og:type" content="website" />
+        {folder?.data && (
         <meta
           property="og:image"
           content={`https://bookmarks.gustavofior.com/api/og?title=${
@@ -86,6 +87,7 @@ export default function Bookmarks() {
               : folder?.data?.name ?? "Bookmarks"
           }`}
         />
+        )}
       </Head>
       <main className="flex min-h-screen w-full flex-col items-center bg-[#e0e0e0] dark:bg-[#161616]">
         <ScrollToTopButton />
