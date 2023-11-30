@@ -81,11 +81,7 @@ export default function Bookmarks() {
         {folder?.data && (
         <meta
           property="og:image"
-          content={`https://bookmarks.gustavofior.com/api/og?title=${
-            folder?.data?.icon
-              ? folder?.data?.icon + "  " + folder?.data?.name
-              : folder?.data?.name ?? "Bookmarks"
-          }`}
+          content={`https://bookmarks.gustavofior.com/api/og?id=${folderId as string}`}
         />
         )}
       </Head>

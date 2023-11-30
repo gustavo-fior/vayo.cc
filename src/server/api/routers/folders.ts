@@ -27,6 +27,23 @@ export const foldersRouter = createTRPCRouter({
         },
       });
     }),
+  findNameAndIconById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      return await ctx.prisma.folder.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          name: true,
+          icon: true,
+        },
+      });
+    }),
   create: protectedProcedure
     .input(
       z.object({
