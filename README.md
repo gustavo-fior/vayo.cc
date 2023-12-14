@@ -55,5 +55,6 @@
 - 🟡 improve perfomance
 - 🟡 fix duplicate save in extension
 - 🟡 cooldown in public page buttons
+- 🟡 x icon does not work
 - MAJOR redesign (use [rauno](https://twitter.com/raunofreiberg/status/1653471349854093327) as inspiration)
 
