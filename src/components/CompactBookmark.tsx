@@ -46,14 +46,13 @@ export const CompactBookmark = ({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 layoutId="bookmark"
-                className="absolute left-0 top-0 h-full w-full rounded-lg bg-black/5 dark:bg-white/5"
+                className="absolute left-0 top-0 h-full w-full rounded-2xl bg-black/5 dark:bg-white/5"
               />
             )}
           </AnimatePresence>
           <motion.div
-            whileHover={{ scale: 1.015 }}
             whileTap={{ scale: 0.98 }}
-            className="flex rounded-lg px-2 py-3 align-middle transition duration-500 ease-in-out md:px-4"
+            className="flex rounded-lg p-3 align-middle transition duration-500 ease-in-out"
           >
             <div className="flex w-full items-center justify-between align-middle">
               <div className="z-10 flex flex-row items-center gap-3 align-middle">
@@ -95,7 +94,7 @@ export const CompactBookmark = ({
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.1 }}
                 animate={
                   isHovering
                     ? { opacity: 1, transition: { delay: 0.5 } }
@@ -104,7 +103,7 @@ export const CompactBookmark = ({
                 exit={{ opacity: 0 }}
                 className="z-50 pr-2 font-bold text-slate-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent the click event from propagating
+                  e.stopPropagation(); 
                   onRemove ? onRemove(bookmark.id) : null;
                 }}
               >
@@ -115,7 +114,7 @@ export const CompactBookmark = ({
         </motion.li>
       </ContextMenu.Trigger>
       <ContextMenu.Portal>
-        <ContextMenu.Content className="rounded-md bg-black/10 px-4 py-2 align-middle no-underline backdrop-blur-lg transition duration-300 ease-in-out hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20">
+        <ContextMenu.Content className="z-50 rounded-md bg-black/10 px-4 py-2 align-middle no-underline backdrop-blur-lg transition duration-300 ease-in-out hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20">
           <ContextMenu.Item
             className="text-black outline-none focus:outline-none dark:text-white"
             onClick={() => {
