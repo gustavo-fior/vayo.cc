@@ -1,7 +1,5 @@
 import * as Checkbox from "@radix-ui/react-checkbox";
 import {
-  ArrowDownIcon,
-  ArrowUpIcon,
   CalendarIcon,
   CheckIcon,
   CopyIcon,
@@ -24,7 +22,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   currentFolderAtom,
-  directionAtom,
   isOpenAtom,
   showMonthsAtom,
   viewStyleAtom,
@@ -39,7 +36,6 @@ export const ProfileMenu = () => {
   const session = useSession();
   const utils = api.useContext();
   const [signinOut, setSigninOut] = useState(false);
-  const [direction, setDirection] = useAtom(directionAtom);
   const [, setIsOpen] = useAtom(isOpenAtom);
   const { resolvedTheme, setTheme } = useTheme();
   const [viewStyle, setViewStyle] = useAtom(viewStyleAtom);
@@ -86,16 +82,6 @@ export const ProfileMenu = () => {
     }
   );
 
-  useHotkeys(
-    "k+s",
-    () => {
-      handleChangeDirection(direction === "asc" ? "desc" : "asc");
-    },
-    {
-      enableOnFormTags: false,
-    }
-  );
-
   const user = api.users.findByUserId.useQuery({
     userId: session.data?.user?.id ?? "",
   });
@@ -111,28 +97,6 @@ export const ProfileMenu = () => {
       void utils.folders.findById.invalidate();
     },
   });
-
-  const handleChangeDirection = (newDirection: "asc" | "desc") => {
-    setIsOpen(false);
-
-    setTimeout(() => {
-      setIsOpen(true);
-    }, 300);
-
-    setDirection(newDirection);
-
-    setTimeout(() => {
-      if (currentFolder)
-        currentFolder.bookmarks = currentFolder.bookmarks.reverse();
-    }, 100);
-
-    updateUser.mutate({
-      id: String(user.data?.id),
-      lastDirection: newDirection,
-      lastViewStyle: viewStyle,
-      lastShowMonths: showMonths,
-    });
-  };
 
   const handleChangeTheme = (newTheme: "light" | "dark") => {
     setTheme(newTheme);
@@ -180,7 +144,6 @@ export const ProfileMenu = () => {
 
     void updateUser.mutateAsync({
       id: String(user.data?.id),
-      lastDirection: direction,
       lastViewStyle: newViewStyle,
       lastShowMonths: showMonths,
     });
@@ -197,16 +160,12 @@ export const ProfileMenu = () => {
 
     void updateUser.mutateAsync({
       id: String(user.data?.id),
-      lastDirection: direction,
       lastViewStyle: viewStyle,
       lastShowMonths: !showMonths,
     });
   };
 
   useEffect(() => {
-    user.data?.lastDirection &&
-      user.data?.lastDirection !== direction &&
-      setDirection(user.data?.lastDirection as "asc" | "desc");
     user.data?.lastViewStyle &&
       user.data?.lastViewStyle !== viewStyle &&
       setViewStyle(user.data?.lastViewStyle as "compact" | "expanded");
@@ -320,73 +279,6 @@ export const ProfileMenu = () => {
                       }`}
                     >
                       Expanded
-                    </p>
-                  </ToggleGroup.Item>
-                </ToggleGroup.Root>
-              </div>
-
-              <div className="flex w-72 flex-row justify-between align-middle">
-                <div className="flex items-center gap-x-3 align-middle">
-                  <AnimatePresence mode="popLayout">
-                    {direction === "asc" ? (
-                      <motion.div
-                        key="asc"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                      >
-                        <ArrowUpIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="desc"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                      >
-                        <ArrowDownIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <p className="text-sm font-normal">Sort by</p>
-                  <Hotkey key1="k" key2="s" />
-                </div>
-                <ToggleGroup.Root
-                  type="single"
-                  defaultValue={direction}
-                  className="flex items-center gap-x-2 align-middle"
-                  onValueChange={(value) => {
-                    if (value !== direction && value !== "") {
-                      handleChangeDirection(value as "asc" | "desc");
-                    }
-                  }}
-                >
-                  <ToggleGroup.Item
-                    value="asc"
-                    className="flex items-center gap-x-2 align-middle"
-                  >
-                    <p
-                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                        direction === "asc"
-                          ? "font-semibold"
-                          : "font-normal text-gray-400"
-                      }`}
-                    >
-                      Oldest
-                    </p>
-                  </ToggleGroup.Item>
-                  <ToggleGroup.Item
-                    value="desc"
-                    className="flex items-center gap-x-2 align-middle"
-                  >
-                    <p
-                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
-                        direction === "desc"
-                          ? "font-semibold"
-                          : "font-normal text-gray-400"
-                      }`}
-                    >
-                      Newest
                     </p>
                   </ToggleGroup.Item>
                 </ToggleGroup.Root>

@@ -10,7 +10,6 @@ export const foldersRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        direction: z.enum(["asc", "desc"]).nullable(),
       })
     )
     .query(async ({ input, ctx }) => {
@@ -21,7 +20,7 @@ export const foldersRouter = createTRPCRouter({
         include: {
           bookmarks: {
             orderBy: {
-              createdAt: input.direction ?? "desc",
+              createdAt: "desc",
             },
           },
         },
@@ -67,22 +66,12 @@ export const foldersRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string().nullable(),
+        skip: z.number().default(0),
+        take: z.number().default(20),
       })
     )
     .query(async ({ input, ctx }) => {
       const userId = input.userId ?? ctx.session.user.id;
-
-      const user = await ctx.prisma.user.findUnique({
-        where: {
-          id: userId,
-        },
-        select: {
-          lastDirection: true,
-        },
-      });
-
-      const lastDirection: "asc" | "desc" =
-        (user?.lastDirection as "asc" | "desc") ?? "desc";
 
       return await ctx.prisma.folder.findMany({
         where: {
@@ -99,8 +88,10 @@ export const foldersRouter = createTRPCRouter({
               url: true,
             },
             orderBy: {
-              createdAt: lastDirection,
+              createdAt: "desc",
             },
+            // skip: input.skip,
+            // take: input.take,
           },
         },
         orderBy: {

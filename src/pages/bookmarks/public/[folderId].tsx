@@ -23,14 +23,12 @@ export default function Bookmarks() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [showMonths, setShowMonths] = useState(false);
-  const [direction] = useState<"asc" | "desc">("desc");
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
     "expanded"
   );
 
   const folder = api.folders.findById.useQuery({
-    id: String(folderId),
-    direction,
+    id: String(folderId)
   });
 
   const handleChangeViewStyle = () => {

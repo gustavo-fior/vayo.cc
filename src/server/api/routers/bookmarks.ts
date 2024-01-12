@@ -52,7 +52,6 @@ export const bookmarksRouter = createTRPCRouter({
     .input(
       z.object({
         folderId: z.string(),
-        direction: z.enum(["asc", "desc"]),
       })
     )
     .query(async ({ input, ctx }) => {
@@ -61,7 +60,7 @@ export const bookmarksRouter = createTRPCRouter({
           folderId: input.folderId,
         },
         orderBy: {
-          createdAt: input.direction,
+          createdAt: "desc"
         },
       });
     }),

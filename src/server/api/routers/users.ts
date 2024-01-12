@@ -26,7 +26,6 @@ export const usersRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         lastViewStyle: z.string(),
-        lastDirection: z.string(),
         lastShowMonths: z.boolean(),
       })
     )
@@ -37,7 +36,6 @@ export const usersRouter = createTRPCRouter({
         },
         data: {
           lastViewStyle: input.lastViewStyle,
-          lastDirection: input.lastDirection,
           lastShowMonths: input.lastShowMonths,
         },
       });

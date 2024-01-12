@@ -19,7 +19,6 @@ import { SkeletonList } from "~/components/SkeletonList";
 import { Spinner } from "~/components/Spinner";
 import {
   currentFolderAtom,
-  directionAtom,
   isOpenAtom,
   viewStyleAtom,
   showMonthsAtom,
@@ -37,7 +36,6 @@ export default function Bookmarks() {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [viewStyle] = useAtom(viewStyleAtom);
-  const [direction] = useAtom(directionAtom);
   const [showMonths] = useAtom(showMonthsAtom);
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
 
@@ -76,11 +74,7 @@ export default function Bookmarks() {
         updatedAt: new Date(),
       };
 
-      if (direction === "desc") {
         currentFolder?.bookmarks?.unshift(newBookmark);
-      } else {
-        currentFolder?.bookmarks?.push(newBookmark);
-      }
     },
     onSettled: () => {
       void utils.folders.findByUserId.refetch();
@@ -91,7 +85,7 @@ export default function Bookmarks() {
         null;
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolder?.id), direction: direction },
+        { folderId: String(currentFolder?.id) },
         previousBookmarks!
       );
     },
@@ -119,7 +113,7 @@ export default function Bookmarks() {
         null;
 
       utils.bookmarks.findByFolderId.setData(
-        { folderId: String(currentFolder?.id), direction: direction },
+        { folderId: String(currentFolder?.id) },
         previousBookmarks!
       );
     },
@@ -147,27 +141,6 @@ export default function Bookmarks() {
       setIsOpen(true);
     }
   }, [foldersLoading, currentFolder, setIsOpen]);
-
-  // Scroll to the newly created bookmark
-  useEffect(() => {
-    const elementToScrollTo = document.getElementById("temp");
-
-    if (elementToScrollTo) {
-      // Get the element's position relative to the viewport
-      const elementRect = elementToScrollTo.getBoundingClientRect();
-
-      // Check if the element is not in the viewport
-      if (
-        elementRect.top < 0 ||
-        elementRect.bottom > window.innerHeight ||
-        elementRect.left < 0 ||
-        elementRect.right > window.innerWidth
-      ) {
-        // Scroll to the element
-        elementToScrollTo.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }, [currentFolder?.bookmarks?.length]);
 
   return (
     <>
