@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { CompactBookmark } from "./CompactBookmark";
 import { ExpandedBookmark } from "./ExpandedBookmark";
+import { randomUUID } from "crypto";
 
 export const BookmarksList = ({
   bookmarks,
@@ -18,36 +19,45 @@ export const BookmarksList = ({
   }[];
   showMonths: boolean;
   viewStyle: "expanded" | "compact";
-  handleDeleteBookmark?: (id: string) => void
+  handleDeleteBookmark?: (id: string) => void;
 }) => {
-  let groupedBookmarks: Record<string, {
-    createdAt: Date;
-    id: string;
-    title: string;
-    url: string;
-    faviconUrl: string | null;
-    ogImageUrl: string | null;
-  }[]> = {};
-
-  if (showMonths) {
-    groupedBookmarks = bookmarks.reduce((result, current) => {
-      const date = new Date(current.createdAt);
-      const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(
-        date
-      );
-      if (!result[month]) {
-        result[month] = [];
-      }
-      result[month]?.push(current);
-      return result;
-    }, {} as Record<string, {
+  let groupedBookmarks: Record<
+    string,
+    {
       createdAt: Date;
       id: string;
       title: string;
       url: string;
       faviconUrl: string | null;
       ogImageUrl: string | null;
-    }[]>);
+    }[]
+  > = {};
+
+  if (showMonths) {
+    groupedBookmarks = bookmarks.reduce(
+      (result, current) => {
+        const date = new Date(current.createdAt);
+        const month = new Intl.DateTimeFormat("en-US", {
+          month: "long",
+        }).format(date);
+        if (!result[month]) {
+          result[month] = [];
+        }
+        result[month]?.push(current);
+        return result;
+      },
+      {} as Record<
+        string,
+        {
+          createdAt: Date;
+          id: string;
+          title: string;
+          url: string;
+          faviconUrl: string | null;
+          ogImageUrl: string | null;
+        }[]
+      >
+    );
   }
 
   return showMonths ? (
@@ -60,10 +70,9 @@ export const BookmarksList = ({
                 <motion.h3
                   initial={{
                     opacity: 0,
-                    x: -10,
                   }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 0.2 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
                   className="pb-2 pl-2 pt-4 text-2xl font-bold text-black dark:text-white"
                 >
                   {month}
@@ -72,10 +81,9 @@ export const BookmarksList = ({
                 <motion.h2
                   initial={{
                     opacity: 0,
-                    x: -10,
                   }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 0.2 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
                   className="pb-2 pl-2 pt-4 text-2xl font-bold text-black dark:text-white"
                 >
                   {month}

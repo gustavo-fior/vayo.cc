@@ -46,11 +46,11 @@ export default function Bookmarks() {
   };
 
   const handleShowMonths = () => {
-    setIsOpen(false);
+    // setIsOpen(false);
 
-    setTimeout(() => {
-      setIsOpen(true);
-    }, 10);
+    // setTimeout(() => {
+    //   setIsOpen(true);
+    // }, 10);
 
     setShowMonths(!showMonths);
   };
