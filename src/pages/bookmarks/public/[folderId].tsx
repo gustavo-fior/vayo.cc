@@ -95,7 +95,6 @@ export default function Bookmarks() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
                   className="pt-2"
                 >
                   <RectangleSkeleton />
@@ -103,10 +102,9 @@ export default function Bookmarks() {
               ) : (
                 <motion.div
                   key="folderNameLoaded"
-                  initial={{ opacity: 0, y: 2 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 0 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                 >
                   {folder?.data?.isShared ? (
                     <div className="flex items-center gap-3 align-middle">
@@ -127,7 +125,6 @@ export default function Bookmarks() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
                   >
                     <ViewButton
                       viewStyle={viewStyle}
@@ -139,7 +136,6 @@ export default function Bookmarks() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
                   >
                     <ThemeButton
                       theme={theme ?? ""}
@@ -151,7 +147,6 @@ export default function Bookmarks() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
                   >
                     <ShowMonthsButton
                       showMonths={showMonths}
@@ -163,7 +158,6 @@ export default function Bookmarks() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
                   >
                     <ShareLinkButton folderId={folderId as string} />
                   </motion.div>
@@ -172,34 +166,14 @@ export default function Bookmarks() {
             </div>
           </AnimatePresence>
 
-          <div className={`mx-2 mb-2 mt-6`}>
+          <div className={`mx-2 mt-6`}>
             <Separator />
           </div>
 
           {folder?.isLoading && <SkeletonList viewStyle={viewStyle} />}
           {folder?.data?.isShared && (
             <motion.div initial={false} animate={isOpen ? "open" : "closed"}>
-              <motion.ul
-                className={`flex flex-col`}
-                variants={{
-                  open: {
-                    transition: {
-                      type: "spring",
-                      bounce: 0,
-                      duration: 0.7,
-                      delayChildren: 0.2,
-                      staggerChildren: 0.08,
-                    },
-                  },
-                  closed: {
-                    transition: {
-                      type: "spring",
-                      bounce: 0,
-                      duration: 0.3,
-                    },
-                  },
-                }}
-              >
+              <motion.ul className={`flex flex-col`}>
                 {folder?.data?.bookmarks &&
                 folder?.data?.bookmarks?.length > 0 ? (
                   <BookmarksList

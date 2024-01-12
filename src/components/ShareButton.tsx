@@ -64,11 +64,11 @@ export const ShareButton = () => {
       <Popover.Trigger asChild>
         <motion.button
           whileTap={{
-            scale: 0.8,
+            scale: 0.95,
           }}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           className="black:text-white rounded-full bg-black/10 p-3 text-black no-underline transition hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
         >
           <div className="flex items-center gap-x-2 align-middle">
@@ -111,18 +111,18 @@ export const ShareButton = () => {
                     {currentFolder?.isShared ? (
                       <motion.div
                         key="allowDuplicate"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                       >
                         <LockOpen1Icon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
                     ) : (
                       <motion.div
                         key="notAllowDuplicate"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                       >
                         <LockClosedIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                       </motion.div>
@@ -139,7 +139,7 @@ export const ShareButton = () => {
                 >
                   <motion.div
                     whileTap={{
-                      scale: 0.8,
+                      scale: 0.95,
                     }}
                   >
                     <Checkbox.Indicator>
@@ -170,7 +170,7 @@ export const ShareButton = () => {
                 <AnimatePresence mode="popLayout">
                   <motion.button
                     whileTap={{
-                      scale: 0.8,
+                      scale: 0.95,
                     }}
                     disabled={!currentFolder?.isShared}
                     onClick={() => {
@@ -187,18 +187,18 @@ export const ShareButton = () => {
                     {copied ? (
                       <motion.div
                         key={"copied"}
-                        initial={{ opacity: 0, scale: 1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 1 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                       >
                         <CheckIcon className="h-4 w-4 text-gray-800 dark:text-white" />
                       </motion.div>
                     ) : (
                       <motion.div
                         key={"copy"}
-                        initial={{ opacity: 0, scale: 1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 1 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                       >
                         <Link1Icon
                           className={`h-4 w-4 transition duration-300 ease-in-out ${

@@ -72,9 +72,9 @@ export const DeleteFolderButton = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0}}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
     >
       <Popover.Root
         open={popverOpen}
@@ -85,11 +85,11 @@ export const DeleteFolderButton = () => {
         <Popover.Trigger asChild>
           <motion.button
             whileTap={{
-              scale: 0.8,
+              scale: 0.95,
             }}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             type="submit"
             disabled={isDeletingFolder}
             className="rounded-full bg-black/10 p-3.5 align-middle font-semibold text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
@@ -120,13 +120,13 @@ export const DeleteFolderButton = () => {
               </div>
               <Separator />
               <p className="px-1 text-xs font-normal text-gray-800 dark:text-gray-400">
-                Are you sure? All <b>{currentFolder?.bookmarks.length}</b> bookmarks in
+                Are you sure? All <b className="dark:text-white text-black">{currentFolder?.bookmarks.length}</b> bookmarks in
                 this folder will be deleted...
               </p>
               <div className="flex w-full gap-2">
                 <motion.button
                   whileTap={{
-                    scale: 0.8,
+                    scale: 0.95,
                   }}
                   type="button"
                   className="w-full rounded-md bg-black/10 px-3 py-2 align-middle text-sm no-underline transition hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
@@ -138,7 +138,7 @@ export const DeleteFolderButton = () => {
                 </motion.button>
                 <motion.button
                   whileTap={{
-                    scale: 0.8,
+                    scale: 0.95,
                   }}
                   type="button"
                   className="w-full rounded-md bg-red-500 px-3  py-2 align-middle text-sm font-normal no-underline transition hover:cursor-pointer hover:bg-red-600"

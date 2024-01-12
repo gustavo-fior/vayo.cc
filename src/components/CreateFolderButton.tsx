@@ -93,9 +93,9 @@ export const CreateFolderButton = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
     >
       <Popover.Root
         open={popverOpen}
@@ -110,11 +110,11 @@ export const CreateFolderButton = () => {
       >
         <Popover.Trigger asChild>
           <motion.button
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0}}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             whileTap={{
-              scale: 0.8,
+              scale: 0.95,
             }}
             type="submit"
             disabled={isCreatingFolder}
@@ -198,11 +198,11 @@ export const CreateFolderButton = () => {
                       </Popover.Portal>
                     </Popover.Root>
                     <motion.button
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       whileTap={{
-                        scale: 0.8,
+                        scale: 0.95,
                       }}
                       type="button"
                       disabled={isCreatingFolder || icon.length === 0}
@@ -240,7 +240,7 @@ export const CreateFolderButton = () => {
               </div>
               <motion.button
                 whileTap={{
-                  scale: 0.8,
+                  scale: 0.95,
                 }}
                 type="submit"
                 disabled={isCreatingFolder}

@@ -220,11 +220,11 @@ export const ProfileMenu = () => {
       <Popover.Trigger asChild>
         <motion.button
           whileTap={{
-            scale: 0.8,
+            scale: 0.95,
           }}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           className="rounded-full bg-black/10 p-2 text-black no-underline transition hover:bg-black/20 dark:bg-white/10 dark:text-white dark:dark:hover:bg-white/20"
         >
           <div className="flex items-center gap-x-2 align-middle">

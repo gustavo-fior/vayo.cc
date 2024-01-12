@@ -122,6 +122,7 @@ export const ExpandedBookmark = ({
                         className="rounded-sm"
                         style={{ height: "0.9rem", width: "0.9rem" }}
                         sizes="(max-width: 320px) 100vw, 48px"
+                        priority
                       />
                     ) : (
                       <div

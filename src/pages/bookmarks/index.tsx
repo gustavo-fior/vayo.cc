@@ -182,9 +182,9 @@ export default function Bookmarks() {
             <div className="pb-32 pt-16">
               <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
                 <motion.form
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   onSubmit={(e) => {
                     e.preventDefault();
 
@@ -216,12 +216,14 @@ export default function Bookmarks() {
                       onChange={(e) => setInputUrl(e.target.value)}
                       placeholder="https://..."
                       className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-slate-600 transition duration-300 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
-                        isDuplicate ? "ring-2 ring-red-500 focus:outline-none animate-shake" : ""
+                        isDuplicate
+                          ? "animate-shake ring-2 ring-red-500 focus:outline-none"
+                          : ""
                       }`}
                     />
                     <motion.button
                       whileTap={{
-                        scale: 0.8,
+                        scale: 0.95,
                       }}
                       type="submit"
                       disabled={
@@ -256,9 +258,9 @@ export default function Bookmarks() {
 
               <div className="flex justify-between px-0 align-middle md:px-2">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   className="flex items-center gap-x-2 overflow-x-auto "
                 >
                   {foldersLoading ? (
@@ -269,7 +271,7 @@ export default function Bookmarks() {
                     folders?.map((folder) => (
                       <motion.div
                         whileTap={{
-                          scale: 0.9,
+                          scale: 0.95,
                         }}
                         onClick={() => {
                           if (
@@ -308,27 +310,7 @@ export default function Bookmarks() {
                   animate={isOpen ? "open" : "closed"}
                   className="flex flex-col gap-8"
                 >
-                  <motion.ul
-                    className={`flex flex-col`}
-                    variants={{
-                      open: {
-                        transition: {
-                          type: "spring",
-                          bounce: 0,
-                          duration: 0.7,
-                          staggerChildren: 0.08,
-                          delayChildren: 0.2,
-                        },
-                      },
-                      closed: {
-                        transition: {
-                          type: "spring",
-                          bounce: 0,
-                          duration: 0.3,
-                        },
-                      },
-                    }}
-                  >
+                  <motion.ul className={`flex flex-col`}>
                     {foldersLoading ? (
                       <SkeletonList viewStyle={viewStyle} />
                     ) : currentFolder?.bookmarks &&
@@ -353,6 +335,7 @@ export default function Bookmarks() {
     </>
   );
 }
+
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
