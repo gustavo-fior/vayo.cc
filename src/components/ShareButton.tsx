@@ -44,7 +44,6 @@ export const ShareButton = () => {
       icon: String(currentFolder?.icon),
       createdAt: currentFolder?.createdAt ?? new Date(),
       updatedAt: currentFolder?.updatedAt ?? new Date(),
-      bookmarks: currentFolder?.bookmarks ?? [],
       userId: String(currentFolder?.userId),
     };
 

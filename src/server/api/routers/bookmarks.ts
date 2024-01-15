@@ -52,17 +52,31 @@ export const bookmarksRouter = createTRPCRouter({
     .input(
       z.object({
         folderId: z.string(),
+        page: z.number().optional(),
       })
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.prisma.bookmark.findMany({
+      const bookmarks = await ctx.prisma.bookmark.findMany({
         where: {
           folderId: input.folderId,
         },
         orderBy: {
-          createdAt: "desc"
+          createdAt: "desc",
+        },
+        skip: input.page ? (input.page - 1) * 30 : undefined,
+        take: 30,
+      });
+
+      const totalElements = await ctx.prisma.bookmark.count({
+        where: {
+          folderId: input.folderId,
         },
       });
+
+      return {
+        bookmarks,
+        totalElements,
+      };
     }),
   delete: protectedProcedure
     .input(

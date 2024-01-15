@@ -4,7 +4,11 @@ import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { currentFolderAtom } from "~/helpers/atoms";
+import {
+  bookmarksAtom,
+  currentFolderAtom,
+  totalBookmarksAtom,
+} from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { Separator } from "./Separator";
 import { Spinner } from "./Spinner";
@@ -13,7 +17,9 @@ export const DeleteFolderButton = () => {
   const session = useSession();
   const utils = api.useContext();
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
+  const [bookmarks] = useAtom(bookmarksAtom);
   const [popverOpen, setPopverOpen] = useState(false);
+  const [totalBookmarks] = useAtom(totalBookmarksAtom);
 
   const { mutate: deleteFolder, isLoading: isDeletingFolder } =
     api.folders.delete.useMutation({
@@ -72,7 +78,7 @@ export const DeleteFolderButton = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0}}
+      initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
@@ -120,8 +126,9 @@ export const DeleteFolderButton = () => {
               </div>
               <Separator />
               <p className="px-1 text-xs font-normal text-gray-800 dark:text-gray-400">
-                Are you sure? All <b className="dark:text-white text-black">{currentFolder?.bookmarks.length}</b> bookmarks in
-                this folder will be deleted...
+                Are you sure? All{" "}
+                <b className="text-black dark:text-white">{totalBookmarks}</b>{" "}
+                bookmarks in this folder will be deleted...
               </p>
               <div className="flex w-full gap-2">
                 <motion.button
