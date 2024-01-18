@@ -78,7 +78,7 @@ export const foldersRouter = createTRPCRouter({
           userId: userId,
         },
         orderBy: {
-          updatedAt: "asc",
+          updatedAt: "desc",
         },
       });
     }),

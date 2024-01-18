@@ -1,7 +1,6 @@
 import { type Bookmark } from "@prisma/client";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useAtom } from "jotai";
-import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
@@ -19,12 +18,12 @@ import { SkeletonList } from "~/components/SkeletonList";
 import { Spinner } from "~/components/Spinner";
 import {
   currentFolderAtom,
-totalBookmarksAtom,
+  totalBookmarksAtom,
   isOpenAtom,
   viewStyleAtom,
   showMonthsAtom,
   foldersAtom,
-  bookmarksAtom
+  bookmarksAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
@@ -47,7 +46,7 @@ export default function Bookmarks() {
   const [totalBookmarks, setTotalBookmarks] = useAtom(totalBookmarksAtom);
   const [folders, setFolders] = useAtom(foldersAtom);
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   api.folders.findByUserId.useQuery(
     {
@@ -75,10 +74,23 @@ export default function Bookmarks() {
     },
     {
       onSuccess: (data) => {
-        if (data.bookmarks && data?.bookmarks.length > 0) {
+        if (data?.bookmarks) {
           setBookmarks((prevBookmarks) => {
-            if (prevBookmarks) {
-              return [...prevBookmarks, ...data.bookmarks];
+
+            const newBookmarks = data.bookmarks.filter((bookmark) => {
+              return !prevBookmarks?.find(
+                (prevBookmark) => prevBookmark.id === bookmark.id
+              );
+            });
+            
+            // remove bookmarks that have temp as id
+            const prev = prevBookmarks?.filter((prevBookmark) => {
+              return prevBookmark.id !== "temp";
+            }
+            );
+
+            if (prev) {
+              return [...prev, ...newBookmarks];
             }
 
             return data.bookmarks;
@@ -108,8 +120,8 @@ export default function Bookmarks() {
 
       bookmarks?.unshift(newBookmark);
     },
-    onSettled: () => {
-      void utils.bookmarks.findByFolderId.refetch();
+    onSettled: async () => {
+      await fetchBookmarks.refetch();
     },
     onError: (context) => {
       const previousBookmarks =
@@ -140,7 +152,7 @@ export default function Bookmarks() {
       }
     },
     onSettled: () => {
-      void utils.folders.findByUserId.refetch();
+      void fetchBookmarks.refetch();
     },
     onError: (context) => {
       const previousBookmarks =
@@ -180,7 +192,9 @@ export default function Bookmarks() {
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        setCurrentPage((prevPage) => prevPage + 1);
+        if (bookmarks?.length !== totalBookmarks && !fetchBookmarks.isLoading) {
+          setCurrentPage((prevPage) => prevPage + 1);
+        }
       }
     };
 
@@ -189,13 +203,13 @@ export default function Bookmarks() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [bookmarks?.length, totalBookmarks, fetchBookmarks.isLoading]);
 
+  // log every change in bookmarks length
   useEffect(() => {
-    if (currentFolder) {
-      void fetchBookmarks.refetch();
-    }
-  }, [currentFolder]);
+    console.log("bookmarks length changed", bookmarks?.length);
+  }
+  , [bookmarks?.length]);
 
   return (
     <>
@@ -209,9 +223,9 @@ export default function Bookmarks() {
             <div className="pb-32 pt-16">
               <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
                 <motion.form
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   onSubmit={(e) => {
                     e.preventDefault();
 
@@ -240,13 +254,13 @@ export default function Bookmarks() {
                       disabled={addBookmark.isLoading || !currentFolder}
                       onChange={(e) => setInputUrl(e.target.value)}
                       placeholder="https://..."
-                      className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-slate-600 transition duration-300 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
-                        isDuplicate ? "ring-2 ring-red-500 focus:ring-0" : ""
+                      className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-slate-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
+                        isDuplicate ? "ring-2 ring-red-500 focus:ring-red-500 animate-shake" : ""
                       }`}
                     />
                     <motion.button
                       whileTap={{
-                        scale: 0.8,
+                        scale: 0.95,
                       }}
                       type="submit"
                       disabled={
@@ -254,7 +268,7 @@ export default function Bookmarks() {
                         addBookmark.isLoading ||
                         !currentFolder
                       }
-                      className={`duration-300'hover:bg-white/20 rounded-full bg-black/10 p-3 transition dark:bg-white/10 ${
+                      className={`duration-200 hover:bg-black/20 dark:hover:bg-white/20 rounded-full bg-black/10 p-3 transition dark:bg-white/10 ${
                         inputUrl.length === 0 || addBookmark.isLoading
                           ? "bg-black/5 dark:bg-white/5"
                           : null
@@ -281,9 +295,9 @@ export default function Bookmarks() {
 
               <div className="flex justify-between px-0 align-middle md:px-2">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   className="flex items-center gap-x-2 overflow-x-auto "
                 >
                   {!folders ? (
@@ -294,7 +308,7 @@ export default function Bookmarks() {
                     folders.map((folder) => (
                       <motion.div
                         whileTap={{
-                          scale: 0.8,
+                          scale: 0.95,
                         }}
                         onClick={() => {
                           if (
@@ -329,35 +343,32 @@ export default function Bookmarks() {
                   <CreateFolderButton />
                 </div>
               </div>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  initial={isOpen}
-                  animate={isOpen ? "open" : "closed"}
-                  className="flex flex-col gap-8"
-                >
-                  <motion.ul className={`flex flex-col`}>
-                    {!bookmarks ? (
-                      <SkeletonList viewStyle={viewStyle} />
-                    ) : bookmarks?.length > 0 ? (
-                      <BookmarksList
-                        bookmarks={bookmarks}
-                        showMonths={showMonths}
-                        viewStyle={viewStyle}
-                        handleDeleteBookmark={handleDeleteBookmark}
-                      />
-                    ) : (
-                      bookmarks?.length === 0 && <EmptyState />
-                    )}
-                  </motion.ul>
-                </motion.div>
-              </AnimatePresence>
+              <motion.div
+                initial={isOpen}
+                animate={isOpen ? "open" : "closed"}
+                className="flex flex-col gap-8"
+              >
+                <motion.ul className={`flex flex-col`}>
+                  {!bookmarks && fetchBookmarks.isFetching ? (
+                    <SkeletonList viewStyle={viewStyle} />
+                  ) : bookmarks && bookmarks?.length > 0 ? (
+                    <BookmarksList
+                      bookmarks={bookmarks}
+                      showMonths={showMonths}
+                      viewStyle={viewStyle}
+                      handleDeleteBookmark={handleDeleteBookmark}
+                    />
+                  ) : (
+                    totalBookmarks === 0 && bookmarks && bookmarks.length === 0 && !fetchBookmarks.isFetching && <EmptyState />
+                  )}
+                </motion.ul>
+              </motion.div>
               <div className="flex justify-center pt-10 align-middle">
                 {fetchBookmarks.isFetching &&
                   bookmarks &&
                   bookmarks?.length > 0 && <Spinner size="md" />}
               </div>
             </div>
-            {/* {bookmarks && bookmarks?.length > 30 && <ListLongImage />} */}
           </div>
         </div>
       </main>

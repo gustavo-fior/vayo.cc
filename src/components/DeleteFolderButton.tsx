@@ -5,7 +5,6 @@ import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import {
-  bookmarksAtom,
   currentFolderAtom,
   totalBookmarksAtom,
 } from "~/helpers/atoms";
@@ -17,7 +16,6 @@ export const DeleteFolderButton = () => {
   const session = useSession();
   const utils = api.useContext();
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
-  const [bookmarks] = useAtom(bookmarksAtom);
   const [popverOpen, setPopverOpen] = useState(false);
   const [totalBookmarks] = useAtom(totalBookmarksAtom);
 
@@ -98,7 +96,7 @@ export const DeleteFolderButton = () => {
             exit={{ opacity: 0 }}
             type="submit"
             disabled={isDeletingFolder}
-            className="rounded-full bg-black/10 p-3.5 align-middle font-semibold text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
+            className="rounded-full bg-black/10 p-3.5 align-middle font-semibold text-black no-underline transition duration-200 hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
             onClick={() => {
               setPopverOpen(true);
             }}
@@ -136,7 +134,7 @@ export const DeleteFolderButton = () => {
                     scale: 0.95,
                   }}
                   type="button"
-                  className="w-full rounded-md bg-black/10 px-3 py-2 align-middle text-sm no-underline transition hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
+                  className="w-full rounded-md bg-black/10 px-3 py-2 align-middle text-sm no-underline transition duration-200 hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
                   onClick={() => {
                     setPopverOpen(false);
                   }}
@@ -148,7 +146,7 @@ export const DeleteFolderButton = () => {
                     scale: 0.95,
                   }}
                   type="button"
-                  className="w-full rounded-md bg-red-500 px-3  py-2 align-middle text-sm font-normal no-underline transition hover:cursor-pointer hover:bg-red-600"
+                  className="w-full rounded-md bg-red-500 px-3  py-2 align-middle text-sm font-normal no-underline transition duration-200 hover:cursor-pointer hover:bg-red-600"
                   onClick={() => {
                     void handleDelete();
                     setPopverOpen(false);

@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { CompactBookmark } from "./CompactBookmark";
 import { ExpandedBookmark } from "./ExpandedBookmark";
-import { randomUUID } from "crypto";
 
 export const BookmarksList = ({
   bookmarks,
