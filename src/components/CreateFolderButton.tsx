@@ -15,12 +15,17 @@ import { Separator } from "./Separator";
 import { Spinner } from "./Spinner";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Hotkey } from "./Hotkey";
+import { foldersAtom, currentFolderAtom, bookmarksAtom } from "~/helpers/atoms";
+import { useAtom } from "jotai";
 
 export const CreateFolderButton = () => {
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [popverOpen, setPopverOpen] = useState(false);
+  const [, setFolders] = useAtom(foldersAtom);
+  const [, setCurrentFolder] = useAtom(currentFolderAtom);
+  const [, setBookmarks] = useAtom(bookmarksAtom);
   const session = useSession();
   const utils = api.useContext();
 
@@ -36,7 +41,10 @@ export const CreateFolderButton = () => {
 
   const { mutate: createFolder, isLoading: isCreatingFolder } =
     api.folders.create.useMutation({
-      onSuccess: async () => {
+      onSuccess: async (data) => {
+        setCurrentFolder(data);
+        setBookmarks([]);
+
         await utils.folders.findByUserId.invalidate({
           userId: String(session?.data?.user?.id),
         });
@@ -56,26 +64,22 @@ export const CreateFolderButton = () => {
 
     await utils.folders.findByUserId.cancel();
 
-    const previousFolders = utils.folders.findByUserId.getData();
+    const newFolder: Folder & { bookmarks: Bookmark[] } = {
+      id: "temp",
+      name,
+      icon,
+      isShared: false,
+      userId: String(session?.data?.user?.id),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      allowDuplicate: true,
+      bookmarks: [],
+    };
 
-    utils.folders.findByUserId.setData(
-      { userId: String(session?.data?.user?.id) },
-      (oldQueryData) => {
-        const newFolder: Folder & { bookmarks: Bookmark[] } = {
-          id: "temp",
-          name,
-          icon,
-          isShared: false,
-          userId: String(session?.data?.user?.id),
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          allowDuplicate: true,
-          bookmarks: [],
-        };
-
-        return oldQueryData ? [...oldQueryData, newFolder] : [newFolder];
-      }
-    );
+    setFolders((oldFolders) => {
+      if (!oldFolders) return null;
+      return [newFolder, ...oldFolders];
+    });
 
     createFolder({
       name,
@@ -88,7 +92,7 @@ export const CreateFolderButton = () => {
     setName("");
     setIcon("");
 
-    return { previousFolders };
+    return;
   };
 
   return (
@@ -110,7 +114,7 @@ export const CreateFolderButton = () => {
       >
         <Popover.Trigger asChild>
           <motion.button
-            initial={{ opacity: 0}}
+            initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             whileTap={{

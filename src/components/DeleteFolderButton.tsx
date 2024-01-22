@@ -7,6 +7,7 @@ import { useState } from "react";
 import {
   currentFolderAtom,
   totalBookmarksAtom,
+  foldersAtom,
 } from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { Separator } from "./Separator";
@@ -16,6 +17,7 @@ export const DeleteFolderButton = () => {
   const session = useSession();
   const utils = api.useContext();
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
+  const [folders, setFolders] = useAtom(foldersAtom);
   const [popverOpen, setPopverOpen] = useState(false);
   const [totalBookmarks] = useAtom(totalBookmarksAtom);
 
@@ -42,36 +44,28 @@ export const DeleteFolderButton = () => {
     });
 
   const handleDelete = async () => {
-    const otherFolder =
-      utils.folders.findByUserId.getData({
-        userId: String(session?.data?.user?.id),
-      })?.[0]?.id === currentFolder?.id
-        ? utils.folders.findByUserId.getData({
-            userId: String(session?.data?.user?.id),
-          })?.[1]
-        : utils.folders.findByUserId.getData({
-            userId: String(session?.data?.user?.id),
-          })?.[0];
+    const otherFolder = folders?.find(
+      (folder) => folder.id !== currentFolder?.id
+    );
+
+    setFolders((oldFolders) => {
+      if (!oldFolders) return null;
+      return oldFolders?.filter((folder) => folder.id !== currentFolder?.id);
+    });
+
     setCurrentFolder(otherFolder ?? null);
 
-    await utils.folders.findByUserId.cancel();
-
-    const previousFolders = utils.folders.findByUserId.getData();
-
-    utils.folders.findByUserId.setData(
-      { userId: String(session?.data?.user?.id) },
-      (previousFolders) => [
-        ...(previousFolders?.filter(
-          (folder) => folder.id !== currentFolder?.id
-        ) ?? []),
-      ]
-    );
+    if (otherFolder) {
+      await utils.bookmarks.findByFolderId.refetch({
+        folderId: otherFolder?.id,
+      });
+    }
 
     deleteFolder({
       id: String(currentFolder?.id),
     });
 
-    return { previousFolders };
+    return;
   };
 
   return (

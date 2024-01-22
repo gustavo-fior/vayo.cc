@@ -76,24 +76,29 @@ export default function Bookmarks() {
       onSuccess: (data) => {
         if (data?.bookmarks) {
           setBookmarks((prevBookmarks) => {
-
             const newBookmarks = data.bookmarks.filter((bookmark) => {
               return !prevBookmarks?.find(
                 (prevBookmark) => prevBookmark.id === bookmark.id
               );
             });
-            
-            // remove bookmarks that have temp as id
-            const prev = prevBookmarks?.filter((prevBookmark) => {
-              return prevBookmark.id !== "temp";
-            }
+
+            const temps = prevBookmarks?.filter(
+              (bookmark) => bookmark.id === "temp"
             );
 
-            if (prev) {
-              return [...prev, ...newBookmarks];
+            const prevBookmarksWithoutTemp = prevBookmarks?.filter(
+              (bookmark) => bookmark.id !== "temp"
+            );
+
+            if (temps && temps.length > 0 && prevBookmarksWithoutTemp && currentPage === 1) {
+              prevBookmarksWithoutTemp.unshift(...newBookmarks);
+            } else {
+              prevBookmarksWithoutTemp?.push(...newBookmarks);
             }
 
-            return data.bookmarks;
+            return prevBookmarksWithoutTemp
+              ? [...prevBookmarksWithoutTemp]
+              : data.bookmarks;
           });
 
           setIsOpen(true);
@@ -121,6 +126,7 @@ export default function Bookmarks() {
       bookmarks?.unshift(newBookmark);
     },
     onSettled: async () => {
+      setCurrentPage(1);
       await fetchBookmarks.refetch();
     },
     onError: (context) => {
@@ -205,12 +211,6 @@ export default function Bookmarks() {
     };
   }, [bookmarks?.length, totalBookmarks, fetchBookmarks.isLoading]);
 
-  // log every change in bookmarks length
-  useEffect(() => {
-    console.log("bookmarks length changed", bookmarks?.length);
-  }
-  , [bookmarks?.length]);
-
   return (
     <>
       <Head>
@@ -255,7 +255,9 @@ export default function Bookmarks() {
                       onChange={(e) => setInputUrl(e.target.value)}
                       placeholder="https://..."
                       className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-slate-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
-                        isDuplicate ? "ring-2 ring-red-500 focus:ring-red-500 animate-shake" : ""
+                        isDuplicate
+                          ? "animate-shake ring-2 ring-red-500 focus:ring-red-500"
+                          : ""
                       }`}
                     />
                     <motion.button
@@ -268,7 +270,7 @@ export default function Bookmarks() {
                         addBookmark.isLoading ||
                         !currentFolder
                       }
-                      className={`duration-200 hover:bg-black/20 dark:hover:bg-white/20 rounded-full bg-black/10 p-3 transition dark:bg-white/10 ${
+                      className={`rounded-full bg-black/10 p-3 transition duration-200 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 ${
                         inputUrl.length === 0 || addBookmark.isLoading
                           ? "bg-black/5 dark:bg-white/5"
                           : null
@@ -359,14 +361,19 @@ export default function Bookmarks() {
                       handleDeleteBookmark={handleDeleteBookmark}
                     />
                   ) : (
-                    totalBookmarks === 0 && bookmarks && bookmarks.length === 0 && !fetchBookmarks.isFetching && <EmptyState />
+                    totalBookmarks === 0 &&
+                    bookmarks &&
+                    bookmarks.length === 0 &&
+                    !fetchBookmarks.isFetching && <EmptyState />
                   )}
                 </motion.ul>
               </motion.div>
               <div className="flex justify-center pt-10 align-middle">
                 {fetchBookmarks.isFetching &&
                   bookmarks &&
-                  bookmarks?.length > 0 && <Spinner size="md" />}
+                  bookmarks?.length > 0
+                  && currentPage > 1
+                  && <Spinner size="md" />}
               </div>
             </div>
           </div>
