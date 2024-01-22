@@ -44,7 +44,6 @@ export const ShareButton = () => {
       icon: String(currentFolder?.icon),
       createdAt: currentFolder?.createdAt ?? new Date(),
       updatedAt: currentFolder?.updatedAt ?? new Date(),
-      bookmarks: currentFolder?.bookmarks ?? [],
       userId: String(currentFolder?.userId),
     };
 
@@ -94,10 +93,10 @@ export const ShareButton = () => {
                   <span
                     className={`absolute inline-flex h-full w-full ${
                       currentFolder?.isShared ? "animate-ping bg-green-500" : "bg-gray-700"
-                    }  rounded-full opacity-75 transition duration-300 ease-in-out`}
+                    }  rounded-full opacity-75 transition duration-200 ease-in-out`}
                   />
                   <span
-                    className={`relative inline-flex h-2 w-2 rounded-full transition duration-300 ease-in-out ${
+                    className={`relative inline-flex h-2 w-2 rounded-full transition duration-200 ease-in-out ${
                       currentFolder?.isShared ? "bg-green-500" : "bg-gray-700"
                     }`}
                   />
@@ -132,7 +131,7 @@ export const ShareButton = () => {
                 </div>
                 <Checkbox.Root
                   defaultChecked={currentFolder?.isShared}
-                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
+                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition duration-200 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
                   onCheckedChange={() => {
                     handleUpdateFolder();
                   }}
@@ -153,7 +152,7 @@ export const ShareButton = () => {
               </p>
               <div className="flex items-center gap-2 align-middle">
                 <input
-                  className={`rounded-md bg-black/10 px-3 py-2 text-sm font-normal no-underline transition duration-300 ease-in-out  dark:bg-white/10 ${
+                  className={`rounded-md bg-black/10 px-3 py-2 text-sm font-normal no-underline transition duration-200 ease-in-out  dark:bg-white/10 ${
                     !currentFolder?.isShared
                       ? "text-zinc-600/10 dark:text-zinc-600/50"
                       : "text-black dark:text-white"
@@ -201,7 +200,7 @@ export const ShareButton = () => {
                         exit={{ opacity: 0 }}
                       >
                         <Link1Icon
-                          className={`h-4 w-4 transition duration-300 ease-in-out ${
+                          className={`h-4 w-4 transition duration-200 ease-in-out ${
                             currentFolder?.isShared
                               ? "text-black dark:text-white"
                               : "text-zinc-600/50"

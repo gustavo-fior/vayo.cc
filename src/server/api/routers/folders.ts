@@ -77,25 +77,8 @@ export const foldersRouter = createTRPCRouter({
         where: {
           userId: userId,
         },
-        include: {
-          bookmarks: {
-            select: {
-              id: true,
-              createdAt: true,
-              faviconUrl: true,
-              title: true,
-              ogImageUrl: true,
-              url: true,
-            },
-            orderBy: {
-              createdAt: "desc",
-            },
-            // skip: input.skip,
-            // take: input.take,
-          },
-        },
         orderBy: {
-          updatedAt: "asc",
+          updatedAt: "desc",
         },
       });
     }),

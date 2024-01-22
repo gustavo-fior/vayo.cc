@@ -20,11 +20,8 @@ export const ExpandedBookmark = ({
   onRemove?: (id: string) => void;
 }) => {
   const [imageError, setImageError] = useState(false);
+  const [faviconError, setFaviconError] = useState(false);
   const [isHovering, setIsHovering] = useState("");
-
-  const handleImageError = () => {
-    setImageError(true);
-  };
 
   return (
     <ContextMenu.Root>
@@ -45,10 +42,10 @@ export const ExpandedBookmark = ({
             <AnimatePresence>
               {isHovering === bookmark.id && (
                 <motion.div
-                  transition={{ duration: 0.4 }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { duration: 0.2 } }}
+                exit={{ opacity: 0, transition: { duration: 0.2 }  }}
                   layoutId="bookmark"
                   className="absolute left-0 top-0 h-full w-full rounded-xl bg-black/5 dark:bg-white/5"
                 />
@@ -60,9 +57,7 @@ export const ExpandedBookmark = ({
             >
               <div className={`flex items-center gap-6 md:w-full`}>
                 {bookmark.ogImageUrl &&
-                !imageError &&
-                bookmark.ogImageUrl !==
-                  "https://raw.githubusercontent.com/spacedriveapp/.github/main/profile/spacedrive_icon.png" ? (
+                !imageError ? (
                   <motion.div
                     animate={{ opacity: 1 }}
                     initial={{ opacity: 0 }}
@@ -82,7 +77,9 @@ export const ExpandedBookmark = ({
                         width: "12rem",
                         objectFit: "cover",
                       }}
-                      onError={handleImageError}
+                      onError={() => {
+                        setImageError(true);
+                      }}
                     />
                   </motion.div>
                 ) : bookmark.id !== "temp" ? (
@@ -106,7 +103,7 @@ export const ExpandedBookmark = ({
                   <motion.p
                     animate={{ opacity: 1 }}
                     initial={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
+                    transition={{ duration: 0.2 }}
                     className="max-w-[16rem] truncate text-lg font-bold text-black dark:text-white sm:max-w-sm md:max-w-lg"
                   >
                     {bookmark.title}
@@ -114,7 +111,7 @@ export const ExpandedBookmark = ({
                   <div className="flex items-center gap-2 align-middle">
                     {bookmark.faviconUrl ? (
                       <Image
-                        src={String(bookmark.faviconUrl)}
+                        src={faviconError ? "/images/logo.png" : bookmark.faviconUrl}
                         alt={bookmark.title}
                         width={12}
                         height={12}
@@ -122,6 +119,9 @@ export const ExpandedBookmark = ({
                         style={{ height: "0.9rem", width: "0.9rem" }}
                         sizes="(max-width: 320px) 100vw, 48px"
                         priority
+                        onError={() => {
+                          setFaviconError(true);
+                        }}
                       />
                     ) : (
                       <div
@@ -129,7 +129,7 @@ export const ExpandedBookmark = ({
                         style={{ height: "0.9rem", width: "0.9rem" }}
                       />
                     )}
-                    <p className="w-64 truncate text-sm text-slate-500 sm:w-72 md:w-96 md:max-w-sm">
+                    <p className="w-64 truncate text-sm text-zinc-500 sm:w-72 md:w-96 md:max-w-sm">
                       {bookmark.url}
                     </p>
                   </div>

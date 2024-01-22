@@ -19,7 +19,8 @@ import { useAtom } from "jotai";
 import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import {
   currentFolderAtom,
   isOpenAtom,
@@ -27,10 +28,9 @@ import {
   viewStyleAtom,
 } from "~/helpers/atoms";
 import { api } from "~/utils/api";
+import { Hotkey } from "./Hotkey";
 import { Separator } from "./Separator";
 import { Spinner } from "./Spinner";
-import { useHotkeys } from "react-hotkeys-hook";
-import { Hotkey } from "./Hotkey";
 
 export const ProfileMenu = () => {
   const session = useSession();
@@ -82,16 +82,6 @@ export const ProfileMenu = () => {
     }
   );
 
-  const user = api.users.findByUserId.useQuery({
-    userId: session.data?.user?.id ?? "",
-  });
-
-  const updateUser = api.users.update.useMutation({
-    onSuccess: () => {
-      void utils.users.findByUserId.invalidate();
-    },
-  });
-
   const updateFolder = api.folders.update.useMutation({
     onSuccess: () => {
       void utils.folders.findById.invalidate();
@@ -118,7 +108,6 @@ export const ProfileMenu = () => {
       icon: String(currentFolder?.icon),
       createdAt: currentFolder?.createdAt ?? new Date(),
       updatedAt: currentFolder?.updatedAt ?? new Date(),
-      bookmarks: currentFolder?.bookmarks ?? [],
       userId: String(currentFolder?.userId),
     };
 
@@ -141,12 +130,6 @@ export const ProfileMenu = () => {
     }, 10);
 
     setViewStyle(newViewStyle);
-
-    void updateUser.mutateAsync({
-      id: String(user.data?.id),
-      lastViewStyle: newViewStyle,
-      lastShowMonths: showMonths,
-    });
   };
 
   const handleUpdateShowMonths = () => {
@@ -157,22 +140,7 @@ export const ProfileMenu = () => {
     }, 10);
 
     setShowMonths(!showMonths);
-
-    void updateUser.mutateAsync({
-      id: String(user.data?.id),
-      lastViewStyle: viewStyle,
-      lastShowMonths: !showMonths,
-    });
   };
-
-  useEffect(() => {
-    user.data?.lastViewStyle &&
-      user.data?.lastViewStyle !== viewStyle &&
-      setViewStyle(user.data?.lastViewStyle as "compact" | "expanded");
-    user.data?.lastShowMonths !== showMonths &&
-      setShowMonths(Boolean(user.data?.lastShowMonths));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.data]);
 
   return (
     <Popover.Root>
@@ -258,7 +226,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
+                      className={`text-sm transition duration-200 ease-in-out hover:text-black dark:hover:text-white ${
                         viewStyle === "compact"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -272,7 +240,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
+                      className={`text-sm transition duration-200 ease-in-out hover:text-black dark:hover:text-white ${
                         viewStyle === "expanded"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -325,7 +293,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
+                      className={`text-sm transition duration-200 ease-in-out hover:text-black dark:hover:text-white ${
                         resolvedTheme === "light"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -339,7 +307,7 @@ export const ProfileMenu = () => {
                     className="flex items-center gap-x-2 align-middle"
                   >
                     <p
-                      className={`text-sm transition duration-300 ease-in-out hover:text-black dark:hover:text-white ${
+                      className={`text-sm transition duration-200 ease-in-out hover:text-black dark:hover:text-white ${
                         resolvedTheme === "dark"
                           ? "font-semibold"
                           : "font-normal text-gray-400"
@@ -379,7 +347,7 @@ export const ProfileMenu = () => {
                 </div>
                 <Checkbox.Root
                   defaultChecked={showMonths}
-                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
+                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-200 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
                   onCheckedChange={() => {
                     handleUpdateShowMonths();
                   }}
@@ -424,7 +392,7 @@ export const ProfileMenu = () => {
                 </div>
                 <Checkbox.Root
                   defaultChecked={currentFolder?.allowDuplicate}
-                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-300 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
+                  className="flex h-6 w-6 items-center justify-center rounded-md bg-black/10 transition  duration-200 ease-in-out hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 "
                   onCheckedChange={() => {
                     handleUpdateFolder();
                   }}

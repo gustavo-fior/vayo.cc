@@ -118,7 +118,7 @@ export const CreateFolderButton = () => {
             }}
             type="submit"
             disabled={isCreatingFolder}
-            className="rounded-full bg-black/10 p-3 align-middle font-semibold text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
+            className="rounded-full bg-black/10 p-3 align-middle font-semibold text-black no-underline transition duration-200 hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
             onClick={() => {
               setPopverOpen(true);
             }}
@@ -175,7 +175,7 @@ export const CreateFolderButton = () => {
                         />
                       </Popover.Trigger>
                       <Popover.Portal>
-                        <Popover.Content className="z-50 mt-2 rounded-md font-semibold text-white no-underline transition">
+                        <Popover.Content className="z-50 mt-2 rounded-md font-semibold text-white no-underline transition duration-200">
                           <EmojiPicker
                             emojiStyle={EmojiStyle.APPLE}
                             previewConfig={{
@@ -210,7 +210,7 @@ export const CreateFolderButton = () => {
                         icon.length === 0
                           ? "bg-black/5 dark:bg-white/5"
                           : "bg-black/10 dark:bg-white/10"
-                      } p-1.5 align-middle font-semibold text-white no-underline transition hover:bg-white/20`}
+                      } p-1.5 align-middle font-semibold text-white no-underline transition duration-200 hover:bg-white/20`}
                       onClick={() => setIcon("")}
                     >
                       <Cross1Icon
@@ -248,7 +248,7 @@ export const CreateFolderButton = () => {
                   name.length > 0
                     ? "bg-black/10 text-black dark:bg-white/10 dark:text-white"
                     : "bg-black/5 text-zinc-400 dark:bg-white/5 dark:text-zinc-600"
-                } items mt-2 rounded-md px-4 py-2 text-center align-middle font-semibold text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:text-white dark:hover:bg-white/20`}
+                } items mt-2 rounded-md px-4 py-2 text-center align-middle font-semibold text-black no-underline transition duration-200 hover:cursor-pointer hover:bg-black/20 dark:text-white dark:hover:bg-white/20`}
               >
                 <p>Create</p>
               </motion.button>

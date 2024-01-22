@@ -20,6 +20,7 @@ export const CompactBookmark = ({
   onRemove?: (id: string) => void;
 }) => {
   const [isHovering, setIsHovering] = useState("");
+  const [faviconError, setFaviconError] = useState(false);
 
   return (
     <ContextMenu.Root>
@@ -43,8 +44,8 @@ export const CompactBookmark = ({
               <motion.div
                 transition={{ duration: 0.4 }}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { duration: 0.2 } }}
+                exit={{ opacity: 0, transition: { duration: 0.2 } }}
                 layoutId="bookmark"
                 className="absolute left-0 top-0 h-full w-full rounded-2xl bg-black/5 dark:bg-white/5"
               />
@@ -57,9 +58,16 @@ export const CompactBookmark = ({
             <div className="flex w-full items-center justify-between align-middle">
               <div className="z-10 flex flex-row items-center gap-3 align-middle">
                 {bookmark.faviconUrl ? (
-                  <div className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10">
+                  <motion.div
+                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10"
+                  >
                     <Image
-                      src={String(bookmark.faviconUrl)}
+                      src={
+                        faviconError ? "/images/logo.png" : bookmark.faviconUrl
+                      }
                       alt={bookmark.title}
                       width={12}
                       height={12}
@@ -69,8 +77,11 @@ export const CompactBookmark = ({
                         width: "0.9rem",
                         borderRadius: "0.2rem",
                       }}
+                      onError={() => {
+                        setFaviconError(true);
+                      }}
                     />
-                  </div>
+                  </motion.div>
                 ) : (
                   <div
                     className="rounded-lg bg-gradient-to-br from-[#d2d1d1] to-[#dad7d7] dark:from-[#1a1a1a] dark:to-[#2d2c2c]"
@@ -80,12 +91,12 @@ export const CompactBookmark = ({
                 <motion.p
                   animate={{ opacity: 1 }}
                   initial={{ opacity: 0 }}
-                  transition={{ duration: 0.4 }}
+                  transition={{ duration: 0.2 }}
                   className={`max-w-[16rem] truncate font-semibold text-black dark:text-white sm:max-w-xs md:max-w-sm`}
                 >
                   {bookmark.title}
                 </motion.p>
-                <p className="hidden w-72 truncate text-sm text-slate-500 md:block">
+                <p className="hidden w-72 truncate text-sm text-zinc-500 md:block">
                   {bookmark.url}
                 </p>
               </div>
@@ -103,7 +114,7 @@ export const CompactBookmark = ({
                 exit={{ opacity: 0 }}
                 className="z-50 pr-2 font-bold text-slate-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
                 onClick={(e) => {
-                  e.stopPropagation(); 
+                  e.stopPropagation();
                   onRemove ? onRemove(bookmark.id) : null;
                 }}
               >

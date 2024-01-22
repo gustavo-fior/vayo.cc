@@ -52,8 +52,7 @@
 # TODO
 
 - 🟡 allow users to edit and have a custom sort for folders (will need to redesign the folders, maybe use [this](https://vaul.emilkowal.ski/))
-- 🟡 improve perfomance
-- 🟡 fix duplicate save in extension
+- 🟡 fix optimistc updates
 - 🟡 cooldown in public page buttons
 - 🟡 x icon does not work
 - MAJOR redesign (use [rauno](https://twitter.com/raunofreiberg/status/1653471349854093327) as inspiration)

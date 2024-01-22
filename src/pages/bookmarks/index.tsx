@@ -1,7 +1,6 @@
 import { type Bookmark } from "@prisma/client";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useAtom } from "jotai";
-import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
@@ -19,45 +18,90 @@ import { SkeletonList } from "~/components/SkeletonList";
 import { Spinner } from "~/components/Spinner";
 import {
   currentFolderAtom,
+  totalBookmarksAtom,
   isOpenAtom,
   viewStyleAtom,
   showMonthsAtom,
+  foldersAtom,
+  bookmarksAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
 import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
 import { api } from "~/utils/api";
-import { ScrollToTopButton } from "~/components/ScrollToTopButton";
 
 export default function Bookmarks() {
   const session = useSession();
   const utils = api.useContext();
-  const [inputUrl, setInputUrl] = useState("");
+
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
+
+  const [inputUrl, setInputUrl] = useState("");
   const [isDuplicate, setIsDuplicate] = useState(false);
+
   const [viewStyle] = useAtom(viewStyleAtom);
   const [showMonths] = useAtom(showMonthsAtom);
-  const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
 
-  const { data: folders, isLoading: foldersLoading } =
-    api.folders.findByUserId.useQuery(
-      { userId: String(session.data?.user.id) },
-      {
-        onSuccess: (data) => {
-          if (data && data?.length > 0) {
-            if (currentFolder) {
-              setCurrentFolder(
-                data.find((folder) => folder.id === currentFolder.id) ??
-                  data[0] ??
-                  null
-              );
-            } else {
-              setCurrentFolder(data[0] ?? null);
-            }
+  const [bookmarks, setBookmarks] = useAtom(bookmarksAtom);
+  const [totalBookmarks, setTotalBookmarks] = useAtom(totalBookmarksAtom);
+  const [folders, setFolders] = useAtom(foldersAtom);
+  const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  api.folders.findByUserId.useQuery(
+    {
+      userId: String(session.data?.user.id),
+    },
+    {
+      onSuccess: (data) => {
+        if (data && data?.length > 0) {
+          setFolders(data);
+
+          if (!currentFolder) {
+            setCurrentFolder(data[0] ?? null);
           }
-        },
-      }
-    );
+
+          void fetchBookmarks.refetch();
+        }
+      },
+    }
+  );
+
+  const fetchBookmarks = api.bookmarks.findByFolderId.useQuery(
+    {
+      folderId: String(currentFolder?.id),
+      page: currentPage,
+    },
+    {
+      onSuccess: (data) => {
+        if (data?.bookmarks) {
+          setBookmarks((prevBookmarks) => {
+
+            const newBookmarks = data.bookmarks.filter((bookmark) => {
+              return !prevBookmarks?.find(
+                (prevBookmark) => prevBookmark.id === bookmark.id
+              );
+            });
+            
+            // remove bookmarks that have temp as id
+            const prev = prevBookmarks?.filter((prevBookmark) => {
+              return prevBookmark.id !== "temp";
+            }
+            );
+
+            if (prev) {
+              return [...prev, ...newBookmarks];
+            }
+
+            return data.bookmarks;
+          });
+
+          setIsOpen(true);
+          setTotalBookmarks(data.totalElements);
+        }
+      },
+    }
+  );
 
   const addBookmark = api.bookmarks.create.useMutation({
     onMutate: () => {
@@ -74,15 +118,21 @@ export default function Bookmarks() {
         updatedAt: new Date(),
       };
 
-        currentFolder?.bookmarks?.unshift(newBookmark);
+      bookmarks?.unshift(newBookmark);
     },
-    onSettled: () => {
-      void utils.folders.findByUserId.refetch();
+    onSettled: async () => {
+      await fetchBookmarks.refetch();
     },
     onError: (context) => {
       const previousBookmarks =
-        (context as { previousBookmarks?: Bookmark[] })?.previousBookmarks ??
-        null;
+        (
+          context as {
+            previousBookmarks?: {
+              bookmarks: Bookmark[];
+              totalElements: number;
+            };
+          }
+        )?.previousBookmarks ?? null;
 
       utils.bookmarks.findByFolderId.setData(
         { folderId: String(currentFolder?.id) },
@@ -93,24 +143,27 @@ export default function Bookmarks() {
 
   const deleteBookmark = api.bookmarks.delete.useMutation({
     onMutate: ({ id }) => {
-      const listWithoutDeletedBookmark = currentFolder?.bookmarks?.filter(
+      const listWithoutDeletedBookmark = bookmarks?.filter(
         (bookmark) => bookmark.id !== id
       );
 
       if (listWithoutDeletedBookmark) {
-        setCurrentFolder({
-          ...currentFolder!,
-          bookmarks: listWithoutDeletedBookmark,
-        });
+        setBookmarks(listWithoutDeletedBookmark);
       }
     },
     onSettled: () => {
-      void utils.folders.findByUserId.refetch();
+      void fetchBookmarks.refetch();
     },
     onError: (context) => {
       const previousBookmarks =
-        (context as { previousBookmarks?: Bookmark[] })?.previousBookmarks ??
-        null;
+        (
+          context as {
+            previousBookmarks?: {
+              bookmarks: Bookmark[];
+              totalElements: number;
+            };
+          }
+        )?.previousBookmarks ?? null;
 
       utils.bookmarks.findByFolderId.setData(
         { folderId: String(currentFolder?.id) },
@@ -135,12 +188,28 @@ export default function Bookmarks() {
     [deleteBookmark]
   );
 
-  // Opening the bookmarks list
+  // update page when scroll to bottom
   useEffect(() => {
-    if (!foldersLoading && currentFolder?.bookmarks?.length) {
-      setIsOpen(true);
-    }
-  }, [foldersLoading, currentFolder, setIsOpen]);
+    const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        if (bookmarks?.length !== totalBookmarks && !fetchBookmarks.isLoading) {
+          setCurrentPage((prevPage) => prevPage + 1);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [bookmarks?.length, totalBookmarks, fetchBookmarks.isLoading]);
+
+  // log every change in bookmarks length
+  useEffect(() => {
+    console.log("bookmarks length changed", bookmarks?.length);
+  }
+  , [bookmarks?.length]);
 
   return (
     <>
@@ -150,7 +219,6 @@ export default function Bookmarks() {
       </Head>
       <main className="relative min-h-screen w-full bg-[#e0e0e0] dark:bg-[#161616]">
         <div className="flex flex-col items-center">
-          <ScrollToTopButton />
           <div className="w-[20rem]  sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
             <div className="pb-32 pt-16">
               <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
@@ -163,9 +231,7 @@ export default function Bookmarks() {
 
                     if (
                       !currentFolder?.allowDuplicate &&
-                      currentFolder?.bookmarks?.find(
-                        (bookmark) => bookmark.url === inputUrl
-                      )
+                      bookmarks?.find((bookmark) => bookmark.url === inputUrl)
                     ) {
                       setIsDuplicate(true);
 
@@ -188,10 +254,8 @@ export default function Bookmarks() {
                       disabled={addBookmark.isLoading || !currentFolder}
                       onChange={(e) => setInputUrl(e.target.value)}
                       placeholder="https://..."
-                      className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-slate-600 transition duration-300 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
-                        isDuplicate
-                          ? "animate-shake ring-2 ring-red-500 focus:outline-none"
-                          : ""
+                      className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-slate-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
+                        isDuplicate ? "ring-2 ring-red-500 focus:ring-red-500 animate-shake" : ""
                       }`}
                     />
                     <motion.button
@@ -204,7 +268,7 @@ export default function Bookmarks() {
                         addBookmark.isLoading ||
                         !currentFolder
                       }
-                      className={`duration-300'hover:bg-white/20 rounded-full bg-black/10 p-3 transition dark:bg-white/10 ${
+                      className={`duration-200 hover:bg-black/20 dark:hover:bg-white/20 rounded-full bg-black/10 p-3 transition dark:bg-white/10 ${
                         inputUrl.length === 0 || addBookmark.isLoading
                           ? "bg-black/5 dark:bg-white/5"
                           : null
@@ -236,12 +300,12 @@ export default function Bookmarks() {
                   exit={{ opacity: 0 }}
                   className="flex items-center gap-x-2 overflow-x-auto "
                 >
-                  {foldersLoading ? (
+                  {!folders ? (
                     [...Array<number>(3)].map((_, i) => (
                       <FolderSkeleton key={i} />
                     ))
-                  ) : folders && folders?.length > 0 ? (
-                    folders?.map((folder) => (
+                  ) : folders?.length > 0 ? (
+                    folders.map((folder) => (
                       <motion.div
                         whileTap={{
                           scale: 0.95,
@@ -253,14 +317,16 @@ export default function Bookmarks() {
                           ) {
                             setCurrentFolder(folder);
                             setIsOpen(false);
+                            setBookmarks(null);
+                            setCurrentPage(0);
                           }
                         }}
                         key={folder.id}
                         className={`${
                           currentFolder?.id === folder.id
                             ? "bg-black/20 dark:bg-white/30"
-                            : "hover:bg-black/20 dark:hover:bg-white/20"
-                        } group flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 align-middle font-semibold text-black no-underline transition hover:cursor-pointer  dark:bg-white/10 dark:text-white `}
+                            : ""
+                        } group flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 align-middle font-semibold text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20`}
                       >
                         {folder.icon && <div>{folder.icon}</div>}
                         <div>{folder.name}</div>
@@ -273,42 +339,42 @@ export default function Bookmarks() {
                   )}
                 </motion.div>
                 <div className="flex gap-2">
-                  {folders && folders?.length > 0 && <DeleteFolderButton />}
+                  {folders && folders.length > 0 && <DeleteFolderButton />}
                   <CreateFolderButton />
                 </div>
               </div>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  initial={isOpen}
-                  animate={isOpen ? "open" : "closed"}
-                  className="flex flex-col gap-8"
-                >
-                  <motion.ul className={`flex flex-col`}>
-                    {foldersLoading ? (
-                      <SkeletonList viewStyle={viewStyle} />
-                    ) : currentFolder?.bookmarks &&
-                      currentFolder?.bookmarks?.length > 0 ? (
-                      <BookmarksList
-                        bookmarks={currentFolder?.bookmarks}
-                        showMonths={showMonths}
-                        viewStyle={viewStyle}
-                        handleDeleteBookmark={handleDeleteBookmark}
-                      />
-                    ) : (
-                      currentFolder?.bookmarks?.length === 0 && <EmptyState />
-                    )}
-                  </motion.ul>
-                </motion.div>
-              </AnimatePresence>
+              <motion.div
+                initial={isOpen}
+                animate={isOpen ? "open" : "closed"}
+                className="flex flex-col gap-8"
+              >
+                <motion.ul className={`flex flex-col`}>
+                  {!bookmarks && fetchBookmarks.isFetching ? (
+                    <SkeletonList viewStyle={viewStyle} />
+                  ) : bookmarks && bookmarks?.length > 0 ? (
+                    <BookmarksList
+                      bookmarks={bookmarks}
+                      showMonths={showMonths}
+                      viewStyle={viewStyle}
+                      handleDeleteBookmark={handleDeleteBookmark}
+                    />
+                  ) : (
+                    totalBookmarks === 0 && bookmarks && bookmarks.length === 0 && !fetchBookmarks.isFetching && <EmptyState />
+                  )}
+                </motion.ul>
+              </motion.div>
+              <div className="flex justify-center pt-10 align-middle">
+                {fetchBookmarks.isFetching &&
+                  bookmarks &&
+                  bookmarks?.length > 0 && <Spinner size="md" />}
+              </div>
             </div>
-            {/* {bookmarks && bookmarks?.length > 30 && <ListLongImage />} */}
           </div>
         </div>
       </main>
     </>
   );
 }
-
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
