@@ -72,8 +72,8 @@ export const bookmarksRouter = createTRPCRouter({
             ogImageUrl: true,
             createdAt: true,
           },
-          skip: input.page ? (input.page - 1) * 20 : undefined,
-          take: 20,
+          skip: input.page ? (input.page - 1) * 25 : undefined,
+          take: 25,
         });
 
         const totalElements = await ctx.prisma.bookmark.count({

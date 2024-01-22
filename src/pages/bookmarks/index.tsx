@@ -48,7 +48,7 @@ export default function Bookmarks() {
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
   const [currentPage, setCurrentPage] = useState(1);
 
-  api.folders.findByUserId.useQuery(
+  const fetchFolders = api.folders.findByUserId.useQuery(
     {
       userId: String(session.data?.user.id),
     },
@@ -90,7 +90,12 @@ export default function Bookmarks() {
               (bookmark) => bookmark.id !== "temp"
             );
 
-            if (temps && temps.length > 0 && prevBookmarksWithoutTemp && currentPage === 1) {
+            if (
+              temps &&
+              temps.length > 0 &&
+              prevBookmarksWithoutTemp &&
+              currentPage === 1
+            ) {
               prevBookmarksWithoutTemp.unshift(...newBookmarks);
             } else {
               prevBookmarksWithoutTemp?.push(...newBookmarks);
@@ -351,29 +356,33 @@ export default function Bookmarks() {
                 className="flex flex-col gap-8"
               >
                 <motion.ul className={`flex flex-col`}>
-                  {!bookmarks && fetchBookmarks.isFetching ? (
+                  {!bookmarks && fetchBookmarks.isFetching && (
                     <SkeletonList viewStyle={viewStyle} />
-                  ) : bookmarks && bookmarks?.length > 0 ? (
+                  )}
+
+                  {bookmarks && bookmarks?.length > 0 && (
                     <BookmarksList
                       bookmarks={bookmarks}
                       showMonths={showMonths}
                       viewStyle={viewStyle}
                       handleDeleteBookmark={handleDeleteBookmark}
                     />
-                  ) : (
-                    totalBookmarks === 0 &&
+                  )}
+
+                  {totalBookmarks === 0 &&
                     bookmarks &&
                     bookmarks.length === 0 &&
-                    !fetchBookmarks.isFetching && <EmptyState />
-                  )}
+                    fetchBookmarks.isFetched &&
+                    fetchFolders.isFetched &&
+                    isOpen
+                    && <EmptyState />}
                 </motion.ul>
               </motion.div>
               <div className="flex justify-center pt-10 align-middle">
                 {fetchBookmarks.isFetching &&
                   bookmarks &&
-                  bookmarks?.length > 0
-                  && currentPage > 1
-                  && <Spinner size="md" />}
+                  bookmarks?.length > 0 &&
+                  currentPage > 1 && <Spinner size="md" />}
               </div>
             </div>
           </div>
