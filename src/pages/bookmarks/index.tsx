@@ -107,8 +107,11 @@ export default function Bookmarks() {
               : data.bookmarks;
           });
 
-          setIsOpen(true);
           setTotalBookmarks(data.totalElements);
+
+          setTimeout(() => {
+            setIsOpen(true);
+          }, 10);
         }
       },
     }
@@ -326,7 +329,7 @@ export default function Bookmarks() {
                             setCurrentFolder(folder);
                             setIsOpen(false);
                             setBookmarks(null);
-                            setCurrentPage(0);
+                            setCurrentPage(1);
                           }
                         }}
                         key={folder.id}
@@ -352,7 +355,7 @@ export default function Bookmarks() {
                 </div>
               </div>
               <motion.div
-                initial={isOpen}
+                initial={false}
                 animate={isOpen ? "open" : "closed"}
                 className="flex flex-col gap-8"
               >
