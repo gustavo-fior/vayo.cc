@@ -59,9 +59,6 @@ export const CompactBookmark = ({
               <div className="z-10 flex flex-row items-center gap-3 align-middle">
                 {bookmark.faviconUrl ? (
                   <motion.div
-                    animate={{ opacity: 1 }}
-                    initial={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
                     className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10"
                   >
                     <Image
@@ -108,11 +105,11 @@ export const CompactBookmark = ({
                 transition={{ duration: 0.1 }}
                 animate={
                   isHovering
-                    ? { opacity: 1, transition: { delay: 0.5 } }
+                    ? { opacity: 1, transition: { delay: 0.2 } }
                     : { opacity: 0 }
                 }
                 exit={{ opacity: 0 }}
-                className="z-50 pr-2 font-bold text-slate-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
+                className="z-50 pr-2 font-bold text-zinc-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
                 onClick={(e) => {
                   e.stopPropagation();
                   onRemove ? onRemove(bookmark.id) : null;

@@ -142,11 +142,11 @@ export const ExpandedBookmark = ({
                   transition={{ duration: 0.1 }}
                   animate={
                     isHovering
-                      ? { opacity: 1, transition: { delay: 0.5 } }
+                      ? { opacity: 1, transition: { delay: 0.2 } }
                       : { opacity: 0 }
                   }
                   exit={{ opacity: 0 }}
-                  className="z-50 pr-6 font-bold text-slate-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
+                  className="z-50 pr-6 font-bold text-zinc-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
                   onClick={(e) => {
                     e.stopPropagation(); 
                     onRemove ? onRemove(bookmark.id) : null;

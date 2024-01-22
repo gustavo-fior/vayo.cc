@@ -24,6 +24,7 @@ const config = {
         hostname: "**",
       },
     ],
+    domains: ["raw.githubusercontent.com"],
     
   },
   experimental: {

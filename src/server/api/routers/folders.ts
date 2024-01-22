@@ -17,13 +17,6 @@ export const foldersRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-        include: {
-          bookmarks: {
-            orderBy: {
-              createdAt: "desc",
-            },
-          },
-        },
       });
     }),
   findNameAndIconById: publicProcedure

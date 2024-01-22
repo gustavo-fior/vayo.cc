@@ -12,23 +12,65 @@ import { Separator } from "~/components/Separator";
 import { ShareLinkButton } from "~/components/ShareLinkButton";
 import { ShowMonthsButton } from "~/components/ShowMonthsButton";
 import { SkeletonList } from "~/components/SkeletonList";
+import { Spinner } from "~/components/Spinner";
 import { ThemeButton } from "~/components/ThemeButton";
 import { ViewButton } from "~/components/ViewButton";
 import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
 import { api } from "~/utils/api";
+
+type SmallBookmark = {
+  id: string;
+  url: string;
+  title: string;
+  faviconUrl: string | null;
+  ogImageUrl: string | null;
+  createdAt: Date;
+};
 
 export default function Bookmarks() {
   const router = useRouter();
   const { folderId } = router.query;
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const [showMonths, setShowMonths] = useState(false);
-  const [viewStyle, setViewStyle] = useState<"expanded" | "compact">(
-    "expanded"
+  const [showMonths, setShowMonths] = useState(true);
+  const [bookmarks, setBookmarks] = useState<SmallBookmark[] | null>(null);
+  const [viewStyle, setViewStyle] = useState<"expanded" | "compact">("compact");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalBookmarks, setTotalBookmarks] = useState(0);
+
+  const bookmarksQuery = api.bookmarks.findByFolderId.useQuery(
+    {
+      folderId: String(folderId),
+      page: currentPage,
+    },
+    {
+      onSuccess: (data) => {
+        if (data) {
+          setBookmarks((prev) => {
+            if (prev) {
+              const newBookmarks = data.bookmarks.filter((bookmark) => {
+                return !prev.find(
+                  (prevBookmark) => prevBookmark.id === bookmark.id
+                );
+              });
+
+              return [...prev, ...newBookmarks];
+            } else {
+              return data.bookmarks;
+            }
+          });
+          setTotalBookmarks(data.totalElements);
+
+          setTimeout(() => {
+            setIsOpen(true);
+          }, 10);
+        }
+      },
+    }
   );
 
   const folder = api.folders.findById.useQuery({
-    id: String(folderId)
+    id: String(folderId),
   });
 
   const handleChangeViewStyle = () => {
@@ -46,20 +88,31 @@ export default function Bookmarks() {
   };
 
   const handleShowMonths = () => {
-    // setIsOpen(false);
+    setIsOpen(false);
 
-    // setTimeout(() => {
-    //   setIsOpen(true);
-    // }, 10);
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 10);
 
     setShowMonths(!showMonths);
   };
 
+  // update page when scroll to bottom
   useEffect(() => {
-    if (folder.data?.isShared && !folder.isLoading && !isOpen) {
-      setIsOpen(true);
-    }
-  }, [folder]);
+    const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        if (bookmarks?.length !== totalBookmarks && !bookmarksQuery.isLoading) {
+          setCurrentPage((prevPage) => prevPage + 1);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [bookmarks?.length, totalBookmarks, bookmarksQuery.isLoading]);
 
   return (
     <>
@@ -111,7 +164,7 @@ export default function Bookmarks() {
                     </div>
                   ) : (
                     <div className="flex items-center gap-3 align-middle">
-                      <p className="text-3xl">This folder is private :/</p>
+                      <p className="text-3xl">🔒 This folder is private</p>
                     </div>
                   )}
                 </motion.div>
@@ -168,23 +221,32 @@ export default function Bookmarks() {
             <Separator />
           </div>
 
-          {folder?.isLoading && <SkeletonList viewStyle={viewStyle} />}
+          {(folder?.isLoading || bookmarksQuery.isLoading) && (
+            <SkeletonList viewStyle={viewStyle} />
+          )}
           {folder?.data?.isShared && (
             <motion.div initial={false} animate={isOpen ? "open" : "closed"}>
               <motion.ul className={`flex flex-col`}>
-                {folder?.data?.bookmarks &&
-                folder?.data?.bookmarks?.length > 0 ? (
+                {bookmarks && bookmarks.length > 0 && (
                   <BookmarksList
-                    bookmarks={folder?.data?.bookmarks}
+                    bookmarks={bookmarks}
                     showMonths={showMonths}
                     viewStyle={viewStyle}
                   />
-                ) : (
-                  <EmptyState />
                 )}
+                {bookmarks &&
+                  bookmarks.length === 0 &&
+                  !folder?.isLoading &&
+                  !bookmarksQuery.isLoading && <EmptyState />}
               </motion.ul>
             </motion.div>
           )}
+          <div className="flex justify-center pt-10 align-middle">
+            {bookmarksQuery.isFetching &&
+              bookmarks &&
+              bookmarks?.length > 0 &&
+              currentPage > 1 && <Spinner size="md" />}
+          </div>
         </div>
       </main>
     </>

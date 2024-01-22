@@ -1,12 +1,16 @@
 export const getCommonFavicons = (url: string): string | null => {
   const host = getWebsiteName(url);
 
+  console.log("host", host);
+
   switch (host) {
     case "youtube" || "youtu.be":
       return "/favicons/youtube.png";
     case "reddit":
       return "/favicons/reddit.png";
-    case "twitter" || "x":
+    case "twitter":
+      return "/favicons/x.png";
+    case "x":
       return "/favicons/x.png";
     case "facebook":
       return "/favicons/facebook.ico";
