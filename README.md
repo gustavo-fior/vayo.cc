@@ -52,6 +52,5 @@
 # TODO
 
 - 🟡 allow users to edit and have a custom sort for folders (will need to redesign the folders, maybe use [this](https://vaul.emilkowal.ski/))
-- 🟡 cooldown in public page buttons
 - MAJOR redesign (use [rauno](https://twitter.com/raunofreiberg/status/1653471349854093327) as inspiration)
 
