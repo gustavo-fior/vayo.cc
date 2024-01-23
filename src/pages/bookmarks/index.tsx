@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BookmarksList } from "~/components/BookmarksList";
 import { CreateFolderButton } from "~/components/CreateFolderButton";
 import { DeleteFolderButton } from "~/components/DeleteFolderButton";
@@ -24,6 +24,7 @@ import {
   showMonthsAtom,
   foldersAtom,
   bookmarksAtom,
+  bookmarksFilteredAtom
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
@@ -39,15 +40,17 @@ export default function Bookmarks() {
   const [inputUrl, setInputUrl] = useState("");
   const [isDuplicate, setIsDuplicate] = useState(false);
 
+  const inputRef = useRef(null);
+
   const [viewStyle] = useAtom(viewStyleAtom);
   const [showMonths] = useAtom(showMonthsAtom);
 
+  const [filteredBookmarks, setFilteredBookmarks] = useAtom(bookmarksFilteredAtom);
   const [bookmarks, setBookmarks] = useAtom(bookmarksAtom);
   const [totalBookmarks, setTotalBookmarks] = useAtom(totalBookmarksAtom);
   const [folders, setFolders] = useAtom(foldersAtom);
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
   const [currentPage, setCurrentPage] = useState(1);
-
 
   const fetchFolders = api.folders.findByUserId.useQuery(
     {
@@ -61,12 +64,12 @@ export default function Bookmarks() {
 
           if (!currentFolder) {
             setCurrentFolder(data[0] ?? null);
-            setBookmarks(data[0]?.bookmarks ?? null)
+            setBookmarks(data[0]?.bookmarks ?? null);
           } else {
             const currentFolderFromData = data.find(
               (folder) => folder.id === currentFolder?.id
             );
-  
+
             setBookmarks(currentFolderFromData?.bookmarks ?? null);
           }
 
@@ -220,7 +223,7 @@ export default function Bookmarks() {
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        if (bookmarks?.length !== totalBookmarks && !fetchBookmarks.isLoading) {
+        if (bookmarks?.length !== totalBookmarks && !fetchBookmarks.isLoading && inputUrl.length === 0) {
           setCurrentPage((prevPage) => prevPage + 1);
         }
       }
@@ -232,6 +235,45 @@ export default function Bookmarks() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [bookmarks?.length, totalBookmarks, fetchBookmarks.isLoading]);
+
+  // focus on input when ctrl/cmd + f is pressed
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+        e.preventDefault();
+
+        // Focus on the form
+        if (inputRef.current) {
+          (inputRef.current as HTMLFormElement).focus();
+        }
+      }
+    };
+
+    // Add event listener when the component mounts
+    document.addEventListener("keydown", handleKeyPress);
+
+    // Remove event listener when the component unmounts
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, []);
+
+  // filter bookmarks by search query
+  useEffect(() => {
+    // only filter if there is a search query and if the search query is not a url
+    if (inputUrl.length > 0) {
+      const filteredBookmarks = bookmarks?.filter((bookmark) => {
+        return (
+          bookmark.title.toLowerCase().includes(inputUrl.toLowerCase()) ||
+          bookmark.url.toLowerCase().includes(inputUrl.toLowerCase())
+        );
+      });
+
+      setFilteredBookmarks(filteredBookmarks ?? []);
+    } else {
+      setFilteredBookmarks(null);
+    }
+  }, [inputUrl]);
 
   return (
     <>
@@ -272,6 +314,7 @@ export default function Bookmarks() {
                       type="url"
                       name="url"
                       id="url"
+                      ref={inputRef}
                       value={isDuplicate ? "Duplicate" : inputUrl}
                       disabled={addBookmark.isLoading || !currentFolder}
                       onChange={(e) => setInputUrl(e.target.value)}
@@ -373,20 +416,17 @@ export default function Bookmarks() {
                 className="flex flex-col gap-8"
               >
                 <motion.ul className={`flex flex-col`}>
-
                   {!bookmarks && fetchBookmarks.isFetching && (
                     <SkeletonList viewStyle={viewStyle} />
                   )}
 
                   {bookmarks && bookmarks?.length > 0 && (
-
                     <BookmarksList
-                      bookmarks={bookmarks}
+                      bookmarks={filteredBookmarks ?? bookmarks}
                       showMonths={showMonths}
                       viewStyle={viewStyle}
                       handleDeleteBookmark={handleDeleteBookmark}
                     />
-
                   )}
 
                   {totalBookmarks === 0 &&
@@ -394,15 +434,12 @@ export default function Bookmarks() {
                     bookmarks.length === 0 &&
                     fetchBookmarks.isFetched &&
                     fetchFolders.isFetched &&
-                    isOpen
-                    && <EmptyState />}
-
+                    isOpen && <EmptyState />}
                 </motion.ul>
               </motion.div>
               <div className="flex justify-center pt-10 align-middle">
                 {fetchBookmarks.isFetching &&
                   bookmarks &&
-
                   bookmarks?.length > 0 &&
                   currentPage > 1 && <Spinner size="md" />}
               </div>
