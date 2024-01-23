@@ -59,8 +59,6 @@ export const foldersRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string().nullable(),
-        skip: z.number().default(0),
-        take: z.number().default(20),
       })
     )
     .query(async ({ input, ctx }) => {
@@ -72,6 +70,23 @@ export const foldersRouter = createTRPCRouter({
         },
         orderBy: {
           updatedAt: "desc",
+        },
+        include: {
+          bookmarks: {
+            orderBy: {
+              createdAt: "desc",
+            },
+            select: {
+              id: true,
+              url: true,
+              title: true,
+              faviconUrl: true,
+              ogImageUrl: true,
+              createdAt: true,
+            },
+            skip: 0,
+            take: 25,
+          },
         },
       });
     }),

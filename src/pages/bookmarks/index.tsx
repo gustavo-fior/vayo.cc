@@ -53,13 +53,25 @@ export default function Bookmarks() {
       userId: String(session.data?.user.id),
     },
     {
+      enabled: !!session.data?.user.id,
       onSuccess: (data) => {
         if (data && data?.length > 0) {
           setFolders(data);
 
           if (!currentFolder) {
             setCurrentFolder(data[0] ?? null);
+            setBookmarks(data[0]?.bookmarks ?? null)
+          } else {
+            const currentFolderFromData = data.find(
+              (folder) => folder.id === currentFolder?.id
+            );
+  
+            setBookmarks(currentFolderFromData?.bookmarks ?? null);
           }
+
+          setTimeout(() => {
+            setIsOpen(true);
+          }, 10);
 
           void fetchBookmarks.refetch();
         }
@@ -73,6 +85,7 @@ export default function Bookmarks() {
       page: currentPage,
     },
     {
+      enabled: !!currentFolder,
       onSuccess: (data) => {
         if (data?.bookmarks) {
           setBookmarks((prevBookmarks) => {
