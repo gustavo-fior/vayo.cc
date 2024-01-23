@@ -44,6 +44,7 @@ export default function Bookmarks() {
       page: currentPage,
     },
     {
+      enabled: Boolean(folderId),
       onSuccess: (data) => {
         if (data) {
           setBookmarks((prev) => {
@@ -69,9 +70,14 @@ export default function Bookmarks() {
     }
   );
 
-  const folder = api.folders.findById.useQuery({
-    id: String(folderId),
-  });
+  const folder = api.folders.findById.useQuery(
+    {
+      id: String(folderId),
+    },
+    {
+      enabled: Boolean(folderId),
+    }
+  );
 
   const handleChangeViewStyle = () => {
     setIsOpen(false);

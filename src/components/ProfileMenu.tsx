@@ -34,7 +34,6 @@ import { Spinner } from "./Spinner";
 
 export const ProfileMenu = () => {
   const session = useSession();
-  const utils = api.useContext();
   const [signinOut, setSigninOut] = useState(false);
   const [, setIsOpen] = useAtom(isOpenAtom);
   const { resolvedTheme, setTheme } = useTheme();
@@ -82,11 +81,7 @@ export const ProfileMenu = () => {
     }
   );
 
-  const updateFolder = api.folders.update.useMutation({
-    onSuccess: () => {
-      void utils.folders.findById.invalidate();
-    },
-  });
+  const updateFolder = api.folders.update.useMutation();
 
   const handleChangeTheme = (newTheme: "light" | "dark") => {
     setTheme(newTheme);
@@ -399,7 +394,7 @@ export const ProfileMenu = () => {
                 >
                   <motion.div
                     whileTap={{
-                      scale: 0.8,
+                      scale: 0.95,
                     }}
                   >
                     <Checkbox.Indicator>
@@ -416,7 +411,7 @@ export const ProfileMenu = () => {
                 </div>
                 <motion.button
                   whileTap={{
-                    scale: 0.8,
+                    scale: 0.95,
                   }}
                   disabled={signinOut}
                   onClick={handleSignOut}
