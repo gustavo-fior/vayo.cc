@@ -234,7 +234,7 @@ export default function Bookmarks() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [bookmarks?.length, totalBookmarks, fetchBookmarks.isLoading]);
+  }, [bookmarks?.length, totalBookmarks, fetchBookmarks.isLoading, inputUrl.length]);
 
   // focus on input when ctrl/cmd + f is pressed
   useEffect(() => {
@@ -318,8 +318,8 @@ export default function Bookmarks() {
                       value={isDuplicate ? "Duplicate" : inputUrl}
                       disabled={addBookmark.isLoading || !currentFolder}
                       onChange={(e) => setInputUrl(e.target.value)}
-                      placeholder="https://..."
-                      className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-slate-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
+                      placeholder="https://... or ⌘ + F to search"
+                      className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
                         isDuplicate
                           ? "animate-shake ring-2 ring-red-500 focus:ring-red-500"
                           : ""
@@ -441,6 +441,7 @@ export default function Bookmarks() {
                 {fetchBookmarks.isFetching &&
                   bookmarks &&
                   bookmarks?.length > 0 &&
+                  inputUrl.length === 0 &&
                   currentPage > 1 && <Spinner size="md" />}
               </div>
             </div>
