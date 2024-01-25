@@ -24,12 +24,14 @@ import {
   showMonthsAtom,
   foldersAtom,
   bookmarksAtom,
-  bookmarksFilteredAtom
+  bookmarksFilteredAtom,
+  currentPageAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
 import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
 import { api } from "~/utils/api";
+import { Header } from "~/components/Header";
 
 export default function Bookmarks() {
   const session = useSession();
@@ -45,12 +47,14 @@ export default function Bookmarks() {
   const [viewStyle] = useAtom(viewStyleAtom);
   const [showMonths] = useAtom(showMonthsAtom);
 
-  const [filteredBookmarks, setFilteredBookmarks] = useAtom(bookmarksFilteredAtom);
+  const [filteredBookmarks, setFilteredBookmarks] = useAtom(
+    bookmarksFilteredAtom
+  );
   const [bookmarks, setBookmarks] = useAtom(bookmarksAtom);
   const [totalBookmarks, setTotalBookmarks] = useAtom(totalBookmarksAtom);
-  const [folders, setFolders] = useAtom(foldersAtom);
+  const [, setFolders] = useAtom(foldersAtom);
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useAtom(currentPageAtom);
 
   const fetchFolders = api.folders.findByUserId.useQuery(
     {
@@ -223,7 +227,11 @@ export default function Bookmarks() {
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        if (bookmarks?.length !== totalBookmarks && !fetchBookmarks.isLoading && inputUrl.length === 0) {
+        if (
+          bookmarks?.length !== totalBookmarks &&
+          !fetchBookmarks.isLoading &&
+          inputUrl.length === 0
+        ) {
           setCurrentPage((prevPage) => prevPage + 1);
         }
       }
@@ -234,7 +242,12 @@ export default function Bookmarks() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [bookmarks?.length, totalBookmarks, fetchBookmarks.isLoading, inputUrl.length]);
+  }, [
+    bookmarks?.length,
+    totalBookmarks,
+    fetchBookmarks.isLoading,
+    inputUrl.length,
+  ]);
 
   // focus on input when ctrl/cmd + f is pressed
   useEffect(() => {
@@ -281,10 +294,11 @@ export default function Bookmarks() {
         <title>{currentFolder?.name ?? "Bookmarks"}</title>
         <link rel="icon" href={getFaviconForFolder(currentFolder)} />
       </Head>
-      <main className="relative min-h-screen w-full bg-[#e0e0e0] dark:bg-[#161616]">
+      <main className="relative min-h-screen w-full bg-[#e0e0e0] pt-8  dark:bg-[#161616]">
+        <Header inputRef={inputRef} />
         <div className="flex flex-col items-center">
           <div className="w-[20rem]  sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-            <div className="pb-32 pt-16">
+            <div className="pb-32">
               <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
                 <motion.form
                   initial={{ opacity: 0 }}
@@ -292,6 +306,14 @@ export default function Bookmarks() {
                   exit={{ opacity: 0 }}
                   onSubmit={(e) => {
                     e.preventDefault();
+
+                    if (
+                      inputUrl.length === 0 ||
+                      addBookmark.isLoading ||
+                      !currentFolder
+                    ) {
+                      return;
+                    }
 
                     if (
                       !currentFolder?.allowDuplicate &&
@@ -306,6 +328,7 @@ export default function Bookmarks() {
                       return;
                     }
 
+
                     handleCreateBookmark();
                   }}
                 >
@@ -318,98 +341,21 @@ export default function Bookmarks() {
                       value={isDuplicate ? "Duplicate" : inputUrl}
                       disabled={addBookmark.isLoading || !currentFolder}
                       onChange={(e) => setInputUrl(e.target.value)}
-                      placeholder="https://... or ⌘ + F to search"
-                      className={`w-72 rounded-full bg-black/10 px-6 py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
+                      placeholder="https://... or ⌘F"
+                      className={`w-full rounded-lg bg-black/10 px-4 py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
                         isDuplicate
                           ? "animate-shake ring-2 ring-red-500 focus:ring-red-500"
                           : ""
                       }`}
                     />
-                    <motion.button
-                      whileTap={{
-                        scale: 0.95,
-                      }}
-                      type="submit"
-                      disabled={
-                        inputUrl.length === 0 ||
-                        addBookmark.isLoading ||
-                        !currentFolder
-                      }
-                      className={`rounded-full bg-black/10 p-3 transition duration-200 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 ${
-                        inputUrl.length === 0 || addBookmark.isLoading
-                          ? "bg-black/5 dark:bg-white/5"
-                          : null
-                      }`}
-                    >
-                      {addBookmark.isLoading ? (
-                        <Spinner size="md" />
-                      ) : (
-                        <PlusIcon className="h-4 w-4 text-black dark:text-white" />
-                      )}
-                    </motion.button>
                   </div>
                 </motion.form>
-
-                <div className="flex items-center gap-2 align-middle">
-                  <ShareButton />
-                  <ProfileMenu />
-                </div>
               </div>
 
-              <div className={`mx-2 my-6`}>
+              <div className={`mx-2 mt-6`}>
                 <Separator />
               </div>
 
-              <div className="flex justify-between px-0 align-middle md:px-2">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="flex items-center gap-x-2 overflow-x-auto "
-                >
-                  {!folders ? (
-                    [...Array<number>(3)].map((_, i) => (
-                      <FolderSkeleton key={i} />
-                    ))
-                  ) : folders?.length > 0 ? (
-                    folders.map((folder) => (
-                      <motion.div
-                        whileTap={{
-                          scale: 0.95,
-                        }}
-                        onClick={() => {
-                          if (
-                            currentFolder?.id !== folder.id &&
-                            folder.id !== "temp"
-                          ) {
-                            setCurrentFolder(folder);
-                            setIsOpen(false);
-                            setBookmarks(null);
-                            setCurrentPage(1);
-                          }
-                        }}
-                        key={folder.id}
-                        className={`${
-                          currentFolder?.id === folder.id
-                            ? "bg-black/20 dark:bg-white/30"
-                            : ""
-                        } group flex items-center gap-2 rounded-full bg-black/10 px-4 py-2 align-middle font-semibold text-black no-underline transition hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20`}
-                      >
-                        {folder.icon && <div>{folder.icon}</div>}
-                        <div>{folder.name}</div>
-                      </motion.div>
-                    ))
-                  ) : (
-                    <p className={`text-center italic text-gray-500`}>
-                      No folders yet, create one -{">"}
-                    </p>
-                  )}
-                </motion.div>
-                <div className="flex gap-2">
-                  {folders && folders.length > 0 && <DeleteFolderButton />}
-                  <CreateFolderButton />
-                </div>
-              </div>
               <motion.div
                 initial={false}
                 animate={isOpen ? "open" : "closed"}

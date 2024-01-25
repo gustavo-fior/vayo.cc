@@ -1,5 +1,5 @@
 import { CheckIcon, Share2Icon } from "@radix-ui/react-icons";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState } from "react";
 
 export const ShareLinkButton = ({ folderId }: { folderId: string }) => {
@@ -17,10 +17,9 @@ export const ShareLinkButton = ({ folderId }: { folderId: string }) => {
   };
 
   return (
-    <AnimatePresence mode="popLayout">
       <motion.button
         whileTap={{
-          scale: 0.8,
+          scale: 0.95,
         }}
         onClick={() => {
           void handleCopyToClipboard();
@@ -47,6 +46,5 @@ export const ShareLinkButton = ({ folderId }: { folderId: string }) => {
           </motion.div>
         )}
       </motion.button>
-    </AnimatePresence>
   );
 };

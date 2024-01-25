@@ -13,6 +13,7 @@ type SmallBookmark = {
 export const isOpenAtom = atom(false);
 export const showMonthsAtom = atom(true);
 export const viewStyleAtom = atom<"expanded" | "compact">("compact");
+export const currentPageAtom = atom(1);
 export const currentFolderAtom = atom<Folder | null>(null);
 export const foldersAtom = atom<Folder[] | null>(null);
 export const bookmarksAtom = atom<SmallBookmark[] | null>([]);

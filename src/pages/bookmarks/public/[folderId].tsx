@@ -169,9 +169,7 @@ export default function Bookmarks() {
                       <p className="text-3xl">{folder?.data?.name}</p>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3 align-middle">
-                      <p className="text-3xl">🔒 This folder is private</p>
-                    </div>
+                    <p className="text-3xl">🔒 This folder is private</p>
                   )}
                 </motion.div>
               )}

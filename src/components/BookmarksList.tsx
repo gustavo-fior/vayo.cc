@@ -118,7 +118,7 @@ export const BookmarksList = ({
       </>
     )
   ) : (
-    <div className="pt-4">
+    <div className="pt-2">
       {bookmarks.map((bookmark) => (
         <motion.div
           key={bookmark.id}

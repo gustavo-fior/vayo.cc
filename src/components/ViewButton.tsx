@@ -1,6 +1,5 @@
 import { HamburgerMenuIcon, RowsIcon } from "@radix-ui/react-icons";
-import { AnimatePresence, motion } from "framer-motion";
-
+import { motion } from "framer-motion";
 
 export const ViewButton = ({
   viewStyle,
@@ -11,36 +10,34 @@ export const ViewButton = ({
 }) => {
   return (
     <motion.button
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       whileTap={{
-        scale: 0.8,
+        scale: 0.95,
       }}
       onClick={() => handleChangeViewStyle()}
-      className="rounded-full dark:bg-white/10 bg-black/10 p-3 no-underline dark:text-white text-black transition dark:hover:bg-white/20 hover:bg-black/20"
+      className="rounded-full bg-black/10 p-3 text-black no-underline transition hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
     >
-      <AnimatePresence mode="popLayout">
-        {viewStyle === "compact" ? (
-          <motion.div
-            key="compact"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-          >
-            <HamburgerMenuIcon className="h-4 w-4" />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="expanded"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-          >
-            <RowsIcon className="h-4 w-4" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {viewStyle === "compact" ? (
+        <motion.div
+          key="compact"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+        >
+          <HamburgerMenuIcon className="h-4 w-4" />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="expanded"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+        >
+          <RowsIcon className="h-4 w-4" />
+        </motion.div>
+      )}
     </motion.button>
   );
 };
