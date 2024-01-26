@@ -1,22 +1,32 @@
-import { PlusIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  Cross1Icon,
+  Cross2Icon,
+  PlusIcon,
+} from "@radix-ui/react-icons";
 import * as Select from "@radix-ui/react-select";
+import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { ProfileMenu } from "./ProfileMenu";
 import { ShareButton } from "./ShareButton";
 
-import {
-  currentFolderAtom,
-  foldersAtom,
-  isOpenAtom,
-  bookmarksAtom,
-  currentPageAtom,
-} from "~/helpers/atoms";
 import { useAtom } from "jotai";
-import { Separator } from "./Separator";
-import { CreateFolderButton } from "./CreateFolderButton";
-import { DeleteFolderButton } from "./DeleteFolderButton";
+import { useHotkeys } from "react-hotkeys-hook";
+import {
+  bookmarksAtom,
+  currentFolderAtom,
+  currentPageAtom,
+  foldersAtom,
+  isNewFolderModalOpenAtom,
+  isOpenAtom,
+  isDeleteFolderModalOpenAtom,
+} from "~/helpers/atoms";
+import { DeleteFolderForm } from "./DeleteFolderForm";
 import { Hotkey } from "./Hotkey";
+import { Separator } from "./Separator";
+import { CreateFolderForm } from "./CreateFolderForm";
 
 export const Header = ({
   inputRef,
@@ -29,7 +39,47 @@ export const Header = ({
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
   const [, setCurrentPage] = useAtom(currentPageAtom);
 
+  const [isNewFolderModalOpen, setIsNewFolderModalOpen] = useAtom(
+    isNewFolderModalOpenAtom
+  );
+
+  const [isDeleteFolderModalOpen, setIsDeleteFolderModalOpen] = useAtom(
+    isDeleteFolderModalOpenAtom
+  );
+
   const [selectOpen, setSelectOpen] = useState(false);
+
+  useHotkeys(
+    "k+f",
+    () => {
+      setSelectOpen(!selectOpen);
+    },
+    {
+      enableOnFormTags: false,
+    }
+  );
+
+  useHotkeys(
+    "k+n",
+    () => {
+      setIsNewFolderModalOpen(!isNewFolderModalOpen);
+      setIsDeleteFolderModalOpen(false);
+    },
+    {
+      enableOnFormTags: false,
+    }
+  );
+
+  useHotkeys(
+    "k+x",
+    () => {
+      setIsDeleteFolderModalOpen(!isDeleteFolderModalOpen);
+      setIsNewFolderModalOpen(false);
+    },
+    {
+      enableOnFormTags: false,
+    }
+  );
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -88,26 +138,34 @@ export const Header = ({
       >
         <Select.Trigger className="text-md inline-flex cursor-pointer items-center justify-between rounded-md focus:outline-none">
           <Select.Value className="flex items-center">
-            {currentFolder?.icon}
-            <span className="ml-2">{currentFolder?.name}</span>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              {currentFolder?.icon}
+              <span className="ml-2">{currentFolder?.name}</span>
+            </motion.p>
           </Select.Value>
-          <Select.Icon className="ml-4">
-            <ChevronDownIcon
-              className={`h-4 w-4 transform text-zinc-500 transition-transform duration-200 ${
-                selectOpen ? "rotate-180" : ""
-              }`}
-            />
-          </Select.Icon>
-          <div className="flex justify-between px-0 align-middle md:px-2">
-            <div className="flex gap-2">
-              {folders && folders.length > 0 && <DeleteFolderButton />}
-              <CreateFolderButton />
-            </div>
-          </div>
+          {currentFolder && (
+            <Select.Icon className="ml-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <ChevronDownIcon
+                  className={`h-4 w-4 transform text-zinc-500 transition-transform duration-200 ${
+                    selectOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </motion.div>
+            </Select.Icon>
+          )}
         </Select.Trigger>
 
         <Select.Portal>
-          <Select.Content position="popper" sideOffset={10}>
+          <Select.Content position="popper" sideOffset={10} alignOffset={-10}>
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
@@ -118,35 +176,88 @@ export const Header = ({
                   <Select.Item
                     key={folder.id}
                     value={folder.id}
-                    className={`cursor-pointer p-3 align-middle transition first:rounded-t-md last:rounded-b-md hover:bg-black/20 dark:hover:bg-white/20 ${
+                    className={`cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20 ${
                       folder.id === currentFolder?.id
-                        ? "bg-black/20 dark:bg-white/20"
+                        ? "bg-black/10 dark:bg-white/10"
                         : ""
                     }`}
                   >
                     <Select.ItemText>
-                      <div className="flex items-center justify-between gap-4">
-                        <p>
+                      <motion.div className="flex items-center justify-between gap-4">
+                        <motion.p>
                           {folder.icon}{" "}
                           <span className="ml-1">{folder.name}</span>{" "}
-                        </p>
-                        <Hotkey key1={String(index + 1)} />
-                      </div>
+                        </motion.p>
+                        {folder.id === currentFolder?.id ? (
+                          <CheckIcon className="mr-0.5 h-4 w-4" />
+                        ) : (
+                          <Hotkey key1={String(index + 1)} />
+                        )}
+                      </motion.div>
                     </Select.ItemText>
                   </Select.Item>
                 ))}
-                <Separator />
-                <Select.Item
-                  className="cursor-pointer p-3 align-middle transition first:rounded-t-md last:rounded-b-md hover:bg-black/20 dark:hover:bg-white/20"
-                  value="new"
+                <div className="m-2">
+                  <Separator />
+                </div>
+
+                {/*CREATE FOLDER MODAL*/}
+                <Dialog.Root
+                  open={isNewFolderModalOpen}
+                  onOpenChange={(change) => {
+                    setIsNewFolderModalOpen(change);
+                  }}
                 >
-                  <Select.ItemText>
-                    <div className="flex items-center">
-                      <PlusIcon className="h-4 w-4" />
-                      <span className="ml-2">New Folder</span>
-                    </div>
-                  </Select.ItemText>
-                </Select.Item>
+                  <Dialog.Trigger asChild>
+                    <motion.div className="cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
+                      <div
+                        onClick={() => setIsNewFolderModalOpen(true)}
+                        className="flex items-center justify-between gap-5"
+                      >
+                        <div className="flex items-center">
+                          <PlusIcon className="ml-0.5 h-4 w-4" />
+                          <span className="ml-2.5">New folder</span>
+                        </div>
+                        <Hotkey key1="k" key2="n" />
+                      </div>
+                    </motion.div>
+                  </Dialog.Trigger>
+                  <Dialog.Portal>
+                    <Dialog.Overlay className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm data-[state=open]:animate-overlayShow" />
+                    <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] w-[20vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
+                      <CreateFolderForm />
+                    </Dialog.Content>
+                  </Dialog.Portal>
+                </Dialog.Root>
+
+                {/*DELETE FOLDER MODAL*/}
+                <Dialog.Root
+                  open={isDeleteFolderModalOpen}
+                  onOpenChange={(change) => {
+                    setIsDeleteFolderModalOpen(change);
+                  }}
+                >
+                  <Dialog.Trigger asChild>
+                    <motion.div className="cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
+                      <div
+                        onClick={() => setIsDeleteFolderModalOpen(true)}
+                        className="flex items-center justify-between gap-5"
+                      >
+                        <div className="flex items-center ">
+                            <Cross2Icon className="ml-0.5 text-red-500 h-4 w-4" />
+                          <span className="ml-2.5 text-red-500">Delete</span>
+                        </div>
+                        <Hotkey key1="k" key2="x" />
+                      </div>
+                    </motion.div>
+                  </Dialog.Trigger>
+                  <Dialog.Portal>
+                    <Dialog.Overlay className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm data-[state=open]:animate-overlayShow" />
+                    <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] w-[20vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
+                      <DeleteFolderForm />
+                    </Dialog.Content>
+                  </Dialog.Portal>
+                </Dialog.Root>
               </Select.Viewport>
             </motion.div>
           </Select.Content>

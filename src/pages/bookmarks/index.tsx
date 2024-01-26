@@ -1,37 +1,31 @@
 import { type Bookmark } from "@prisma/client";
-import { PlusIcon } from "@radix-ui/react-icons";
-import { useAtom } from "jotai";
 import { motion } from "framer-motion";
+import { useAtom } from "jotai";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BookmarksList } from "~/components/BookmarksList";
-import { CreateFolderButton } from "~/components/CreateFolderButton";
-import { DeleteFolderButton } from "~/components/DeleteFolderButton";
 import { EmptyState } from "~/components/EmptyState";
-import { FolderSkeleton } from "~/components/FolderSkeleton";
-import { ProfileMenu } from "~/components/ProfileMenu";
+import { Header } from "~/components/Header";
 import { Separator } from "~/components/Separator";
-import { ShareButton } from "~/components/ShareButton";
 import { SkeletonList } from "~/components/SkeletonList";
 import { Spinner } from "~/components/Spinner";
 import {
-  currentFolderAtom,
-  totalBookmarksAtom,
-  isOpenAtom,
-  viewStyleAtom,
-  showMonthsAtom,
-  foldersAtom,
   bookmarksAtom,
   bookmarksFilteredAtom,
+  currentFolderAtom,
   currentPageAtom,
+  foldersAtom,
+  isOpenAtom,
+  showMonthsAtom,
+  totalBookmarksAtom,
+  viewStyleAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
 import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
 import { api } from "~/utils/api";
-import { Header } from "~/components/Header";
 
 export default function Bookmarks() {
   const session = useSession();
@@ -242,6 +236,7 @@ export default function Bookmarks() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     bookmarks?.length,
     totalBookmarks,
@@ -286,6 +281,7 @@ export default function Bookmarks() {
     } else {
       setFilteredBookmarks(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputUrl]);
 
   return (
@@ -327,7 +323,6 @@ export default function Bookmarks() {
 
                       return;
                     }
-
 
                     handleCreateBookmark();
                   }}
