@@ -238,7 +238,7 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                    <motion.div className="cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
+                    <motion.div className="cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
                       <div
                         onClick={() => setIsDeleteFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
