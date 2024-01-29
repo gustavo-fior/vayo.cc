@@ -15,6 +15,8 @@ export const BookmarksList = ({
     url: string;
     faviconUrl: string | null;
     ogImageUrl: string | null;
+    loading?: boolean;
+    onClick?: () => void;
   }[];
   showMonths: boolean;
   viewStyle: "expanded" | "compact";
@@ -98,7 +100,7 @@ export const BookmarksList = ({
                   y: bookmark.id === "temp" ? -10 : 0,
                 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
+                transition={{ duration: 0.3 }}
               >
                 {viewStyle === "compact" ? (
                   <CompactBookmark
@@ -128,7 +130,7 @@ export const BookmarksList = ({
             y: bookmark.id === "temp" ? -10 : 0,
           }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.3 }}
         >
           {viewStyle === "compact" ? (
             <CompactBookmark

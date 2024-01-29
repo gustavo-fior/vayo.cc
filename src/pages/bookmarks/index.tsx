@@ -147,10 +147,15 @@ export default function Bookmarks() {
       };
 
       bookmarks?.unshift(newBookmark);
+      setTotalBookmarks((prevTotal) => (prevTotal ? prevTotal + 1 : 1));
     },
     onSettled: async () => {
+      const previousPage = currentPage;
+
       setCurrentPage(1);
       await fetchBookmarks.refetch();
+
+      setCurrentPage(previousPage);
     },
     onError: (context) => {
       const previousBookmarks =
@@ -178,10 +183,8 @@ export default function Bookmarks() {
 
       if (listWithoutDeletedBookmark) {
         setBookmarks(listWithoutDeletedBookmark);
+        setTotalBookmarks((prevTotal) => (prevTotal ? prevTotal - 1 : 0));
       }
-    },
-    onSettled: () => {
-      void fetchBookmarks.refetch();
     },
     onError: (context) => {
       const previousBookmarks =
@@ -293,95 +296,100 @@ export default function Bookmarks() {
       <main className="relative min-h-screen w-full bg-[#e0e0e0] pt-8  dark:bg-[#161616]">
         <Header inputRef={inputRef} />
         <div className="flex flex-col items-center">
-          <div className="w-[20rem] sm:w-[30rem] md:w-[40rem] lg:w-[50rem] pb-32">
-              <motion.form
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="md:mx-12 mx-4 mt-4"
-                onSubmit={(e) => {
-                  e.preventDefault();
+          <div className="w-[20rem] pb-32 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
+            <motion.form
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mx-4 mt-4 md:mx-12 relative"
+              onSubmit={(e) => {
+                e.preventDefault();
 
-                  if (
-                    inputUrl.length === 0 ||
-                    addBookmark.isLoading ||
-                    !currentFolder
-                  ) {
-                    return;
-                  }
+                if (
+                  inputUrl.length === 0 ||
+                  addBookmark.isLoading ||
+                  !currentFolder
+                ) {
+                  return;
+                }
 
-                  if (
-                    !currentFolder?.allowDuplicate &&
-                    bookmarks?.find((bookmark) => bookmark.url === inputUrl)
-                  ) {
-                    setIsDuplicate(true);
+                if (
+                  !currentFolder?.allowDuplicate &&
+                  bookmarks?.find((bookmark) => bookmark.url === inputUrl)
+                ) {
+                  setIsDuplicate(true);
 
-                    setTimeout(() => {
-                      setIsDuplicate(false);
-                    }, 2000);
+                  setTimeout(() => {
+                    setIsDuplicate(false);
+                  }, 2000);
 
-                    return;
-                  }
+                  return;
+                }
 
-                  handleCreateBookmark();
-                }}
-              >
-                <input
-                  type="url"
-                  name="url"
-                  id="url"
-                  ref={inputRef}
-                  value={isDuplicate ? "Duplicate" : inputUrl}
-                  disabled={addBookmark.isLoading || !currentFolder}
-                  onChange={(e) => setInputUrl(e.target.value)}
-                  placeholder="https://... or ⌘F"
-                  className={`w-full rounded-lg bg-black/10 px-4 py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
-                       ${
-                         isDuplicate
-                           ? "animate-shake ring-2 ring-red-500 focus:ring-red-500 focus:outline-none"
-                           : "outline-zinc-500 focus:ring-zinc-500 focus:outline-none"
-                       }`}
-                />
-              </motion.form>
+                handleCreateBookmark();
+              }}
+            >
+              <input
+                type="url"
+                name="url"
+                id="url"
+                ref={inputRef}
+                value={isDuplicate ? "Duplicate" : inputUrl}
+                disabled={addBookmark.isLoading || !currentFolder}
+                onChange={(e) => setInputUrl(e.target.value)}
+                placeholder="https://... or ⌘F"
+                className={` w-full rounded-lg bg-black/10 px-4 py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
+                  ${
+                    isDuplicate
+                      ? "animate-shake ring-2 ring-red-500 focus:outline-none focus:ring-red-500"
+                      : "outline-zinc-500 focus:outline-none focus:ring-zinc-500"
+                  }`}
+              />
+              {addBookmark.isLoading && (
+                <motion.div className="absolute top-1/2 right-4 transform -translate-y-1/2">
+                  <Spinner size="md" />
+                </motion.div>
+              )}
+            </motion.form>
 
-              <div className={`mx-2 mt-6`}>
-                <Separator />
-              </div>
+            <div className={`mx-2 mt-6`}>
+              <Separator />
+            </div>
 
-              <motion.div
-                initial={false}
-                animate={isOpen ? "open" : "closed"}
-                className="flex flex-col gap-8"
-              >
-                <motion.ul className={`flex flex-col`}>
-                  {!bookmarks && fetchBookmarks.isFetching && (
-                    <SkeletonList viewStyle={viewStyle} />
-                  )}
+            <motion.div
+              initial={false}
+              animate={isOpen ? "open" : "closed"}
+              className="flex flex-col gap-8"
+            >
+              <motion.ul className={`flex flex-col`}>
+                {!bookmarks && fetchBookmarks.isFetching && (
+                  <SkeletonList viewStyle={viewStyle} />
+                )}
 
-                  {bookmarks && bookmarks?.length > 0 && (
-                    <BookmarksList
-                      bookmarks={filteredBookmarks ?? bookmarks}
-                      showMonths={showMonths}
-                      viewStyle={viewStyle}
-                      handleDeleteBookmark={handleDeleteBookmark}
-                    />
-                  )}
+                {bookmarks && bookmarks?.length > 0 && (
+                  <BookmarksList
+                    bookmarks={filteredBookmarks ?? bookmarks}
+                    showMonths={showMonths}
+                    viewStyle={viewStyle}
+                    handleDeleteBookmark={handleDeleteBookmark}
+                  />
+                )}
 
-                  {totalBookmarks === 0 &&
-                    bookmarks &&
-                    bookmarks.length === 0 &&
-                    fetchBookmarks.isFetched &&
-                    fetchFolders.isFetched &&
-                    isOpen && <EmptyState />}
-                </motion.ul>
-              </motion.div>
-              <div className="flex justify-center pt-10 align-middle">
-                {fetchBookmarks.isFetching &&
+                {totalBookmarks === 0 &&
                   bookmarks &&
-                  bookmarks?.length > 0 &&
-                  inputUrl.length === 0 &&
-                  currentPage > 1 && <Spinner size="md" />}
-              </div>
+                  bookmarks.length === 0 &&
+                  fetchBookmarks.isFetched &&
+                  fetchFolders.isFetched &&
+                  isOpen && <EmptyState />}
+              </motion.ul>
+            </motion.div>
+            <div className="flex justify-center pt-10 align-middle">
+              {fetchBookmarks.isFetching &&
+                bookmarks &&
+                bookmarks?.length > 0 &&
+                inputUrl.length === 0 &&
+                currentPage > 1 && <Spinner size="md" />}
+            </div>
           </div>
         </div>
       </main>

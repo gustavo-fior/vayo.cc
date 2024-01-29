@@ -1,8 +1,6 @@
 export const getCommonFavicons = (url: string): string | null => {
   const host = getWebsiteName(url);
 
-  console.log("host", host);
-
   switch (host) {
     case "youtube" || "youtu.be":
       return "/favicons/youtube.png";

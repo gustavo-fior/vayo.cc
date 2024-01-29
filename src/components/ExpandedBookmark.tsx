@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
 import { itemVariants } from "../helpers/animationVariants";
+import { Spinner } from "./Spinner";
 
 export const ExpandedBookmark = ({
   bookmark,
@@ -16,6 +17,8 @@ export const ExpandedBookmark = ({
     url: string;
     faviconUrl: string | null;
     ogImageUrl: string | null;
+    loading?: boolean;
+    onClick?: () => void;
   };
   onRemove?: (id: string) => void;
 }) => {
@@ -36,16 +39,21 @@ export const ExpandedBookmark = ({
             onMouseLeave={() => setIsHovering("")}
             className={`relative border-y-4 border-transparent hover:cursor-pointer`}
             onClick={() => {
+              if (bookmark.onClick) {
+                bookmark.onClick();
+                return;
+              }
+
               window.open(bookmark.url, "_blank");
             }}
           >
             <AnimatePresence>
               {isHovering === bookmark.id && (
                 <motion.div
-                transition={{ duration: 0.4 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { duration: 0.2 } }}
-                exit={{ opacity: 0, transition: { duration: 0.2 }  }}
+                  transition={{ duration: 0.4 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1, transition: { duration: 0.2 } }}
+                  exit={{ opacity: 0, transition: { duration: 0.2 } }}
                   layoutId="bookmark"
                   className="absolute left-0 top-0 h-full w-full rounded-xl bg-black/5 dark:bg-white/5"
                 />
@@ -56,8 +64,11 @@ export const ExpandedBookmark = ({
               className={`z-10 flex justify-between rounded-lg px-3 py-3 transition duration-500 ease-in-out`}
             >
               <div className={`flex items-center gap-6 md:w-full`}>
-                {bookmark.ogImageUrl &&
-                !imageError ? (
+                {bookmark.loading ? (
+                  <motion.div className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10">
+                    <Spinner size="md" />
+                  </motion.div>
+                ) : bookmark.ogImageUrl && !imageError ? (
                   <motion.div
                     animate={{ opacity: 1 }}
                     initial={{ opacity: 0 }}
@@ -111,7 +122,11 @@ export const ExpandedBookmark = ({
                   <div className="flex items-center gap-2 align-middle">
                     {bookmark.faviconUrl ? (
                       <Image
-                        src={faviconError ? "/images/logo.png" : bookmark.faviconUrl}
+                        src={
+                          faviconError
+                            ? "/images/logo.png"
+                            : bookmark.faviconUrl
+                        }
                         alt={bookmark.title}
                         width={12}
                         height={12}
@@ -148,7 +163,7 @@ export const ExpandedBookmark = ({
                   exit={{ opacity: 0 }}
                   className="z-50 pr-6 font-bold text-zinc-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
                   onClick={(e) => {
-                    e.stopPropagation(); 
+                    e.stopPropagation();
                     onRemove ? onRemove(bookmark.id) : null;
                   }}
                 >
