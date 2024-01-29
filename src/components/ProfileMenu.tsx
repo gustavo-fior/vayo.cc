@@ -166,11 +166,10 @@ export const ProfileMenu = () => {
         </motion.button>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content className="z-50 mr-6 md:mr-64">
+        <Popover.Content className="z-50 md:mr-12 mr-6">
           <motion.div
-            initial={{ opacity: 0, y: 3 }}
+            initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -3 }}
             className="mt-4 flex flex-col gap-3 rounded-md bg-black/5 p-4 align-middle font-semibold text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white"
           >
             <div className="flex items-center gap-2 px-1 align-middle">

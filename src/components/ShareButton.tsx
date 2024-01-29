@@ -77,11 +77,10 @@ export const ShareButton = () => {
       </Popover.Trigger>
       {currentFolder?.id && (
         <Popover.Portal>
-          <Popover.Content className="z-50 ml-4 md:mr-40">
+          <Popover.Content className="z-50 mr-12">
             <motion.div
-              initial={{ opacity: 0, y: 3 }}
+              initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -3 }}
               className="mt-4 flex flex-col gap-3 rounded-md bg-black/5 p-4 align-middle font-semibold text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white"
             >
               <div className="flex items-center justify-between gap-2 px-1 align-middle">

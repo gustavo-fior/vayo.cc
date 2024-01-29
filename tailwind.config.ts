@@ -11,6 +11,8 @@ export default {
       },
       animation: {
         shake: "shake 0.62s cubic-bezier(.36,.07,.19,.97) both",
+        overlayShow: "overlayShow 200ms cubic-bezier(0.16, 1, 0.3, 1)",
+        contentShow: "contentShow 50ms cubic-bezier(0.16, 1, 0.3, 1)",
       },
       keyframes: {
         shake: {
@@ -26,6 +28,17 @@ export default {
           "40%, 60%": {
             transform: "translate3d(2px, 0, 0)",
           },
+        },
+        overlayShow: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        contentShow: {
+          from: {
+            opacity: "0",
+            transform: "translate(-50%, -45%) scale(0.96)",
+          },
+          to: { opacity: "1", transform: "translate(-50%, -50%) scale(1)" },
         },
       },
     },

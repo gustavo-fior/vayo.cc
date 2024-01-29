@@ -1,5 +1,5 @@
 import { SunIcon, MoonIcon } from "@radix-ui/react-icons";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 export const ThemeButton = ({
   theme,
@@ -10,16 +10,15 @@ export const ThemeButton = ({
 }) => {
   return (
     <motion.button
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       whileTap={{
-        scale: 0.8,
+        scale: 0.95,
       }}
       onClick={() => void handleChangeTheme()}
       className="rounded-full bg-black/10 p-3 text-black no-underline transition hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
     >
-      <AnimatePresence mode="popLayout">
         {theme === "light" ? (
           <motion.div
             key="light"
@@ -39,7 +38,6 @@ export const ThemeButton = ({
             <SunIcon className="h-4 w-4" />
           </motion.div>
         )}
-      </AnimatePresence>
     </motion.button>
   );
 };
