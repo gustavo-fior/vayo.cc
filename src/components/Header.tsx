@@ -1,7 +1,6 @@
 import {
   CheckIcon,
   ChevronDownIcon,
-  Cross1Icon,
   Cross2Icon,
   PlusIcon,
 } from "@radix-ui/react-icons";
@@ -93,11 +92,13 @@ export const Header = ({
         const pressedNumber = parseInt(event.key, 10);
         if (pressedNumber > 0 && pressedNumber <= folders.length) {
           const folder = folders[pressedNumber - 1];
-          setIsOpen(false);
-          setBookmarks(null);
-          setCurrentPage(1);
-          setSelectOpen(false);
-          setCurrentFolder(folder ?? null);
+          if (folder && folder.id !== currentFolder?.id) {
+            setIsOpen(false);
+            setBookmarks(null);
+            setCurrentPage(1);
+            setSelectOpen(false);
+            setCurrentFolder(folder);
+          }
         }
       }
     };
@@ -108,12 +109,13 @@ export const Header = ({
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, [
+    currentFolder?.id,
     folders,
+    inputRef,
+    setCurrentFolder,
     setIsOpen,
     setBookmarks,
     setCurrentPage,
-    setCurrentFolder,
-    inputRef,
   ]);
 
   return (
@@ -129,11 +131,13 @@ export const Header = ({
         onValueChange={(value) => {
           const folder = folders?.find((folder) => folder.id === value);
 
-          setIsOpen(false);
-          setBookmarks(null);
-          setCurrentPage(1);
-          setSelectOpen(false);
-          setCurrentFolder(folder ?? null);
+          if (folder?.id !== currentFolder?.id) {
+            setIsOpen(false);
+            setBookmarks(null);
+            setCurrentPage(1);
+            setSelectOpen(false);
+            setCurrentFolder(folder ?? null);
+          }
         }}
       >
         <Select.Trigger className="text-md inline-flex cursor-pointer items-center justify-between rounded-md focus:outline-none">
@@ -244,7 +248,7 @@ export const Header = ({
                         className="flex items-center justify-between gap-5"
                       >
                         <div className="flex items-center ">
-                            <Cross2Icon className="ml-0.5 text-red-500 h-4 w-4" />
+                          <Cross2Icon className="ml-0.5 h-4 w-4 text-red-500" />
                           <span className="ml-2.5 text-red-500">Delete</span>
                         </div>
                         <Hotkey key1="k" key2="x" />

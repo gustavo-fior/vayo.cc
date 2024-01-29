@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
 import { itemVariants } from "../helpers/animationVariants";
+import { Spinner } from "./Spinner";
 
 export const CompactBookmark = ({
   bookmark,
@@ -16,6 +17,8 @@ export const CompactBookmark = ({
     url: string;
     faviconUrl: string | null;
     ogImageUrl: string | null;
+    loading?: boolean;
+    onClick?: () => void;
   };
   onRemove?: (id: string) => void;
 }) => {
@@ -36,6 +39,11 @@ export const CompactBookmark = ({
           }}
           className="relative border-b-4 border-transparent hover:cursor-pointer"
           onClick={() => {
+            if (bookmark.onClick) {
+              bookmark.onClick();
+              return;
+            }
+
             window.open(bookmark.url, "_blank");
           }}
         >
@@ -57,10 +65,12 @@ export const CompactBookmark = ({
           >
             <div className="flex w-full items-center justify-between align-middle">
               <div className="z-10 flex flex-row items-center gap-3 align-middle">
-                {bookmark.faviconUrl ? (
-                  <motion.div
-                    className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10"
-                  >
+                {bookmark.loading ? (
+                  <motion.div className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10 flex items-center justify-center">
+                    <Spinner size="sm" />
+                  </motion.div>
+                ) : bookmark.faviconUrl ? (
+                  <motion.div className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10">
                     <Image
                       src={
                         faviconError ? "/images/logo.png" : bookmark.faviconUrl

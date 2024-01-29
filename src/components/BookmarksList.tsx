@@ -15,6 +15,8 @@ export const BookmarksList = ({
     url: string;
     faviconUrl: string | null;
     ogImageUrl: string | null;
+    loading?: boolean;
+    onClick?: () => void;
   }[];
   showMonths: boolean;
   viewStyle: "expanded" | "compact";
