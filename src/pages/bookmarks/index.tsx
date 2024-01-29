@@ -295,57 +295,55 @@ export default function Bookmarks() {
         <div className="flex flex-col items-center">
           <div className="w-[20rem]  sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
             <div className="pb-32">
-              <div className="flex flex-col-reverse items-center justify-between gap-4 px-2 align-middle lg:flex-row lg:gap-0">
-                <motion.form
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onSubmit={(e) => {
-                    e.preventDefault();
+              <motion.form
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="mx-12"
+                onSubmit={(e) => {
+                  e.preventDefault();
 
-                    if (
-                      inputUrl.length === 0 ||
-                      addBookmark.isLoading ||
-                      !currentFolder
-                    ) {
-                      return;
-                    }
+                  if (
+                    inputUrl.length === 0 ||
+                    addBookmark.isLoading ||
+                    !currentFolder
+                  ) {
+                    return;
+                  }
 
-                    if (
-                      !currentFolder?.allowDuplicate &&
-                      bookmarks?.find((bookmark) => bookmark.url === inputUrl)
-                    ) {
-                      setIsDuplicate(true);
+                  if (
+                    !currentFolder?.allowDuplicate &&
+                    bookmarks?.find((bookmark) => bookmark.url === inputUrl)
+                  ) {
+                    setIsDuplicate(true);
 
-                      setTimeout(() => {
-                        setIsDuplicate(false);
-                      }, 2000);
+                    setTimeout(() => {
+                      setIsDuplicate(false);
+                    }, 2000);
 
-                      return;
-                    }
+                    return;
+                  }
 
-                    handleCreateBookmark();
-                  }}
-                >
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="url"
-                      name="url"
-                      id="url"
-                      ref={inputRef}
-                      value={isDuplicate ? "Duplicate" : inputUrl}
-                      disabled={addBookmark.isLoading || !currentFolder}
-                      onChange={(e) => setInputUrl(e.target.value)}
-                      placeholder="https://... or ⌘F"
-                      className={`w-full rounded-lg bg-black/10 px-4 py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 md:w-96 ${
-                        isDuplicate
-                          ? "animate-shake ring-2 ring-red-500 focus:ring-red-500"
-                          : ""
-                      }`}
-                    />
-                  </div>
-                </motion.form>
-              </div>
+                  handleCreateBookmark();
+                }}
+              >
+                <input
+                  type="url"
+                  name="url"
+                  id="url"
+                  ref={inputRef}
+                  value={isDuplicate ? "Duplicate" : inputUrl}
+                  disabled={addBookmark.isLoading || !currentFolder}
+                  onChange={(e) => setInputUrl(e.target.value)}
+                  placeholder="https://... or ⌘F"
+                  className={`/> w-full rounded-lg bg-black/10 px-4 py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
+                       ${
+                         isDuplicate
+                           ? "animate-shake ring-2 ring-red-500 focus:ring-red-500 focus:outline-none"
+                           : "outline-zinc-500 focus:ring-zinc-500 focus:outline-none"
+                       }`}
+                />
+              </motion.form>
 
               <div className={`mx-2 mt-6`}>
                 <Separator />
