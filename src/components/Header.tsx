@@ -1,11 +1,11 @@
+import * as Dialog from "@radix-ui/react-dialog";
 import {
   CheckIcon,
   ChevronDownIcon,
   Cross2Icon,
-  PlusIcon,
+  PlusIcon
 } from "@radix-ui/react-icons";
 import * as Select from "@radix-ui/react-select";
-import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { ProfileMenu } from "./ProfileMenu";
@@ -18,14 +18,14 @@ import {
   currentFolderAtom,
   currentPageAtom,
   foldersAtom,
+  isDeleteFolderModalOpenAtom,
   isNewFolderModalOpenAtom,
   isOpenAtom,
-  isDeleteFolderModalOpenAtom,
 } from "~/helpers/atoms";
+import { CreateFolderForm } from "./CreateFolderForm";
 import { DeleteFolderForm } from "./DeleteFolderForm";
 import { Hotkey } from "./Hotkey";
 import { Separator } from "./Separator";
-import { CreateFolderForm } from "./CreateFolderForm";
 
 export const Header = ({
   inputRef,
@@ -49,7 +49,7 @@ export const Header = ({
   const [selectOpen, setSelectOpen] = useState(false);
 
   useHotkeys(
-    "k+f",
+    "f",
     () => {
       setSelectOpen(!selectOpen);
     },
@@ -59,7 +59,7 @@ export const Header = ({
   );
 
   useHotkeys(
-    "k+n",
+    "n",
     () => {
       setIsNewFolderModalOpen(!isNewFolderModalOpen);
       setIsDeleteFolderModalOpen(false);
@@ -70,7 +70,7 @@ export const Header = ({
   );
 
   useHotkeys(
-    "k+x",
+    "x",
     () => {
       setIsDeleteFolderModalOpen(!isDeleteFolderModalOpen);
       setIsNewFolderModalOpen(false);
@@ -213,7 +213,7 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                    <motion.div className="cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
+                    <motion.div className="z-[999] cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
                       <div
                         onClick={() => setIsNewFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
@@ -222,7 +222,7 @@ export const Header = ({
                           <PlusIcon className="ml-0.5 h-4 w-4" />
                           <span className="ml-2.5">New folder</span>
                         </div>
-                        <Hotkey key1="k" key2="n" />
+                        <Hotkey key1="n" />
                       </div>
                     </motion.div>
                   </Dialog.Trigger>
@@ -242,7 +242,7 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                    <motion.div className="cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
+                    <motion.div className="z-[999] cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
                       <div
                         onClick={() => setIsDeleteFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
@@ -251,7 +251,7 @@ export const Header = ({
                           <Cross2Icon className="ml-0.5 h-4 w-4 text-red-500" />
                           <span className="ml-2.5 text-red-500">Delete</span>
                         </div>
-                        <Hotkey key1="k" key2="x" />
+                        <Hotkey key1="x" />
                       </div>
                     </motion.div>
                   </Dialog.Trigger>

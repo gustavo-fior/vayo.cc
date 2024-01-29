@@ -42,7 +42,7 @@ export const ProfileMenu = () => {
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
 
   useHotkeys(
-    "k+t",
+    "t",
     () => {
       handleChangeTheme(resolvedTheme === "light" ? "dark" : "light");
     },
@@ -52,7 +52,7 @@ export const ProfileMenu = () => {
   );
 
   useHotkeys(
-    "k+d",
+    "d",
     () => {
       handleUpdateFolder();
     },
@@ -62,7 +62,7 @@ export const ProfileMenu = () => {
   );
 
   useHotkeys(
-    "k+m",
+    "m",
     () => {
       handleUpdateShowMonths();
     },
@@ -72,7 +72,7 @@ export const ProfileMenu = () => {
   );
 
   useHotkeys(
-    "k+v",
+    "v",
     () => {
       handleChangeViewStyle(viewStyle === "compact" ? "expanded" : "compact");
     },
@@ -204,7 +204,7 @@ export const ProfileMenu = () => {
                     )}
                   </AnimatePresence>
                   <p className="text-sm font-normal">View</p>
-                  <Hotkey key1="k" key2="v" />
+                  <Hotkey key1="v" />
                 </div>
                 <ToggleGroup.Root
                   type="single"
@@ -271,7 +271,7 @@ export const ProfileMenu = () => {
                     )}
                   </AnimatePresence>
                   <p className="text-sm font-normal">Day or night</p>
-                  <Hotkey key1="k" key2="t" />
+                  <Hotkey key1="t" />
                 </div>
                 <ToggleGroup.Root
                   type="single"
@@ -338,7 +338,7 @@ export const ProfileMenu = () => {
                     )}
                   </AnimatePresence>
                   <p className="text-sm font-normal">Show months?</p>
-                  <Hotkey key1="k" key2="m" />
+                  <Hotkey key1="m" />
                 </div>
                 <Checkbox.Root
                   defaultChecked={showMonths}
@@ -383,7 +383,7 @@ export const ProfileMenu = () => {
                     )}
                   </AnimatePresence>
                   <p className="text-sm font-normal">Allow duplicates?</p>
-                  <Hotkey key1="k" key2="d" />
+                  <Hotkey key1="d" />
                 </div>
                 <Checkbox.Root
                   defaultChecked={currentFolder?.allowDuplicate}
