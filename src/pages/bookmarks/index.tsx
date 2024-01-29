@@ -293,13 +293,12 @@ export default function Bookmarks() {
       <main className="relative min-h-screen w-full bg-[#e0e0e0] pt-8  dark:bg-[#161616]">
         <Header inputRef={inputRef} />
         <div className="flex flex-col items-center">
-          <div className="w-[20rem]  sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-            <div className="pb-32">
+          <div className="w-[20rem] sm:w-[30rem] md:w-[40rem] lg:w-[50rem] pb-32">
               <motion.form
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="mx-12"
+                className="md:mx-12 mx-4 mt-4"
                 onSubmit={(e) => {
                   e.preventDefault();
 
@@ -336,7 +335,7 @@ export default function Bookmarks() {
                   disabled={addBookmark.isLoading || !currentFolder}
                   onChange={(e) => setInputUrl(e.target.value)}
                   placeholder="https://... or ⌘F"
-                  className={`/> w-full rounded-lg bg-black/10 px-4 py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
+                  className={`w-full rounded-lg bg-black/10 px-4 py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
                        ${
                          isDuplicate
                            ? "animate-shake ring-2 ring-red-500 focus:ring-red-500 focus:outline-none"
@@ -383,7 +382,6 @@ export default function Bookmarks() {
                   inputUrl.length === 0 &&
                   currentPage > 1 && <Spinner size="md" />}
               </div>
-            </div>
           </div>
         </div>
       </main>
