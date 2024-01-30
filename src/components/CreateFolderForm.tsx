@@ -3,20 +3,21 @@ import { Separator } from "@radix-ui/react-context-menu";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import * as Popover from "@radix-ui/react-popover";
-import EmojiPicker, {
-  EmojiStyle,
-  SkinTonePickerLocation,
-  SuggestionMode,
-  Theme,
-} from "emoji-picker-react";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { bookmarksAtom, currentFolderAtom, foldersAtom, isNewFolderModalOpenAtom } from "~/helpers/atoms";
+import {
+  bookmarksAtom,
+  currentFolderAtom,
+  foldersAtom,
+  isNewFolderModalOpenAtom,
+} from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { Hotkey } from "./Hotkey";
 import { useTheme } from "next-themes";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 
 export const CreateFolderForm = () => {
   const [name, setName] = useState("");
@@ -29,7 +30,7 @@ export const CreateFolderForm = () => {
   const [, setIsNewFolderModalOpen] = useAtom(isNewFolderModalOpenAtom);
   const session = useSession();
   const utils = api.useContext();
-  const {theme} = useTheme();
+  const { theme } = useTheme();
 
   const { mutate: createFolder, isLoading: isCreatingFolder } =
     api.folders.create.useMutation({
@@ -87,7 +88,7 @@ export const CreateFolderForm = () => {
 
   return (
     <motion.form
-      className="flex flex-col gap-3 rounded-md bg-black/20 p-6 align-middle font-semibold text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white"
+      className="flex flex-col gap-3 rounded-md bg-white/40 p-6 align-middle font-semibold text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white"
       onSubmit={(e) => {
         setIsNewFolderModalOpen(false);
         void handleCreateFolder(e);
@@ -101,7 +102,7 @@ export const CreateFolderForm = () => {
           <Hotkey key1="n" />
         </div>
         <Dialog.Close asChild className=" cursor-pointer">
-          <Cross1Icon className="h-4 w-4 text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition duration-200" />
+          <Cross1Icon className="h-4 w-4 text-zinc-500 transition duration-200 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300" />
         </Dialog.Close>
       </div>
       <Separator />
@@ -122,28 +123,25 @@ export const CreateFolderForm = () => {
                     scale: 0.95,
                   }}
                   value={icon}
-                  className="w-10 rounded-md bg-black/10 py-1.5 text-center text-white placeholder-zinc-600 placeholder-opacity-50 dark:bg-white/10 outline-none focus:outline-none"
+                  className="w-10 rounded-md bg-black/10 py-1.5 text-center text-white placeholder-zinc-600 placeholder-opacity-50 outline-none focus:outline-none dark:bg-white/10"
                   placeholder="?"
                   readOnly
                 />
               </Popover.Trigger>
               <Popover.Portal>
-                <Popover.Content className="z-[10001] mt-2 rounded-md font-semibold text-white no-underline transition duration-200">
-                  <EmojiPicker
-                    emojiStyle={EmojiStyle.APPLE}
-                    previewConfig={{
-                      showPreview: false,
-                    }}
-                    suggestedEmojisMode={SuggestionMode.RECENT}
-                    theme={theme === "dark" ? Theme.DARK : Theme.LIGHT}
-                    skinTonePickerLocation={SkinTonePickerLocation.PREVIEW}
-                    onEmojiClick={(emojiData) => {
-                      setIcon(emojiData.emoji);
+                <Popover.Content className="z-[10001] mt-2 rounded-md font-semibold text-white no-underline h-[10rem] w-[300px] outline-none focus:outline-none">
+                  <Picker
+                    theme={theme === "dark" ? "dark" : "light"}
+                    onEmojiSelect={(emojiData) => {
+                      setIcon(emojiData.native as string);
                       setEmojiPickerOpen(false);
                     }}
-                    lazyLoadEmojis
-                    autoFocusSearch
-                    width={400}
+                    navPosition="none"
+                    skinTonePosition="none"
+                    searchPosition="none"
+                    previewPosition="none"
+                    autoFocus
+                    data={data}
                   />
                 </Popover.Content>
               </Popover.Portal>
@@ -196,8 +194,8 @@ export const CreateFolderForm = () => {
         className={`${
           name.length > 0
             ? "bg-black/10 text-black dark:bg-white/10 dark:text-white"
-            : "bg-black/5 text-zinc-400 dark:bg-white/5 dark:text-zinc-600"
-        } mt-2 rounded-md px-4 py-2 text-center align-middle font-semibold text-black no-underline transition duration-200 hover:cursor-pointer hover:bg-black/20 dark:text-white dark:hover:bg-white/20`}
+            : "bg-black/5 text-zinc-500 dark:bg-white/5 dark:text-zinc-600"
+        } mt-2 rounded-md px-4 py-2 text-center align-middle font-semibold no-underline transition duration-200 hover:cursor-pointer`}
       >
         <p>Create</p>
       </motion.button>
