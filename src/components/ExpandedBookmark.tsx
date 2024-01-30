@@ -37,7 +37,7 @@ export const ExpandedBookmark = ({
               setIsHovering(bookmark.id);
             }}
             onMouseLeave={() => setIsHovering("")}
-            className={`relative border-y-4 border-transparent hover:cursor-pointer`}
+            className={`hover:cursor-pointer`}
             onClick={() => {
               if (bookmark.onClick) {
                 bookmark.onClick();
@@ -47,21 +47,9 @@ export const ExpandedBookmark = ({
               window.open(bookmark.url, "_blank");
             }}
           >
-            <AnimatePresence>
-              {isHovering === bookmark.id && (
-                <motion.div
-                  transition={{ duration: 0.4 }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1, transition: { duration: 0.2 } }}
-                  exit={{ opacity: 0, transition: { duration: 0.2 } }}
-                  layoutId="bookmark"
-                  className="absolute left-0 top-0 h-full w-full rounded-xl bg-black/5 dark:bg-white/5"
-                />
-              )}
-            </AnimatePresence>
             <motion.div
               whileTap={{ scale: 0.98 }}
-              className={`z-10 flex justify-between rounded-lg px-3 py-3 transition duration-500 ease-in-out`}
+              className={`flex justify-between rounded-xl hover:bg-black/5 hover:dark:bg-white/5 p-3 mb-2 transition duration-200 ease-in-out`}
             >
               <div className={`flex items-center gap-6 md:w-full`}>
                 {bookmark.loading ? (
@@ -110,12 +98,12 @@ export const ExpandedBookmark = ({
                     }}
                   />
                 )}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 sm:pl-2 md:pl-0">
                   <motion.p
                     animate={{ opacity: 1 }}
                     initial={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="max-w-[16rem] truncate text-lg font-bold text-black dark:text-white sm:max-w-sm md:max-w-lg"
+                    className="lg:max-w-[30rem] md:max-w-[24rem] sm:max-w-[24rem] max-w-[15rem] truncate text-lg font-bold text-black dark:text-white"
                   >
                     {bookmark.title}
                   </motion.p>
@@ -144,7 +132,7 @@ export const ExpandedBookmark = ({
                         style={{ height: "0.9rem", width: "0.9rem" }}
                       />
                     )}
-                    <p className="w-64 truncate text-sm text-zinc-500 sm:w-72 md:w-96 md:max-w-sm">
+                    <p className="w-48 truncate text-sm text-zinc-500 sm:w-72 md:w-96 md:max-w-sm">
                       {bookmark.url}
                     </p>
                   </div>
@@ -161,13 +149,13 @@ export const ExpandedBookmark = ({
                       : { opacity: 0 }
                   }
                   exit={{ opacity: 0 }}
-                  className="z-50 pr-6 font-bold text-zinc-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
+                  className="z-50 lg:pr-6 pr-4 font-bold text-zinc-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
                   onClick={(e) => {
                     e.stopPropagation();
                     onRemove ? onRemove(bookmark.id) : null;
                   }}
                 >
-                  <Cross1Icon className="h-4 w-4" />
+                  <Cross1Icon className="h-5 w-5" />
                 </motion.button>
               )}
             </motion.div>

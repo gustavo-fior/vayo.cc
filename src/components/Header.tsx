@@ -98,6 +98,7 @@ export const Header = ({
             setCurrentPage(1);
             setSelectOpen(false);
             setCurrentFolder(folder);
+            localStorage.setItem("currentFolderId", folder.id);
           }
         }
       }
@@ -137,6 +138,7 @@ export const Header = ({
             setCurrentPage(1);
             setSelectOpen(false);
             setCurrentFolder(folder ?? null);
+            localStorage.setItem("currentFolderId", folder?.id ?? "");
           }
         }}
       >

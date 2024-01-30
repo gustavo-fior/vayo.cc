@@ -34,7 +34,7 @@ export const bookmarksRouter = createTRPCRouter({
         }
       }
 
-      const { title, faviconUrl, ogImageUrl } = await getBookmarkMetadata(
+      const { title, faviconUrl, ogImageUrl, description } = await getBookmarkMetadata(
         input.url
       );
 
@@ -44,6 +44,7 @@ export const bookmarksRouter = createTRPCRouter({
           title: title,
           faviconUrl: faviconUrl,
           ogImageUrl: ogImageUrl,
+          description: description,
           folderId: input.folderId,
         },
       });
@@ -53,11 +54,12 @@ export const bookmarksRouter = createTRPCRouter({
       z.object({
         folderId: z.string(),
         page: z.number().optional(),
+        search: z.string().optional(),
       })
     )
     .query(async ({ input, ctx }) => {
       if (input.folderId) {
-        const bookmarks = await ctx.prisma.bookmark.findMany({
+        const bookmarks = input.page ? await ctx.prisma.bookmark.findMany({
           where: {
             folderId: input.folderId,
           },
@@ -72,8 +74,43 @@ export const bookmarksRouter = createTRPCRouter({
             ogImageUrl: true,
             createdAt: true,
           },
-          skip: input.page ? (input.page - 1) * 35 : undefined,
+          skip: input.page ? (input.page - 1) * 35 : 0,
           take: 35,
+        }) : await ctx.prisma.bookmark.findMany({
+          where: {
+            folderId: input.folderId,
+            OR: [
+              {
+                title: {
+                  contains: input.search,
+                  mode: "insensitive",
+                },
+              },
+              {
+                url: {
+                  contains: input.search,
+                  mode: "insensitive",
+                },
+              },
+              {
+                description: {
+                  contains: input.search,
+                  mode: "insensitive",
+                },
+              }
+            ],
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          select: {
+            id: true,
+            url: true,
+            title: true,
+            faviconUrl: true,
+            ogImageUrl: true,
+            createdAt: true,
+          },
         });
 
         const totalElements = await ctx.prisma.bookmark.count({

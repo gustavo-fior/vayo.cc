@@ -45,7 +45,7 @@ export const getBookmarkMetadata = async (
     // ERROR
     if (response.status >= 400) {
       console.log("error: " + response.status);
-      const { pageTitle, logo, image } = await getMetadataThroughMicrolinkAPI(
+      const { pageTitle, logo, image, description } = await getMetadataThroughMicrolinkAPI(
         url,
         null,
         null,
@@ -69,6 +69,7 @@ export const getBookmarkMetadata = async (
         title,
         faviconUrl,
         ogImageUrl,
+        description,
       };
     }
 
@@ -115,10 +116,14 @@ export const getBookmarkMetadata = async (
       faviconUrl = "/images/logo.png";
     }
 
+    const description = getOgDescription(url, document);
+
+
     return {
       title,
       faviconUrl,
       ogImageUrl,
+      description
     };
   } catch (error) {
     console.error("Error fetching page metadata:", error);
@@ -126,6 +131,7 @@ export const getBookmarkMetadata = async (
       title: "",
       faviconUrl: null,
       ogImageUrl: null,
+      description: null,
     };
   }
 };
@@ -134,6 +140,7 @@ export type BookmarkMetadata = {
   title: string;
   faviconUrl: string | null;
   ogImageUrl: string | null;
+  description?: string | null;
 };
 
 // tries to get the favicon url from the given url, if it fails, it tries to get the favicon url from the root url
@@ -306,6 +313,7 @@ const getMetadataThroughMicrolinkAPI = async (
   logo: string | null;
   image: string | null;
   pageTitle: string | null;
+  description: string | null;
 }> => {
   const response1 = await fetch(`https://api.microlink.io/?url=${url}`);
 
@@ -331,6 +339,7 @@ const getMetadataThroughMicrolinkAPI = async (
     logo: faviconUrl ?? null,
     image: ogImageUrl ?? null,
     pageTitle: title ?? null,
+    description: jsonResponse.data?.description ?? null,
   };
 };
 
@@ -364,3 +373,23 @@ type ApiResponse = {
   statusCode: number;
   headers: Record<string, string | number | null | string[] | undefined>;
 };
+
+const getOgDescription = (url: string, document: Document): string | null => {
+  const ogDescriptionElement = document.querySelector(
+    "meta[property='og:description']"
+  );
+
+  if (ogDescriptionElement) {
+    return ogDescriptionElement.getAttribute("content") ?? null;
+  }
+
+  const descriptionElement = document.querySelector(
+    "meta[name='description']"
+  );
+
+  if (descriptionElement) {
+    return descriptionElement.getAttribute("content") ?? null;
+  }
+
+  return null;
+}

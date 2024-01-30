@@ -25,6 +25,7 @@ import {
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
 import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
+import { useDebounce } from "~/hooks/useDebounce";
 import { api } from "~/utils/api";
 
 export default function Bookmarks() {
@@ -34,6 +35,7 @@ export default function Bookmarks() {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
 
   const [inputUrl, setInputUrl] = useState("");
+  const inputUrlDebounced = useDebounce(inputUrl, 300);
   const [isDuplicate, setIsDuplicate] = useState(false);
 
   const inputRef = useRef(null);
@@ -61,8 +63,19 @@ export default function Bookmarks() {
           setFolders(data);
 
           if (!currentFolder) {
-            setCurrentFolder(data[0] ?? null);
-            setBookmarks(data[0]?.bookmarks ?? null);
+            const currentFolderId = localStorage.getItem("currentFolderId");
+
+            if (currentFolderId) {
+              const currentFolderFromData = data.find(
+                (folder) => folder.id === currentFolderId
+              );
+
+              setCurrentFolder(currentFolderFromData ?? null);
+              setBookmarks(currentFolderFromData?.bookmarks ?? null);
+            } else {
+              setCurrentFolder(data[0] ?? null);
+              setBookmarks(data[0]?.bookmarks ?? null);
+            }
           } else {
             const currentFolderFromData = data.find(
               (folder) => folder.id === currentFolder?.id
@@ -76,6 +89,26 @@ export default function Bookmarks() {
           }, 10);
 
           void fetchBookmarks.refetch();
+        }
+      },
+    }
+  );
+
+  api.bookmarks.findByFolderId.useQuery(
+    {
+      folderId: String(currentFolder?.id),
+      search: inputUrlDebounced,
+    },
+    {
+      enabled: !!currentFolder && inputUrlDebounced.length > 0,
+      onSuccess: (data) => {
+        if (data?.bookmarks) {
+          setFilteredBookmarks(data.bookmarks);
+          setTotalBookmarks(data.bookmarks.length);
+
+          setTimeout(() => {
+            setIsOpen(true);
+          }, 10);
         }
       },
     }
@@ -142,6 +175,7 @@ export default function Bookmarks() {
         folderId: String(currentFolder?.id),
         faviconUrl: getCommonFavicons(inputUrl),
         ogImageUrl: null,
+        description: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -281,6 +315,7 @@ export default function Bookmarks() {
       });
 
       setFilteredBookmarks(filteredBookmarks ?? []);
+      setTotalBookmarks(filteredBookmarks?.length ?? 0);
     } else {
       setFilteredBookmarks(null);
     }
@@ -296,12 +331,12 @@ export default function Bookmarks() {
       <main className="relative min-h-screen w-full bg-[#e0e0e0] pt-8  dark:bg-[#161616]">
         <Header inputRef={inputRef} />
         <div className="flex flex-col items-center">
-          <div className="w-[20rem] pb-32 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
+          <div className="w-[20rem] pb-32 sm:w-[40rem] md:w-[48rem] lg:w-[50rem]">
             <motion.form
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="mx-4 mt-4 md:mx-12 relative"
+              className="relative mx-4 mt-8 md:mx-12"
               onSubmit={(e) => {
                 e.preventDefault();
 
@@ -338,7 +373,7 @@ export default function Bookmarks() {
                 disabled={addBookmark.isLoading || !currentFolder}
                 onChange={(e) => setInputUrl(e.target.value)}
                 placeholder="https://... or ⌘F"
-                className={` w-full rounded-lg bg-black/10 px-4 py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
+                className={`w-full rounded-lg bg-black/10 px-4 py-2 font-semibold  text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
                   ${
                     isDuplicate
                       ? "animate-shake ring-2 ring-red-500 focus:outline-none focus:ring-red-500"
@@ -346,7 +381,7 @@ export default function Bookmarks() {
                   }`}
               />
               {addBookmark.isLoading && (
-                <motion.div className="absolute top-1/2 right-4 transform -translate-y-1/2">
+                <motion.div className="absolute right-4 top-1/2 -translate-y-1/2 transform">
                   <Spinner size="md" />
                 </motion.div>
               )}
@@ -376,8 +411,9 @@ export default function Bookmarks() {
                 )}
 
                 {totalBookmarks === 0 &&
-                  bookmarks &&
-                  bookmarks.length === 0 &&
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  ((bookmarks && bookmarks.length === 0) ||
+                    (filteredBookmarks && filteredBookmarks.length === 0)) &&
                   fetchBookmarks.isFetched &&
                   fetchFolders.isFetched &&
                   isOpen && <EmptyState />}
