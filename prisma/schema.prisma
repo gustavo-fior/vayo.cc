@@ -79,6 +79,7 @@ model Bookmark {
     url       String
     faviconUrl String?
     ogImageUrl     String?
+    description    String?
     title     String
     folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
     folderId  String

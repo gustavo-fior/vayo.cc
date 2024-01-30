@@ -1,6 +1,6 @@
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Cross1Icon } from "@radix-ui/react-icons";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
 import { itemVariants } from "../helpers/animationVariants";
@@ -37,7 +37,7 @@ export const CompactBookmark = ({
           onHoverEnd={() => {
             setIsHovering("");
           }}
-          className="relative border-b-4 border-transparent hover:cursor-pointer"
+          className="hover:cursor-pointer"
           onClick={() => {
             if (bookmark.onClick) {
               bookmark.onClick();
@@ -47,24 +47,12 @@ export const CompactBookmark = ({
             window.open(bookmark.url, "_blank");
           }}
         >
-          <AnimatePresence>
-            {isHovering === bookmark.id && (
-              <motion.div
-                transition={{ duration: 0.4 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { duration: 0.2 } }}
-                exit={{ opacity: 0, transition: { duration: 0.2 } }}
-                layoutId="bookmark"
-                className="absolute left-0 top-0 h-full w-full rounded-2xl bg-black/5 dark:bg-white/5"
-              />
-            )}
-          </AnimatePresence>
           <motion.div
             whileTap={{ scale: 0.98 }}
-            className="flex rounded-lg p-3 align-middle transition duration-500 ease-in-out"
+            className="flex  p-3 align-middle transition duration-200 ease-in-out rounded-2xl mb-1 hover:bg-black/5 hover:dark:bg-white/5"
           >
             <div className="flex w-full items-center justify-between align-middle">
-              <div className="z-10 flex flex-row items-center gap-3 align-middle">
+              <div className="flex flex-row items-center gap-3 align-middle">
                 {bookmark.loading ? (
                   <motion.div className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10 flex items-center justify-center">
                     <Spinner size="sm" />
@@ -99,11 +87,11 @@ export const CompactBookmark = ({
                   animate={{ opacity: 1 }}
                   initial={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className={`max-w-[16rem] truncate font-semibold text-black dark:text-white sm:max-w-xs md:max-w-sm`}
+                  className={`lg:max-w-[24rem] md:max-w-[22rem] sm:max-w-[22rem] max-w-[13rem] truncate font-semibold text-black dark:text-white`}
                 >
                   {bookmark.title}
                 </motion.p>
-                <p className="hidden w-72 truncate text-sm text-zinc-500 md:block">
+                <p className="hidden lg:max-w-[18rem] md:max-w-[10rem] truncate text-sm text-zinc-500 md:block">
                   {bookmark.url}
                 </p>
               </div>

@@ -65,7 +65,7 @@ export default function Home() {
     {
       createdAt: new Date(),
       id: "4",
-      title: "GitHub repo",
+      title: "GitHub Repo",
       url: "https://github.com/gustavo-fior/bookmarks",
       faviconUrl: "/favicons/github-white.svg",
       ogImageUrl: null,

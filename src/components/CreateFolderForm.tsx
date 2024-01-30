@@ -98,7 +98,7 @@ export const CreateFolderForm = () => {
           <p className="text-lg font-semibold text-black dark:text-white">
             New folder
           </p>
-          <Hotkey key1="k" key2="n" />
+          <Hotkey key1="n" />
         </div>
         <Dialog.Close asChild className=" cursor-pointer">
           <Cross1Icon className="h-4 w-4 text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition duration-200" />
@@ -122,7 +122,7 @@ export const CreateFolderForm = () => {
                     scale: 0.95,
                   }}
                   value={icon}
-                  className="w-10 rounded-md bg-black/10 py-1.5 text-center text-white placeholder-zinc-600 placeholder-opacity-50 dark:bg-white/10"
+                  className="w-10 rounded-md bg-black/10 py-1.5 text-center text-white placeholder-zinc-600 placeholder-opacity-50 dark:bg-white/10 outline-none focus:outline-none"
                   placeholder="?"
                   readOnly
                 />

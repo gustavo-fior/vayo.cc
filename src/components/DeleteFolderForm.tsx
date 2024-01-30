@@ -74,7 +74,7 @@ export const DeleteFolderForm = () => {
           <p className="text-lg font-semibold text-black dark:text-white">
             Delete folder
           </p>
-          <Hotkey key1="k" key2="x" />
+          <Hotkey key1="x" />
         </div>
         <Dialog.Close asChild className=" cursor-pointer">
           <Cross1Icon className="h-4 w-4 text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition duration-200" />
@@ -92,7 +92,7 @@ export const DeleteFolderForm = () => {
             scale: 0.95,
           }}
           type="button"
-          className="w-full rounded-md bg-black/10 px-4 py-2 align-middle text-md font-semibold no-underline transition duration-200 hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
+          className="w-full rounded-md bg-black/10 px-4 py-2 align-middle text-md font-semibold no-underline transition duration-200 hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 outline-none focus:outline-none"
           onClick={() => {
             setIsDeleteFolderModalOpen(false);
           }}
