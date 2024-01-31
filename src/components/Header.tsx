@@ -150,7 +150,7 @@ export const Header = ({
               exit={{ opacity: 0 }}
             >
               {currentFolder?.icon}
-              <span className="ml-3 font-medium">{currentFolder?.name}</span>
+              <span className={`${currentFolder?.icon ? "ml-3" : ""} font-medium`}>{currentFolder?.name}</span>
             </motion.p>
           </Select.Value>
           {currentFolder && (
