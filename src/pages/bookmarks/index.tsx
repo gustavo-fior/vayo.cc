@@ -211,6 +211,17 @@ export default function Bookmarks() {
 
   const deleteBookmark = api.bookmarks.delete.useMutation({
     onMutate: ({ id }) => {
+      if (filteredBookmarks && filteredBookmarks.length > 0) {
+        const listWithoutDeletedBookmark = filteredBookmarks.filter(
+          (bookmark) => bookmark.id !== id
+        );
+  
+        if (listWithoutDeletedBookmark) {
+          setFilteredBookmarks(listWithoutDeletedBookmark);
+          setTotalBookmarks((prevTotal) => (prevTotal ? prevTotal - 1 : 0));
+        }
+      }
+
       const listWithoutDeletedBookmark = bookmarks?.filter(
         (bookmark) => bookmark.id !== id
       );
