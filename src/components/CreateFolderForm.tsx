@@ -1,3 +1,5 @@
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import { type Bookmark, type Folder } from "@prisma/client";
 import { Separator } from "@radix-ui/react-context-menu";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -6,7 +8,8 @@ import * as Popover from "@radix-ui/react-popover";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useTheme } from "next-themes";
+import { type SetStateAction, useState } from "react";
 import {
   bookmarksAtom,
   currentFolderAtom,
@@ -15,9 +18,6 @@ import {
 } from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { Hotkey } from "./Hotkey";
-import { useTheme } from "next-themes";
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
 
 export const CreateFolderForm = () => {
   const [name, setName] = useState("");
@@ -135,7 +135,7 @@ export const CreateFolderForm = () => {
                 className="z-[10001] mt-2 rounded-md font-semibold text-white no-underline h-[10rem] w-[300px] outline-none focus:outline-none">
                   <Picker
                     theme={theme === "dark" ? "dark" : "light"}
-                    onEmojiSelect={(emojiData : unknown) => {
+                    onEmojiSelect={(emojiData: { native: SetStateAction<string>; }) => {
                       setIcon(emojiData.native);
                       setEmojiPickerOpen(false);
                     }}
