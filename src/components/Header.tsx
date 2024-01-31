@@ -150,7 +150,7 @@ export const Header = ({
               exit={{ opacity: 0 }}
             >
               {currentFolder?.icon}
-              <span className="ml-2">{currentFolder?.name}</span>
+              <span className="ml-3 font-medium">{currentFolder?.name}</span>
             </motion.p>
           </Select.Value>
           {currentFolder && (
@@ -175,7 +175,7 @@ export const Header = ({
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-md bg-black/5 p-1 align-middle text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white"
+              className="rounded-md bg-black/5 p-1.5 align-middle text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white"
             >
               <Select.Viewport className="flex flex-col">
                 {folders?.map((folder, index) => (

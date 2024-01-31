@@ -129,11 +129,14 @@ export const CreateFolderForm = () => {
                 />
               </Popover.Trigger>
               <Popover.Portal>
-                <Popover.Content className="z-[10001] mt-2 rounded-md font-semibold text-white no-underline h-[10rem] w-[300px] outline-none focus:outline-none">
+                <Popover.Content 
+                
+                sideOffset={35} side="left" align="end"
+                className="z-[10001] mt-2 rounded-md font-semibold text-white no-underline h-[10rem] w-[300px] outline-none focus:outline-none">
                   <Picker
                     theme={theme === "dark" ? "dark" : "light"}
-                    onEmojiSelect={(emojiData) => {
-                      setIcon(emojiData.native as string);
+                    onEmojiSelect={(emojiData : unknown) => {
+                      setIcon(emojiData.native);
                       setEmojiPickerOpen(false);
                     }}
                     navPosition="none"
@@ -142,6 +145,7 @@ export const CreateFolderForm = () => {
                     previewPosition="none"
                     autoFocus
                     data={data}
+                    perLine={8}
                   />
                 </Popover.Content>
               </Popover.Portal>
