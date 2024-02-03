@@ -175,15 +175,13 @@ export default function Bookmarks() {
   );
 
   const addBookmark = api.bookmarks.create.useMutation({
-    onMutate: () => {
-      setInputUrl("");
-
+    onMutate: (data) => {
       const newBookmark: Bookmark = {
-        id: inputUrl,
-        url: inputUrl,
-        title: capitalizeFirstLetter(getWebsiteName(inputUrl)),
+        id: data.url,
+        url: data.url,
+        title: capitalizeFirstLetter(getWebsiteName(data.url)),
         folderId: String(currentFolder?.id),
-        faviconUrl: getCommonFavicons(inputUrl),
+        faviconUrl: getCommonFavicons(data.url),
         ogImageUrl: null,
         description: null,
         createdAt: new Date(),
@@ -206,11 +204,14 @@ export default function Bookmarks() {
       }
 
       setBookmarks((prevBookmarks) => {
-        if (prevBookmarks) {
-          return [data, ...prevBookmarks];
+        if (!prevBookmarks) {
+          return [data];
         }
 
-        return [data];
+        return [
+          data,
+          ...prevBookmarks?.filter((bookmark) => bookmark.id !== data.url),
+        ];
       });
     },
     onError: (context) => {
