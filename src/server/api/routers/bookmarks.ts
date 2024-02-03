@@ -30,7 +30,7 @@ export const bookmarksRouter = createTRPCRouter({
         });
 
         if (existingBookmark) {
-          return Error("Bookmark already exists");
+          throw Error("Bookmark already exists");
         }
       }
 
