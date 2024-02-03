@@ -30,13 +30,14 @@ export function CreateOrSearchBookmarkForm({
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={async (e) => {
         e.preventDefault();
+        const url = inputUrl;
+        onCleanUp();
+        setInputUrl("");
         try {
-          await onSubmit({ url: inputUrl });
+          await onSubmit({ url });
         } catch (e) {
           console.error(e);
         }
-        setInputUrl("");
-        onCleanUp();
       }}
     >
       <input
