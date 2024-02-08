@@ -4,8 +4,15 @@ import { useAtom } from "jotai";
 import { type GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { BookmarksList } from "~/components/BookmarksList";
+import { CreateOrSearchBookmarkForm } from "~/components/CreateBookmarkForm";
 import { EmptyState } from "~/components/EmptyState";
 import { Header } from "~/components/Header";
 import { Separator } from "~/components/Separator";
@@ -122,58 +129,59 @@ export default function Bookmarks() {
     {
       enabled: !!currentFolder,
       onSuccess: (data) => {
-        if (data?.bookmarks) {
-          setBookmarks((prevBookmarks) => {
-            const newBookmarks = data.bookmarks.filter((bookmark) => {
-              return !prevBookmarks?.find(
-                (prevBookmark) => prevBookmark.id === bookmark.id
-              );
-            });
+        if (!data?.bookmarks) return;
 
-            const temps = prevBookmarks?.filter(
-              (bookmark) => bookmark.id === "temp"
-            );
+        setBookmarks((prevBookmarks) => {
+          if (!prevBookmarks) {
+            return data.bookmarks;
+          }
 
-            const prevBookmarksWithoutTemp = prevBookmarks?.filter(
-              (bookmark) => bookmark.id !== "temp"
-            );
+          const prevBookmarksIds = prevBookmarks.map((bookmark) => bookmark.id);
 
-            if (
-              temps &&
-              temps.length > 0 &&
-              prevBookmarksWithoutTemp &&
-              currentPage === 1
-            ) {
-              prevBookmarksWithoutTemp.unshift(...newBookmarks);
-            } else {
-              prevBookmarksWithoutTemp?.push(...newBookmarks);
-            }
+          const newBookmarks = data.bookmarks.filter(
+            (bookmark) => !prevBookmarksIds.includes(bookmark.id)
+          );
 
-            return prevBookmarksWithoutTemp
-              ? [...prevBookmarksWithoutTemp]
-              : data.bookmarks;
-          });
+          const prevLocalBookmarks = prevBookmarks?.filter(
+            (bookmark) => bookmark.new === true
+          );
 
-          setTotalBookmarks(data.totalElements);
+          const prevRemoteBookmarks = prevBookmarks?.filter(
+            (bookmark) => !bookmark.new
+          );
 
-          setTimeout(() => {
-            setIsOpen(true);
-          }, 10);
-        }
+          if (
+            prevLocalBookmarks.length > 0 &&
+            prevRemoteBookmarks &&
+            currentPage === 1
+          ) {
+            prevRemoteBookmarks.unshift(...newBookmarks);
+          } else {
+            prevRemoteBookmarks.push(...newBookmarks);
+          }
+
+          return prevRemoteBookmarks
+            ? [...prevRemoteBookmarks]
+            : data.bookmarks;
+        });
+
+        setTotalBookmarks(data.totalElements);
+
+        setTimeout(() => {
+          setIsOpen(true);
+        }, 10);
       },
     }
   );
 
   const addBookmark = api.bookmarks.create.useMutation({
-    onMutate: () => {
-      setInputUrl("");
-
+    onMutate: (data) => {
       const newBookmark: Bookmark = {
-        id: "temp",
-        url: inputUrl,
-        title: capitalizeFirstLetter(getWebsiteName(inputUrl)),
+        id: data.url,
+        url: data.url,
+        title: capitalizeFirstLetter(getWebsiteName(data.url)),
         folderId: String(currentFolder?.id),
-        faviconUrl: getCommonFavicons(inputUrl),
+        faviconUrl: getCommonFavicons(data.url),
         ogImageUrl: null,
         description: null,
         createdAt: new Date(),
@@ -183,13 +191,28 @@ export default function Bookmarks() {
       bookmarks?.unshift(newBookmark);
       setTotalBookmarks((prevTotal) => (prevTotal ? prevTotal + 1 : 1));
     },
-    onSettled: async () => {
+    onSettled: (data) => {
       const previousPage = currentPage;
 
       setCurrentPage(1);
-      await fetchBookmarks.refetch();
 
       setCurrentPage(previousPage);
+    },
+    onSuccess: (data) => {
+      if (!data) {
+        return;
+      }
+
+      setBookmarks((prevBookmarks) => {
+        if (!prevBookmarks) {
+          return [data];
+        }
+
+        return [
+          data,
+          ...prevBookmarks?.filter((bookmark) => bookmark.id !== data.url),
+        ];
+      });
     },
     onError: (context) => {
       const previousBookmarks =
@@ -215,7 +238,7 @@ export default function Bookmarks() {
         const listWithoutDeletedBookmark = filteredBookmarks.filter(
           (bookmark) => bookmark.id !== id
         );
-  
+
         if (listWithoutDeletedBookmark) {
           setFilteredBookmarks(listWithoutDeletedBookmark);
           setTotalBookmarks((prevTotal) => (prevTotal ? prevTotal - 1 : 0));
@@ -249,12 +272,32 @@ export default function Bookmarks() {
     },
   });
 
-  const handleCreateBookmark = useCallback(() => {
-    addBookmark.mutate({
-      url: inputUrl,
-      folderId: String(currentFolder?.id),
-    });
-  }, [addBookmark, inputUrl, currentFolder?.id]);
+  const handleCreateBookmark = useCallback(
+    async ({ url }: { url: string }) => {
+      if (url.length === 0 || !currentFolder) {
+        return;
+      }
+
+      if (
+        !currentFolder?.allowDuplicate &&
+        bookmarks?.find((bookmark) => bookmark.url === url)
+      ) {
+        setIsDuplicate(true);
+
+        setTimeout(() => {
+          setIsDuplicate(false);
+        }, 2000);
+
+        return;
+      }
+
+      await addBookmark.mutateAsync({
+        url,
+        folderId: String(currentFolder?.id),
+      });
+    },
+    [addBookmark, currentFolder?.id]
+  );
 
   const handleDeleteBookmark = useCallback(
     (id: string) => {
@@ -314,24 +357,29 @@ export default function Bookmarks() {
     };
   }, []);
 
-  // filter bookmarks by search query
-  useEffect(() => {
-    // only filter if there is a search query and if the search query is not a url
-    if (inputUrl.length > 0) {
-      const filteredBookmarks = bookmarks?.filter((bookmark) => {
-        return (
-          bookmark.title.toLowerCase().includes(inputUrl.toLowerCase()) ||
-          bookmark.url.toLowerCase().includes(inputUrl.toLowerCase())
-        );
-      });
+  function handleCleanUp() {
+    setIsDuplicate(false);
+    setFilteredBookmarks(null);
+    setTotalBookmarks(bookmarks?.length ?? 0);
+  }
 
-      setFilteredBookmarks(filteredBookmarks ?? []);
-      setTotalBookmarks(filteredBookmarks?.length ?? 0);
-    } else {
-      setFilteredBookmarks(null);
+  // filter bookmarks by search query
+  function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    if (value.length === 0) {
+      handleCleanUp();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputUrl]);
+
+    const filteredBookmarks = bookmarks?.filter((bookmark) => {
+      return (
+        bookmark.title.toLowerCase().includes(value.toLowerCase()) ||
+        bookmark.url.toLowerCase().includes(value.toLowerCase())
+      );
+    });
+
+    setFilteredBookmarks(filteredBookmarks ?? []);
+    setTotalBookmarks(filteredBookmarks?.length ?? 0);
+  }
 
   return (
     <>
@@ -343,60 +391,13 @@ export default function Bookmarks() {
         <Header inputRef={inputRef} />
         <div className="flex flex-col items-center">
           <div className="w-[20rem] pb-32 sm:w-[40rem] md:w-[48rem] lg:w-[50rem]">
-            <motion.form
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="relative mx-4 mt-8 md:mx-12"
-              onSubmit={(e) => {
-                e.preventDefault();
-
-                if (
-                  inputUrl.length === 0 ||
-                  addBookmark.isLoading ||
-                  !currentFolder
-                ) {
-                  return;
-                }
-
-                if (
-                  !currentFolder?.allowDuplicate &&
-                  bookmarks?.find((bookmark) => bookmark.url === inputUrl)
-                ) {
-                  setIsDuplicate(true);
-
-                  setTimeout(() => {
-                    setIsDuplicate(false);
-                  }, 2000);
-
-                  return;
-                }
-
-                handleCreateBookmark();
-              }}
-            >
-              <input
-                type="url"
-                name="url"
-                id="url"
-                ref={inputRef}
-                value={isDuplicate ? "Duplicate" : inputUrl}
-                disabled={addBookmark.isLoading || !currentFolder}
-                onChange={(e) => setInputUrl(e.target.value)}
-                placeholder="https://... or ⌘F"
-                className={`w-full rounded-lg bg-black/10 px-4 py-2 font-semibold  text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
-                  ${
-                    isDuplicate
-                      ? "animate-shake ring-2 ring-red-500 focus:outline-none focus:ring-red-500"
-                      : "outline-zinc-500 focus:outline-none focus:ring-zinc-500"
-                  }`}
-              />
-              {addBookmark.isLoading && (
-                <motion.div className="absolute right-4 top-1/2 -translate-y-1/2 transform">
-                  <Spinner size="md" />
-                </motion.div>
-              )}
-            </motion.form>
+            <CreateOrSearchBookmarkForm
+              onSubmit={handleCreateBookmark}
+              onCleanUp={handleCleanUp}
+              onChange={handleInputChange}
+              isLoading={addBookmark.isLoading}
+              isDuplicate={isDuplicate}
+            />
 
             <div className={`mx-2 mt-6`}>
               <Separator />
