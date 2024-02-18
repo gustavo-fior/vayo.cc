@@ -9,3 +9,4 @@
 - [ ] return bookmark desc to filter locally first
 - [ ] fix OG stuff
 - [ ] fix loading while is fetching search
+- [ ] fix last pages bug in big lists
