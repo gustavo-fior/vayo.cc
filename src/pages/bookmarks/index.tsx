@@ -215,7 +215,7 @@ export default function Bookmarks() {
         const listWithoutDeletedBookmark = filteredBookmarks.filter(
           (bookmark) => bookmark.id !== id
         );
-  
+
         if (listWithoutDeletedBookmark) {
           setFilteredBookmarks(listWithoutDeletedBookmark);
           setTotalBookmarks((prevTotal) => (prevTotal ? prevTotal - 1 : 0));
@@ -249,12 +249,15 @@ export default function Bookmarks() {
     },
   });
 
-  const handleCreateBookmark = useCallback(() => {
-    addBookmark.mutate({
-      url: inputUrl,
-      folderId: String(currentFolder?.id),
-    });
-  }, [addBookmark, inputUrl, currentFolder?.id]);
+  const handleCreateBookmark = useCallback(
+    (url?: string) => {
+      addBookmark.mutate({
+        url: url ?? inputUrl,
+        folderId: String(currentFolder?.id),
+      });
+    },
+    [addBookmark, inputUrl, currentFolder?.id]
+  );
 
   const handleDeleteBookmark = useCallback(
     (id: string) => {
@@ -383,6 +386,33 @@ export default function Bookmarks() {
                 value={isDuplicate ? "Duplicate" : inputUrl}
                 disabled={addBookmark.isLoading || !currentFolder}
                 onChange={(e) => setInputUrl(e.target.value)}
+                onPaste={(e) => {
+                  const text = e.clipboardData.getData("text/plain");
+
+                  if (text.length === 0 || inputUrl.length > 0) {
+                    return;
+                  }
+
+                  setInputUrl(text);
+
+                  if (
+                    !currentFolder?.allowDuplicate &&
+                    bookmarks?.find((bookmark) => bookmark.url === text)
+                  ) {
+                    console.log("duplicate");
+                    setIsDuplicate(true);
+
+                    setTimeout(() => {
+                      setIsDuplicate(false);
+                    }, 2000);
+
+                    return;
+                  }
+
+                  console.log("paste");
+
+                  handleCreateBookmark(text);
+                }}
                 placeholder="https://... or ⌘F"
                 className={`w-full rounded-lg bg-black/10 px-4 py-2 font-semibold  text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
                   ${

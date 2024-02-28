@@ -86,6 +86,20 @@ export default function Home() {
         <title>Bookmarks</title>
         <meta name="description" content="Keeping bookmarks" />
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content="Looking for cool bookmarks? Check out this folder!"
+        />
+        <meta property="og:title" content={"Bookmarks"} />
+        <meta
+          property="og:description"
+          content="Looking for cool bookmarks? Check out this folder!"
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content={`https://bookmarks.gustavofior.com/api/og`}
+        />
       </Head>
       <motion.main
         initial={{ opacity: 0 }}
@@ -95,12 +109,7 @@ export default function Home() {
       >
         <div className="w-[20rem] sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
           <div className="flex items-center gap-3 px-2 align-middle font-semibold">
-          <Image
-            src="/images/logo.png"
-            alt="logo"
-            width={36}
-            height={36}
-          />
+            <Image src="/images/logo.png" alt="logo" width={36} height={36} />
             <p className="text-3xl">Bookmarks</p>
           </div>
           <div className={`mx-2 mt-6`}>

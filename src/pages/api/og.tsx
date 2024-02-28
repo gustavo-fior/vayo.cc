@@ -26,18 +26,6 @@ export default async function handler() {
             position: "relative",
           }}
         >
-          {/* Texture overlay */}
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              background: "url('https://img.freepik.com/premium-vector/abstract-dark-background-small-squares-pixels-shades-black-gray-colors_444390-496.jpg')", // Replace with the path to your texture image
-              opacity: 0.15, // Adjust the opacity as needed
-            }}
-          ></div>
 
           <div
             style={{
@@ -47,21 +35,37 @@ export default async function handler() {
               justifyItems: "flex-start",
             }}
           ></div>
+          {/* Logo */}
           <div
-            tw="font-bold"
             style={{
-              fontSize: 96,
-              letterSpacing: "-0.025em",
-              fontFamily: "Inter",
-              color: "white",
-              marginTop: 30,
-              padding: "0 120px",
-              lineHeight: 1.4,
-              whiteSpace: "pre-wrap",
-              marginLeft: 48,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              justifyItems: "center",
+              marginLeft: 96,
+              marginTop: 96,
             }}
           >
-            Bookmarks
+            <img
+              src="https://bookmarks.gustavofior.com/images/logo.png"
+              alt="logo"
+              width={96}
+              height={96}
+            />
+            <div
+              tw="font-bold"
+              style={{
+                fontSize: 96,
+                letterSpacing: "-0.025em",
+                fontFamily: "Inter",
+                color: "white",
+                lineHeight: 1.4,
+                whiteSpace: "pre-wrap",
+                marginLeft: 32,
+              }}
+            >
+              Bookmarks
+            </div>
           </div>
         </div>
       ),
