@@ -10,3 +10,4 @@
 - [x] fix OG stuff
 - [ ] fix loading while is fetching search
 - [x] fix last pages bug in big lists
+- [ ] test supabase rest
