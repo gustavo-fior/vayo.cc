@@ -35,7 +35,7 @@ export default function Bookmarks() {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
 
   const [inputUrl, setInputUrl] = useState("");
-  const inputUrlDebounced = useDebounce(inputUrl, 300);
+  const inputUrlDebounced = useDebounce(inputUrl, 50);
   const [isDuplicate, setIsDuplicate] = useState(false);
 
   const inputRef = useRef(null);
@@ -94,7 +94,7 @@ export default function Bookmarks() {
     }
   );
 
-  api.bookmarks.findByFolderId.useQuery(
+  const fetchBookmarsWithSearch = api.bookmarks.findByFolderId.useQuery(
     {
       folderId: String(currentFolder?.id),
       search: inputUrlDebounced,
@@ -457,7 +457,8 @@ export default function Bookmarks() {
                     (filteredBookmarks && filteredBookmarks.length === 0)) &&
                   fetchBookmarks.isFetched &&
                   fetchFolders.isFetched &&
-                  isOpen && <EmptyState />}
+                  fetchBookmarsWithSearch.isFetched &&
+                  !fetchBookmarsWithSearch.isLoading && <EmptyState />}
               </motion.ul>
             </motion.div>
             <div className="flex justify-center pt-10 align-middle">
