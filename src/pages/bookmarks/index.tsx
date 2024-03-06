@@ -25,6 +25,7 @@ import {
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
 import { getFaviconForFolder } from "~/helpers/getFaviconForFolder";
+import { isValidURL } from "~/helpers/isValidURL";
 import { useDebounce } from "~/hooks/useDebounce";
 import { api } from "~/utils/api";
 
@@ -342,7 +343,7 @@ export default function Bookmarks() {
         <title>{currentFolder?.name ?? "Bookmarks"}</title>
         <link rel="icon" href={getFaviconForFolder(currentFolder)} />
       </Head>
-      <main className="relative min-h-screen w-full bg-[#e0e0e0] pt-8  dark:bg-[#161616]">
+      <main className="relative min-h-screen w-full bg-[#e0e0e0] pt-8 dark:bg-[#111111]">
         <Header inputRef={inputRef} />
         <div className="flex flex-col items-center">
           <div className="w-[20rem] pb-32 sm:w-[40rem] md:w-[48rem] lg:w-[50rem]">
@@ -389,7 +390,7 @@ export default function Bookmarks() {
                 onPaste={(e) => {
                   const text = e.clipboardData.getData("text/plain");
 
-                  if (text.length === 0 || inputUrl.length > 0) {
+                  if (text.length === 0 || inputUrl.length > 0 || !isValidURL(text)) {
                     return;
                   }
 
@@ -399,22 +400,21 @@ export default function Bookmarks() {
                     !currentFolder?.allowDuplicate &&
                     bookmarks?.find((bookmark) => bookmark.url === text)
                   ) {
-                    console.log("duplicate");
                     setIsDuplicate(true);
 
                     setTimeout(() => {
+                      setInputUrl(text);
+
                       setIsDuplicate(false);
                     }, 2000);
 
                     return;
                   }
 
-                  console.log("paste");
-
                   handleCreateBookmark(text);
                 }}
                 placeholder="https://... or ⌘F"
-                className={`w-full rounded-lg bg-black/10 px-4 py-2 font-semibold  text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
+                className={`w-full rounded-lg bg-black/10 px-4 py-2 font-semibold  text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 border border-black/10 dark:border-white/10 
                   ${
                     isDuplicate
                       ? "animate-shake ring-2 ring-red-500 focus:outline-none focus:ring-red-500"
@@ -457,6 +457,7 @@ export default function Bookmarks() {
                     (filteredBookmarks && filteredBookmarks.length === 0)) &&
                   fetchBookmarks.isFetched &&
                   fetchFolders.isFetched &&
+                  !isDuplicate &&
                   fetchBookmarsWithSearch.isFetched &&
                   !fetchBookmarsWithSearch.isLoading && <EmptyState />}
               </motion.ul>

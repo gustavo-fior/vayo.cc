@@ -88,7 +88,7 @@ export const CreateFolderForm = () => {
 
   return (
     <motion.form
-      className="flex flex-col gap-3 rounded-md bg-white/40 p-6 align-middle font-semibold text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white"
+      className="flex flex-col gap-3 rounded-md bg-white/60 p-6 align-middle font-semibold text-black no-underline backdrop-blur-xl dark:bg-white/5 dark:text-white border-2 border-black/20 dark:border-white/10"
       onSubmit={(e) => {
         setIsNewFolderModalOpen(false);
         void handleCreateFolder(e);

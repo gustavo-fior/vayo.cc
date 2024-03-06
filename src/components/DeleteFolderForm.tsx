@@ -68,7 +68,7 @@ export const DeleteFolderForm = () => {
   };
 
   return (
-    <motion.div className="flex flex-col gap-3 rounded-md bg-white/40 p-6 align-middle font-semibold text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white">
+    <motion.div className="flex flex-col gap-3 rounded-md bg-white/60 p-6 align-middle font-semibold text-black no-underline backdrop-blur-xl dark:bg-white/5 dark:text-white border-2 border-black/20 dark:border-white/10">
       <div className="flex flex-row items-center justify-between px-1 align-middle">
         <div className="flex flex-row items-center gap-2">
           <p className="text-lg font-semibold text-black dark:text-white">

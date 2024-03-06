@@ -49,7 +49,7 @@ export const CompactBookmark = ({
         >
           <motion.div
             whileTap={{ scale: 0.98 }}
-            className="flex  p-3 align-middle transition duration-200 ease-in-out rounded-2xl mb-1 hover:bg-black/5 hover:dark:bg-white/5"
+            className="flex p-3 align-middle transition duration-200 ease-out rounded-2xl mb-1 hover:bg-black/5 hover:dark:bg-white/5"
           >
             <div className="flex w-full items-center justify-between align-middle">
               <div className="flex flex-row items-center gap-3 align-middle">

@@ -175,14 +175,14 @@ export const Header = ({
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-md bg-black/5 p-1.5 align-middle text-black no-underline backdrop-blur-lg dark:bg-white/10 dark:text-white"
+              className="rounded-lg bg-black/5 p-1 align-middle text-black no-underline backdrop-blur-lg dark:bg-white/5 dark:text-white border border-black/10 dark:border-white/10"
             >
               <Select.Viewport className="flex flex-col">
                 {folders?.map((folder, index) => (
                   <Select.Item
                     key={folder.id}
                     value={folder.id}
-                    className={`cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20 ${
+                    className={`cursor-pointer rounded-md px-3 py-2 mb-1 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20 ${
                       folder.id === currentFolder?.id
                         ? "bg-black/10 dark:bg-white/10"
                         : ""
@@ -192,7 +192,7 @@ export const Header = ({
                       <motion.div className="flex items-center justify-between gap-4">
                         <motion.p>
                           {folder.icon}{" "}
-                          <span className="ml-1">{folder.name}</span>{" "}
+                          <span className={`ml-1`}>{folder.name}</span>{" "}
                         </motion.p>
                         {folder.id === currentFolder?.id ? (
                           <CheckIcon className="mr-0.5 h-4 w-4" />
@@ -203,7 +203,7 @@ export const Header = ({
                     </Select.ItemText>
                   </Select.Item>
                 ))}
-                <div className="m-2">
+                <div className="mx-2 my-1">
                   <Separator />
                 </div>
 
@@ -211,6 +211,7 @@ export const Header = ({
                 <Dialog.Root
                   open={isNewFolderModalOpen}
                   onOpenChange={(change) => {
+                    setSelectOpen(false);
                     setIsNewFolderModalOpen(change);
                   }}
                 >
@@ -229,7 +230,7 @@ export const Header = ({
                     </motion.div>
                   </Dialog.Trigger>
                   <Dialog.Portal>
-                    <Dialog.Overlay className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm data-[state=open]:animate-overlayShow" />
+                    <Dialog.Overlay className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-md data-[state=open]:animate-overlayShow" />
                     <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] w-[20vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
                       <CreateFolderForm />
                     </Dialog.Content>
@@ -240,11 +241,12 @@ export const Header = ({
                 <Dialog.Root
                   open={isDeleteFolderModalOpen}
                   onOpenChange={(change) => {
+                    setSelectOpen(false);
                     setIsDeleteFolderModalOpen(change);
                   }}
                 >
                   <Dialog.Trigger asChild>
-                    <motion.div className="z-[999] cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
+                    <motion.div className="z-[999] cursor-pointer rounded-md px-3 py-2 mt-1 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
                       <div
                         onClick={() => setIsDeleteFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
@@ -258,7 +260,7 @@ export const Header = ({
                     </motion.div>
                   </Dialog.Trigger>
                   <Dialog.Portal>
-                    <Dialog.Overlay className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm data-[state=open]:animate-overlayShow" />
+                    <Dialog.Overlay className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-md data-[state=open]:animate-overlayShow" />
                     <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] w-[20vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
                       <DeleteFolderForm />
                     </Dialog.Content>
