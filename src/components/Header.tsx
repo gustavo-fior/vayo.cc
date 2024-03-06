@@ -3,7 +3,7 @@ import {
   CheckIcon,
   ChevronDownIcon,
   Cross2Icon,
-  PlusIcon
+  PlusIcon,
 } from "@radix-ui/react-icons";
 import * as Select from "@radix-ui/react-select";
 import { motion } from "framer-motion";
@@ -144,14 +144,15 @@ export const Header = ({
       >
         <Select.Trigger className="text-md inline-flex cursor-pointer items-center justify-between rounded-md focus:outline-none">
           <Select.Value className="flex items-center">
-            <motion.p
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              className="flex items-center gap-3 align-middle"
             >
-              {currentFolder?.icon}
-              <span className="ml-3 font-medium">{currentFolder?.name}</span>
-            </motion.p>
+              <div className="mb-0.5">{currentFolder?.icon}</div>
+              <span className="font-medium">{currentFolder?.name}</span>
+            </motion.div>
           </Select.Value>
           {currentFolder && (
             <Select.Icon className="ml-4">
@@ -175,14 +176,14 @@ export const Header = ({
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-lg bg-black/5 p-1 align-middle text-black no-underline backdrop-blur-lg dark:bg-white/5 dark:text-white border border-black/10 dark:border-white/10"
+              className="rounded-lg border border-black/10 bg-black/5 p-1 align-middle text-black no-underline backdrop-blur-lg dark:border-white/10 dark:bg-white/5 dark:text-white"
             >
               <Select.Viewport className="flex flex-col">
                 {folders?.map((folder, index) => (
                   <Select.Item
                     key={folder.id}
                     value={folder.id}
-                    className={`cursor-pointer rounded-md px-3 py-2 mb-1 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20 ${
+                    className={`mb-1 cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20 ${
                       folder.id === currentFolder?.id
                         ? "bg-black/10 dark:bg-white/10"
                         : ""
@@ -190,10 +191,12 @@ export const Header = ({
                   >
                     <Select.ItemText>
                       <motion.div className="flex items-center justify-between gap-4">
-                        <motion.p>
-                          {folder.icon}{" "}
-                          <span className={`ml-1`}>{folder.name}</span>{" "}
-                        </motion.p>
+                        <motion.div className="flex items-center gap-2 align-middle">
+                          <div className="mb-0.5">{folder?.icon}</div>
+                          <span className="font-medium">
+                            {folder?.name}
+                          </span>
+                        </motion.div>
                         {folder.id === currentFolder?.id ? (
                           <CheckIcon className="mr-0.5 h-4 w-4" />
                         ) : (
@@ -246,7 +249,7 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                    <motion.div className="z-[999] cursor-pointer rounded-md px-3 py-2 mt-1 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
+                    <motion.div className="z-[999] mt-1 cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
                       <div
                         onClick={() => setIsDeleteFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
@@ -255,7 +258,7 @@ export const Header = ({
                           <Cross2Icon className="ml-0.5 h-4 w-4 text-red-500" />
                           <span className="ml-2.5 text-red-500">Delete</span>
                         </div>
-                        <Hotkey key1="x" />
+                        <Hotkey red key1="x" />
                       </div>
                     </motion.div>
                   </Dialog.Trigger>

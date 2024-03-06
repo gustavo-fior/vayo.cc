@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { itemVariants } from "../helpers/animationVariants";
 import { Spinner } from "./Spinner";
+import { ContextMenuContent } from "./ContextMenuContent";
+import { type Bookmark } from "@prisma/client";
 
 export const ExpandedBookmark = ({
   bookmark,
@@ -163,16 +165,7 @@ export const ExpandedBookmark = ({
         </AnimatePresence>
       </ContextMenu.Trigger>
       <ContextMenu.Portal>
-        <ContextMenu.Content className="rounded-md bg-white/10 px-4 py-2 align-middle text-white no-underline backdrop-blur-lg transition duration-300 ease-in-out hover:cursor-pointer hover:bg-white/20">
-          <ContextMenu.Item
-            className="text-black outline-none focus:outline-none dark:text-white"
-            onClick={() => {
-              void navigator.clipboard.writeText(bookmark.url);
-            }}
-          >
-            <p>Copy link</p>
-          </ContextMenu.Item>
-        </ContextMenu.Content>
+        <ContextMenuContent bookmark={bookmark as Bookmark} />
       </ContextMenu.Portal>
     </ContextMenu.Root>
   );

@@ -139,4 +139,21 @@ export const bookmarksRouter = createTRPCRouter({
         },
       });
     }),
+  move: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        folderId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.bookmark.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          folderId: input.folderId,
+        },
+      });
+    }),
 });
