@@ -8,6 +8,6 @@
 - [ ] add move to other folder feature
 - [x] add ctrl v to add 
 - [x] fix OG stuff
-- [ ] fix loading while is fetching search
+- [x] fix loading while is fetching search
 - [x] fix last pages bug in big lists
 - [ ] test supabase rest
