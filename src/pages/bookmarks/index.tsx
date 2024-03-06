@@ -18,9 +18,7 @@ import {
   currentPageAtom,
   foldersAtom,
   isOpenAtom,
-  showMonthsAtom,
   totalBookmarksAtom,
-  viewStyleAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
@@ -40,9 +38,6 @@ export default function Bookmarks() {
   const [isDuplicate, setIsDuplicate] = useState(false);
 
   const inputRef = useRef(null);
-
-  const [viewStyle] = useAtom(viewStyleAtom);
-  const [showMonths] = useAtom(showMonthsAtom);
 
   const [filteredBookmarks, setFilteredBookmarks] = useAtom(
     bookmarksFilteredAtom
@@ -231,6 +226,21 @@ export default function Bookmarks() {
         setBookmarks(listWithoutDeletedBookmark);
         setTotalBookmarks((prevTotal) => (prevTotal ? prevTotal - 1 : 0));
       }
+
+      // didn't like it 
+      //
+      // toast("Bookmark deleted", {
+      //   position: "top-center",
+      //   duration: 1500,
+      //   style: {
+      //     borderRadius: "16px",
+      //     color: resolvedTheme === "dark" ? "white" : "black",
+      //     border: resolvedTheme === "dark" ? "1px solid #262626" : "1px solid #a3a3a3",
+      //     backgroundColor: resolvedTheme === "dark" ? "#171717" : "#d4d4d4",
+      //     fontFamily: "Inter",
+      //     fontWeight: "500",
+      //   },
+      // });
     },
     onError: (context) => {
       const previousBookmarks =
@@ -276,7 +286,7 @@ export default function Bookmarks() {
         if (
           bookmarks?.length !== totalBookmarks &&
           !fetchBookmarks.isLoading &&
-          inputUrl.length === 0
+          inputUrl.length === 0 // TODO: fix this
         ) {
           setCurrentPage((prevPage) => prevPage + 1);
         }
@@ -296,23 +306,20 @@ export default function Bookmarks() {
     inputUrl.length,
   ]);
 
-  // focus on input when ctrl/cmd + f is pressed
+  // focus on input when ctrl/cmd + f
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "f") {
         e.preventDefault();
 
-        // Focus on the form
         if (inputRef.current) {
           (inputRef.current as HTMLFormElement).focus();
         }
       }
     };
 
-    // Add event listener when the component mounts
     document.addEventListener("keydown", handleKeyPress);
 
-    // Remove event listener when the component unmounts
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
@@ -390,7 +397,11 @@ export default function Bookmarks() {
                 onPaste={(e) => {
                   const text = e.clipboardData.getData("text/plain");
 
-                  if (text.length === 0 || inputUrl.length > 0 || !isValidURL(text)) {
+                  if (
+                    text.length === 0 ||
+                    inputUrl.length > 0 ||
+                    !isValidURL(text)
+                  ) {
                     return;
                   }
 
@@ -414,7 +425,7 @@ export default function Bookmarks() {
                   handleCreateBookmark(text);
                 }}
                 placeholder="https://... or ⌘F"
-                className={`w-full rounded-lg bg-black/10 px-4 py-2 font-semibold  text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 border border-black/10 dark:border-white/10 
+                className={`w-full rounded-lg border border-black/10 bg-black/10 px-4  py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 
                   ${
                     isDuplicate
                       ? "animate-shake ring-2 ring-red-500 focus:outline-none focus:ring-red-500"
@@ -438,15 +449,11 @@ export default function Bookmarks() {
               className="flex flex-col gap-8"
             >
               <motion.ul className={`flex flex-col`}>
-                {!bookmarks && fetchBookmarks.isFetching && (
-                  <SkeletonList viewStyle={viewStyle} />
-                )}
+                {!bookmarks && fetchBookmarks.isFetching && <SkeletonList />}
 
                 {bookmarks && bookmarks?.length > 0 && (
                   <BookmarksList
                     bookmarks={filteredBookmarks ?? bookmarks}
-                    showMonths={showMonths}
-                    viewStyle={viewStyle}
                     handleDeleteBookmark={handleDeleteBookmark}
                   />
                 )}

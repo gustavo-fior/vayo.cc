@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { CompactBookmark } from "./CompactBookmark";
 import { ExpandedBookmark } from "./ExpandedBookmark";
+import { useAtom } from "jotai";
+import { showMonthsAtom, viewStyleAtom } from "~/helpers/atoms";
 
 export const BookmarksList = ({
   bookmarks,
-  showMonths,
-  viewStyle,
   handleDeleteBookmark,
 }: {
   bookmarks: {
@@ -18,8 +18,6 @@ export const BookmarksList = ({
     loading?: boolean;
     onClick?: () => void;
   }[];
-  showMonths: boolean;
-  viewStyle: "expanded" | "compact";
   handleDeleteBookmark?: (id: string) => void;
 }) => {
   let groupedBookmarks: Record<
@@ -33,6 +31,9 @@ export const BookmarksList = ({
       ogImageUrl: string | null;
     }[]
   > = {};
+
+  const [viewStyle] = useAtom(viewStyleAtom);
+  const [showMonths] = useAtom(showMonthsAtom);
 
   if (showMonths) {
     groupedBookmarks = bookmarks.reduce(

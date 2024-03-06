@@ -34,7 +34,8 @@ export const api = createTRPCNext<AppRouter>({
        */
       links: [
         loggerLink({
-          enabled: () => false,
+          enabled: (opts) =>
+            (opts.direction === "down" && opts.result instanceof Error),
         }),
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,

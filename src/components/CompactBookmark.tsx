@@ -1,9 +1,13 @@
+import { type Bookmark } from "@prisma/client";
 import * as ContextMenu from "@radix-ui/react-context-menu";
-import { Cross1Icon } from "@radix-ui/react-icons";
+import {
+  Cross1Icon
+} from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
 import { itemVariants } from "../helpers/animationVariants";
+import { ContextMenuContent } from "./ContextMenuContent";
 import { Spinner } from "./Spinner";
 
 export const CompactBookmark = ({
@@ -49,12 +53,12 @@ export const CompactBookmark = ({
         >
           <motion.div
             whileTap={{ scale: 0.98 }}
-            className="flex p-3 align-middle transition duration-200 ease-out rounded-2xl mb-1 hover:bg-black/5 hover:dark:bg-white/5"
+            className="mb-1 flex rounded-2xl p-3 align-middle transition duration-200 ease-out hover:bg-black/5 hover:dark:bg-white/5"
           >
             <div className="flex w-full items-center justify-between align-middle">
               <div className="flex flex-row items-center gap-3 align-middle">
                 {bookmark.loading ? (
-                  <motion.div className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10 flex items-center justify-center">
+                  <motion.div className="flex min-h-[1.9rem] min-w-[1.9rem] items-center justify-center rounded-lg bg-black/10 p-2 dark:bg-white/10">
                     <Spinner size="sm" />
                   </motion.div>
                 ) : bookmark.faviconUrl ? (
@@ -87,11 +91,11 @@ export const CompactBookmark = ({
                   animate={{ opacity: 1 }}
                   initial={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className={`lg:max-w-[24rem] md:max-w-[22rem] sm:max-w-[22rem] max-w-[13rem] truncate font-semibold text-black dark:text-white`}
+                  className={`max-w-[13rem] truncate font-semibold text-black dark:text-white sm:max-w-[22rem] md:max-w-[22rem] lg:max-w-[24rem]`}
                 >
                   {bookmark.title}
                 </motion.p>
-                <p className="hidden lg:max-w-[18rem] md:max-w-[10rem] truncate text-sm text-zinc-500 md:block">
+                <p className="hidden truncate text-sm text-zinc-500 md:block md:max-w-[10rem] lg:max-w-[18rem]">
                   {bookmark.url}
                 </p>
               </div>
@@ -120,16 +124,7 @@ export const CompactBookmark = ({
         </motion.li>
       </ContextMenu.Trigger>
       <ContextMenu.Portal>
-        <ContextMenu.Content className="z-50 rounded-md bg-black/10 px-4 py-2 align-middle no-underline backdrop-blur-lg transition duration-300 ease-in-out hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20">
-          <ContextMenu.Item
-            className="text-black outline-none focus:outline-none dark:text-white"
-            onClick={() => {
-              void navigator.clipboard.writeText(bookmark.url);
-            }}
-          >
-            <p>Copy link</p>
-          </ContextMenu.Item>
-        </ContextMenu.Content>
+        <ContextMenuContent bookmark={bookmark as Bookmark} />
       </ContextMenu.Portal>
     </ContextMenu.Root>
   );
