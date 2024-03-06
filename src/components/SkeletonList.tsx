@@ -1,12 +1,8 @@
-import { useAtom } from "jotai";
 import { CompactSkeleton } from "./CompactSkeleton";
 import { ExpandedSkeleton } from "./ExpandedSkeleton";
 import { motion } from "framer-motion";
-import { viewStyleAtom } from "~/helpers/atoms";
 
-export const SkeletonList = () => {
-  const [viewStyle] = useAtom(viewStyleAtom);
-
+export const SkeletonList = ({ viewStyle }: { viewStyle: string }) => {
   return (
     <div className="flex flex-col gap-6 px-2 pt-6">
       {[...Array<number>(3)].map((_, i) => (

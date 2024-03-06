@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { BookmarksList } from "~/components/BookmarksList";
 import { Separator } from "~/components/Separator";
-import ThreeDodecahedron from "~/components/ThreeDodecahedron";
 
 export default function Home() {
   const [signingInGithub, setSigningInGithub] = useState(false);

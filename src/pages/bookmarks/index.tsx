@@ -18,7 +18,9 @@ import {
   currentPageAtom,
   foldersAtom,
   isOpenAtom,
+  showMonthsAtom,
   totalBookmarksAtom,
+  viewStyleAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
@@ -34,8 +36,8 @@ export default function Bookmarks() {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
 
   const [inputUrl, setInputUrl] = useState("");
-  const inputUrlDebounced = useDebounce(inputUrl, 50);
   const [isDuplicate, setIsDuplicate] = useState(false);
+  const inputUrlDebounced = useDebounce(inputUrl, 50);
 
   const inputRef = useRef(null);
 
@@ -47,6 +49,8 @@ export default function Bookmarks() {
   const [, setFolders] = useAtom(foldersAtom);
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
   const [currentPage, setCurrentPage] = useAtom(currentPageAtom);
+  const [viewStyle] = useAtom(viewStyleAtom);
+  const [showMonths] = useAtom(showMonthsAtom);
 
   const fetchFolders = api.folders.findByUserId.useQuery(
     {
@@ -449,10 +453,12 @@ export default function Bookmarks() {
               className="flex flex-col gap-8"
             >
               <motion.ul className={`flex flex-col`}>
-                {!bookmarks && fetchBookmarks.isFetching && <SkeletonList />}
+                {!bookmarks && fetchBookmarks.isFetching && <SkeletonList viewStyle={viewStyle} />}
 
                 {bookmarks && bookmarks?.length > 0 && (
                   <BookmarksList
+                    viewStyle={viewStyle}
+                    showMonths={showMonths}
                     bookmarks={filteredBookmarks ?? bookmarks}
                     handleDeleteBookmark={handleDeleteBookmark}
                   />
