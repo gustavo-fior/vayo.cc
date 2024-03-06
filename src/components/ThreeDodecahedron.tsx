@@ -32,6 +32,8 @@ const ThreeDodecahedron: React.FC = () => {
       const pos = geometry.attributes.position?.array;
       const col: number[] = [];
 
+      if (!pos) return;
+
       for (let i = 0; i < pos?.length; i += 3) {
         col.push(Math.random(), Math.random(), Math.random());
       }
@@ -55,10 +57,10 @@ const ThreeDodecahedron: React.FC = () => {
       const wireframe = new THREE.WireframeGeometry(geometry);
       const line = new THREE.LineSegments(wireframe);
 
-      line.material.depthTest = false;
-      line.material.opacity = 0.75;
-      line.material.transparent = true;
-      line.material.color = new THREE.Color('white');
+      // line.material.depthTest = false;
+      // line.material.opacity = 0.75;
+      // line.material.transparent = true;
+      // line.material.color = new THREE.Color('white');
 
       scene.add(line);
 
