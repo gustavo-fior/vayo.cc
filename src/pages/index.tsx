@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { BookmarksList } from "~/components/BookmarksList";
 import { Separator } from "~/components/Separator";
+import ThreeDodecahedron from "~/components/ThreeDodecahedron";
 
 export default function Home() {
   const [signingInGithub, setSigningInGithub] = useState(false);
@@ -105,9 +106,11 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#1a1a1a] to-[black]"
+        className="flex min-h-screen flex-col items-center justify-center bg-zinc-950"
       >
         <div className="w-[20rem] sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
+        {/* <ThreeDodecahedron /> */}
+
           <div className="flex items-center gap-3 px-2 align-middle font-semibold">
             <Image src="/images/logo.png" alt="logo" width={36} height={36} />
             <p className="text-3xl">Bookmarks</p>
