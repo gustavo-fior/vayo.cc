@@ -42,20 +42,20 @@ export default async function handler() {
               alignItems: "center",
               justifyContent: "center",
               justifyItems: "center",
-              marginLeft: 96,
+              marginLeft: 240,
               marginTop: 96,
             }}
           >
             <img
               src="https://bookmarks.gustavofior.com/images/logo.png"
               alt="logo"
-              width={96}
-              height={96}
+              width={192}
+              height={192}
             />
             <div
               tw="font-bold"
               style={{
-                fontSize: 96,
+                fontSize: 192,
                 letterSpacing: "-0.025em",
                 fontFamily: "Inter",
                 color: "white",
@@ -70,8 +70,8 @@ export default async function handler() {
         </div>
       ),
       {
-        width: 1200,
-        height: 630,
+        width: 1920,
+        height: 1080,
         fonts: [
           {
             name: "Inter",
