@@ -206,9 +206,7 @@ export const Header = ({
                     </Select.ItemText>
                   </Select.Item>
                 ))}
-                <div className="mx-2 my-1">
                   <Separator />
-                </div>
 
                 {/*CREATE FOLDER MODAL*/}
                 <Dialog.Root
@@ -219,7 +217,7 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                    <motion.div className="z-[999] cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
+                    <motion.div className="z-[999] mt-1 cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
                       <div
                         onClick={() => setIsNewFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"

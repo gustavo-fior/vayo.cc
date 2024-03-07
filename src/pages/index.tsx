@@ -105,7 +105,7 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="flex min-h-screen flex-col items-center justify-center bg-zinc-950"
+        className="flex min-h-screen flex-col items-center justify-center bg-[#111111]"
       >
         <div className="w-[20rem] sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
         {/* <ThreeDodecahedron /> */}

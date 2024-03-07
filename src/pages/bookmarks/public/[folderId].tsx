@@ -140,7 +140,7 @@ export default function Bookmarks() {
           content={`https://bookmarks.gustavofior.com/api/og`}
         />
       </Head>
-      <main className="flex min-h-screen w-full flex-col items-center bg-[#e0e0e0] dark:bg-[#161616]">
+      <main className="flex min-h-screen w-full flex-col items-center bg-[#e0e0e0] dark:bg-[#111111]">
         <ScrollToTopButton />
 
         <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">

@@ -45,33 +45,6 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
-    async signIn({ user }) {
-      const dbUser = await prisma.user.findUnique({
-        where: { id: user.id },
-        select: { firstAccess: true },
-      });
-
-      if (dbUser?.firstAccess) {
-        try {
-          await prisma.folder.create({
-            data: {
-              name: "Awesome stuff",
-              icon: "🐢",
-              userId: user.id,
-            },
-          });
-
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { firstAccess: false },
-          });
-        } catch (error) {
-          console.error("Error creating default folder:", error);
-        }
-      }
-
-      return true;
-    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [

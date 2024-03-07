@@ -2,7 +2,7 @@ import { CompactSkeleton } from "./CompactSkeleton";
 import { ExpandedSkeleton } from "./ExpandedSkeleton";
 import { motion } from "framer-motion";
 
-export const SkeletonList = ({ viewStyle }: { viewStyle: string }) => {
+export const SkeletonList = ({ viewStyle }: { viewStyle: "expanded" | "compact" }) => {
   return (
     <div className="flex flex-col gap-6 px-2 pt-6">
       {[...Array<number>(3)].map((_, i) => (
