@@ -2,7 +2,13 @@ import * as ContextMenu from "@radix-ui/react-context-menu";
 import { DoubleArrowRightIcon, Link1Icon } from "@radix-ui/react-icons";
 import { Separator } from "./Separator";
 import { useAtom } from "jotai";
-import { bookmarksAtom, bookmarksFilteredAtom, currentFolderAtom, foldersAtom } from "~/helpers/atoms";
+import {
+  bookmarksAtom,
+  bookmarksFilteredAtom,
+  currentFolderAtom,
+  foldersAtom,
+  totalBookmarksAtom,
+} from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { type Bookmark } from "@prisma/client";
 
@@ -11,7 +17,14 @@ export const ContextMenuContent = ({ bookmark }: { bookmark: Bookmark }) => {
   const [folders] = useAtom(foldersAtom);
   const [currentFolder] = useAtom(currentFolderAtom);
   const [bookmarks, setBookmarks] = useAtom(bookmarksAtom);
-  const [filteredBookmarks, setFilteredBookmarks] = useAtom(bookmarksFilteredAtom);
+  const [, setTotalBookmarks] = useAtom(totalBookmarksAtom);
+  const [filteredBookmarks, setFilteredBookmarks] = useAtom(
+    bookmarksFilteredAtom
+  );
+
+  const otherFolders = folders?.filter(
+    (folder) => folder.id !== currentFolder?.id
+  );
 
   const moveBookmark = api.bookmarks.move.useMutation({
     onMutate: () => {
@@ -23,7 +36,11 @@ export const ContextMenuContent = ({ bookmark }: { bookmark: Bookmark }) => {
         return;
       }
 
-      setBookmarks(bookmarks?.filter((b) => b.id !== bookmark.id) as Bookmark[]);
+      setBookmarks(
+        bookmarks?.filter((b) => b.id !== bookmark.id) as Bookmark[]
+      );
+
+      setTotalBookmarks((oldTotal) => (oldTotal ?? 0) - 1);
     },
     onError: (context) => {
       const previousBookmarks =
@@ -57,44 +74,46 @@ export const ContextMenuContent = ({ bookmark }: { bookmark: Bookmark }) => {
         </div>
       </ContextMenu.Item>
 
-      <div className="my-1">
-        <Separator />
-      </div>
-      <ContextMenu.Sub>
-        <ContextMenu.SubTrigger className="rounded-lg px-3 py-2 text-black outline-none transition duration-300 ease-in-out hover:cursor-pointer hover:bg-black/20 focus:outline-none dark:text-white  dark:hover:bg-white/20">
-          <div className="flex items-center gap-2 align-middle">
-            <DoubleArrowRightIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-            <p>Move</p>
+      {otherFolders && otherFolders.length > 0 && (
+        <>
+          <div className="my-1">
+            <Separator />
           </div>
-        </ContextMenu.SubTrigger>
-        <ContextMenu.Portal>
-          <ContextMenu.SubContent
-            className="z-50 rounded-lg border border-black/10 bg-black/5 p-1 align-middle  no-underline backdrop-blur-lg dark:border-white/10"
-            sideOffset={2}
-            alignOffset={-5}
-          >
-            {folders?.filter(
-              (folder) => folder.id !== currentFolder?.id
-            ).map((folder) => (
-              <ContextMenu.Item
-                key={folder.id}
-                className="rounded-lg px-3 py-2 text-black outline-none transition duration-300 ease-in-out hover:cursor-pointer hover:bg-black/20 focus:outline-none dark:text-white  dark:hover:bg-white/20"
-                onClick={() => {
-                  moveBookmark.mutate({
-                    id: bookmark.id,
-                    folderId: folder.id,
-                  });
-                }}
+          <ContextMenu.Sub>
+            <ContextMenu.SubTrigger className="rounded-lg px-3 py-2 text-black outline-none transition duration-300 ease-in-out hover:cursor-pointer hover:bg-black/20 focus:outline-none dark:text-white  dark:hover:bg-white/20">
+              <div className="flex items-center gap-2 align-middle">
+                <DoubleArrowRightIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+                <p>Move</p>
+              </div>
+            </ContextMenu.SubTrigger>
+            <ContextMenu.Portal>
+              <ContextMenu.SubContent
+                className="z-50 rounded-lg border border-black/10 bg-black/5 p-1 align-middle  no-underline backdrop-blur-lg dark:border-white/10"
+                sideOffset={2}
+                alignOffset={-5}
               >
-                <div className="flex items-center gap-2 align-middle">
-                  <div className="mb-0.5">{folder?.icon}</div>
-                  <span className="font-medium">{folder?.name}</span>
-                </div>
-              </ContextMenu.Item>
-            ))}
-          </ContextMenu.SubContent>
-        </ContextMenu.Portal>
-      </ContextMenu.Sub>
+                {otherFolders.map((folder) => (
+                  <ContextMenu.Item
+                    key={folder.id}
+                    className="rounded-lg px-3 py-2 text-black outline-none transition duration-300 ease-in-out hover:cursor-pointer hover:bg-black/20 focus:outline-none dark:text-white  dark:hover:bg-white/20"
+                    onClick={() => {
+                      moveBookmark.mutate({
+                        id: bookmark.id,
+                        folderId: folder.id,
+                      });
+                    }}
+                  >
+                    <div className="flex items-center gap-2 align-middle">
+                      <div className="mb-0.5">{folder?.icon}</div>
+                      <span className="font-medium">{folder?.name}</span>
+                    </div>
+                  </ContextMenu.Item>
+                ))}
+              </ContextMenu.SubContent>
+            </ContextMenu.Portal>
+          </ContextMenu.Sub>
+        </>
+      )}
     </ContextMenu.Content>
   );
 };

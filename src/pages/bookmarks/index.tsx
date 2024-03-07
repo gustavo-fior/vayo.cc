@@ -6,6 +6,7 @@ import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BookmarksList } from "~/components/BookmarksList";
+import { CreateFirstFolder } from "~/components/CreateFirstFolder";
 import { EmptyState } from "~/components/EmptyState";
 import { Header } from "~/components/Header";
 import { Separator } from "~/components/Separator";
@@ -18,7 +19,9 @@ import {
   currentPageAtom,
   foldersAtom,
   isOpenAtom,
+  showMonthsAtom,
   totalBookmarksAtom,
+  viewStyleAtom,
 } from "~/helpers/atoms";
 import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getCommonFavicons, getWebsiteName } from "~/helpers/getCommonFavicons";
@@ -48,6 +51,10 @@ export default function Bookmarks() {
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
   const [currentPage, setCurrentPage] = useAtom(currentPageAtom);
 
+  const [viewStyle] = useAtom(viewStyleAtom);
+  const [showMonths] = useAtom(showMonthsAtom);
+  const [folders] = useAtom(foldersAtom);
+
   const fetchFolders = api.folders.findByUserId.useQuery(
     {
       userId: String(session.data?.user.id),
@@ -71,6 +78,8 @@ export default function Bookmarks() {
             } else {
               setCurrentFolder(data[0] ?? null);
               setBookmarks(data[0]?.bookmarks ?? null);
+
+              localStorage.setItem("currentFolderId", data[0]?.id ?? "");
             }
           } else {
             const currentFolderFromData = data.find(
@@ -227,7 +236,7 @@ export default function Bookmarks() {
         setTotalBookmarks((prevTotal) => (prevTotal ? prevTotal - 1 : 0));
       }
 
-      // didn't like it 
+      // didn't like it
       //
       // toast("Bookmark deleted", {
       //   position: "top-center",
@@ -400,7 +409,8 @@ export default function Bookmarks() {
                   if (
                     text.length === 0 ||
                     inputUrl.length > 0 ||
-                    !isValidURL(text)
+                    !isValidURL(text) || 
+                    addBookmark.isLoading 
                   ) {
                     return;
                   }
@@ -449,13 +459,21 @@ export default function Bookmarks() {
               className="flex flex-col gap-8"
             >
               <motion.ul className={`flex flex-col`}>
-                {!bookmarks && fetchBookmarks.isFetching && <SkeletonList />}
+                {!bookmarks && fetchBookmarks.isFetching && (
+                  <SkeletonList viewStyle={viewStyle} />
+                )}
 
                 {bookmarks && bookmarks?.length > 0 && (
                   <BookmarksList
+                    showMonths={showMonths}
+                    viewStyle={viewStyle}
                     bookmarks={filteredBookmarks ?? bookmarks}
                     handleDeleteBookmark={handleDeleteBookmark}
                   />
+                )}
+
+                {(!folders || folders.length === 0)  && fetchFolders.isFetched && !fetchFolders.isLoading && (
+                  <CreateFirstFolder />
                 )}
 
                 {totalBookmarks === 0 &&
@@ -465,8 +483,11 @@ export default function Bookmarks() {
                   fetchBookmarks.isFetched &&
                   fetchFolders.isFetched &&
                   !isDuplicate &&
-                  fetchBookmarsWithSearch.isFetched &&
-                  !fetchBookmarsWithSearch.isLoading && <EmptyState />}
+                  folders &&
+                  folders?.length > 0 &&
+                  (!fetchBookmarsWithSearch.isLoading || inputUrl.length === 0) &&
+                  !addBookmark.isLoading &&
+                  <EmptyState />}
               </motion.ul>
             </motion.div>
             <div className="flex justify-center pt-10 align-middle">

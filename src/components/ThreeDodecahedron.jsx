@@ -1,20 +1,22 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
-const ThreeDodecahedron: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const requestRef = useRef<number>();
+const ThreeDodecahedron = () => {
+  const canvasRef = useRef(null);
+  const requestRef = useRef();
 
   useEffect(() => {
-    let camera: THREE.PerspectiveCamera;
-    let scene: THREE.Scene;
-    let renderer: THREE.WebGLRenderer;
-    let geometry: THREE.DodecahedronGeometry;
-    let material: THREE.MeshPhongMaterial;
-    let mesh: THREE.Mesh;
+    let camera;
+    let scene;
+    let renderer;
+    let geometry;
+    let material;
+    let mesh;
 
     const init = () => {
       camera = new THREE.PerspectiveCamera(
@@ -30,7 +32,7 @@ const ThreeDodecahedron: React.FC = () => {
       geometry = new THREE.DodecahedronGeometry(1.2, 1);
 
       const pos = geometry.attributes.position?.array;
-      const col: number[] = [];
+      const col = [];
 
       for (let i = 0; i < pos?.length; i += 3) {
         col.push(Math.random(), Math.random(), Math.random());
@@ -68,7 +70,7 @@ const ThreeDodecahedron: React.FC = () => {
 
       renderer = new THREE.WebGLRenderer({
         antialias: true,
-        canvas: canvasRef.current!,
+        canvas: canvasRef.current,
       });
       renderer.setSize(window.innerWidth/10, window.innerHeight/10);
       renderer.setClearColor(0x000000, 0); // Set background color to transparent
@@ -91,7 +93,7 @@ const ThreeDodecahedron: React.FC = () => {
       camera.position.set(rx, ry, rz).normalize().multiplyScalar(2.5);
       camera.lookAt(scene.position);
 
-      const scale = Math.sin(time) * 0.4 + 0;
+      const scale = Math.sin(time) * 0.4 + 0.7;
       mesh.scale.set(scale, scale, scale);
 
       renderer.render(scene, camera);
@@ -100,7 +102,7 @@ const ThreeDodecahedron: React.FC = () => {
     init();
 
     return () => {
-      cancelAnimationFrame(requestRef.current!);
+      cancelAnimationFrame(requestRef.current);
     };
   }, []);
 

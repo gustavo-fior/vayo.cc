@@ -1,7 +1,6 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { type Bookmark, type Folder } from "@prisma/client";
-import { Separator } from "@radix-ui/react-context-menu";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import * as Popover from "@radix-ui/react-popover";
@@ -18,6 +17,7 @@ import {
 } from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { Hotkey } from "./Hotkey";
+import { Separator } from "./Separator";
 
 export const CreateFolderForm = () => {
   const [name, setName] = useState("");
@@ -106,7 +106,7 @@ export const CreateFolderForm = () => {
         </Dialog.Close>
       </div>
       <Separator />
-      <div className="flex flex-row items-center gap-2 px-1 align-middle">
+      <div className="flex flex-row mt-2 items-center gap-2 px-1 align-middle">
         <div className="flex flex-col">
           <label className="text-sm font-normal text-zinc-500">Icon</label>
           <div className="mt-1 flex flex-row items-center gap-2 align-middle  ">
@@ -181,7 +181,7 @@ export const CreateFolderForm = () => {
           <label className=" text-sm font-normal text-zinc-500">Name</label>
           <input
             type="text"
-            className="mt-1 w-40 rounded-md bg-black/10 px-3 py-2 text-sm font-normal text-black placeholder-zinc-600 dark:bg-white/10 dark:text-white"
+            className="mt-1  md:w-full w-36 rounded-md bg-black/10 px-3 py-2 text-sm font-normal text-black placeholder-zinc-600 dark:bg-white/10 dark:text-white"
             placeholder="Awesome refs"
             required
             value={name}

@@ -11,7 +11,7 @@ import {
 } from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { Hotkey } from "./Hotkey";
-import { Separator } from "@radix-ui/react-context-menu";
+import { Separator } from "./Separator";
 
 export const DeleteFolderForm = () => {
   const session = useSession();
@@ -55,6 +55,8 @@ export const DeleteFolderForm = () => {
     setCurrentFolder(otherFolder ?? null);
 
     if (otherFolder) {
+      localStorage.setItem("currentFolderId", otherFolder.id);
+
       await utils.bookmarks.findByFolderId.refetch({
         folderId: otherFolder?.id,
       });
@@ -81,7 +83,7 @@ export const DeleteFolderForm = () => {
         </Dialog.Close>
       </div>
       <Separator />
-      <p className="px-1 text-sm font-normal text-gray-800 dark:text-gray-400">
+      <p className="px-1 mt-1 text-sm font-normal text-gray-800 dark:text-gray-400">
         Are you sure? All{" "}
         <b className="text-black dark:text-white">{totalBookmarks}</b> bookmarks
         in this folder will be deleted...
