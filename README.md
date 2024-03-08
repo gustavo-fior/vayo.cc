@@ -7,6 +7,7 @@
 - [x] fix loading while is fetching search
 - [x] fix last pages bug in big lists
 - [x] fix first folder creation
+- [ ] fix currentFolderId bug
 - [ ] buy new domain
 - [ ] create new logo
 - [ ] fix emoji picker (https://github.com/missive/emoji-mart?tab=readme-ov-file)
