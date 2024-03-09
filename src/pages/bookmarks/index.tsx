@@ -63,6 +63,8 @@ export default function Bookmarks() {
       enabled: !!session.data?.user.id,
       onSuccess: (data) => {
         if (data && data?.length > 0) {
+          console.log(data);
+
           setFolders(data);
 
           if (!currentFolder) {
@@ -73,8 +75,15 @@ export default function Bookmarks() {
                 (folder) => folder.id === currentFolderId
               );
 
-              setCurrentFolder(currentFolderFromData ?? null);
-              setBookmarks(currentFolderFromData?.bookmarks ?? null);
+              if (currentFolderFromData) {
+                setCurrentFolder(currentFolderFromData);
+                setBookmarks(currentFolderFromData?.bookmarks);
+              } else {
+                setCurrentFolder(data[0] ?? null);
+                setBookmarks(data[0]?.bookmarks ?? null);
+
+                localStorage.setItem("currentFolderId", data[0]?.id ?? "");
+              }
             } else {
               setCurrentFolder(data[0] ?? null);
               setBookmarks(data[0]?.bookmarks ?? null);
@@ -409,8 +418,8 @@ export default function Bookmarks() {
                   if (
                     text.length === 0 ||
                     inputUrl.length > 0 ||
-                    !isValidURL(text) || 
-                    addBookmark.isLoading 
+                    !isValidURL(text) ||
+                    addBookmark.isLoading
                   ) {
                     return;
                   }
@@ -472,9 +481,9 @@ export default function Bookmarks() {
                   />
                 )}
 
-                {(!folders || folders.length === 0)  && fetchFolders.isFetched && !fetchFolders.isLoading && (
-                  <CreateFirstFolder />
-                )}
+                {(!folders || folders.length === 0) &&
+                  fetchFolders.isFetched &&
+                  !fetchFolders.isLoading && <CreateFirstFolder />}
 
                 {totalBookmarks === 0 &&
                   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -485,9 +494,9 @@ export default function Bookmarks() {
                   !isDuplicate &&
                   folders &&
                   folders?.length > 0 &&
-                  (!fetchBookmarsWithSearch.isLoading || inputUrl.length === 0) &&
-                  !addBookmark.isLoading &&
-                  <EmptyState />}
+                  (!fetchBookmarsWithSearch.isLoading ||
+                    inputUrl.length === 0) &&
+                  !addBookmark.isLoading && <EmptyState />}
               </motion.ul>
             </motion.div>
             <div className="flex justify-center pt-10 align-middle">
