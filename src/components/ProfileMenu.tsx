@@ -7,6 +7,7 @@ import {
   GearIcon,
   HamburgerMenuIcon,
   LayoutIcon,
+  LightningBoltIcon,
   MoonIcon,
   RowsIcon,
   SunIcon,
@@ -137,7 +138,6 @@ export const ProfileMenu = () => {
     setShowMonths(!showMonths);
   };
 
-
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
@@ -166,11 +166,11 @@ export const ProfileMenu = () => {
         </motion.button>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content className="z-50 md:mr-12 mr-6">
+        <Popover.Content className="z-50 mr-6 md:mr-12">
           <motion.div
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 flex flex-col gap-3 rounded-md bg-black/5 p-4 align-middle font-semibold text-black no-underline backdrop-blur-lg dark:bg-white/5 dark:text-white border border-black/10 dark:border-white/10"
+            className="mt-4 sm:w-80 w-64 flex flex-col gap-3 rounded-md border border-black/10 bg-black/5 p-4 align-middle font-semibold text-black no-underline backdrop-blur-lg dark:border-white/10 dark:bg-white/5 dark:text-white"
           >
             <div className="flex items-center gap-2 px-1 align-middle">
               <div className="flex items-center gap-2 align-middle">
@@ -224,7 +224,7 @@ export const ProfileMenu = () => {
                       className={`text-sm transition duration-200 ease-in-out hover:text-black dark:hover:text-white ${
                         viewStyle === "compact"
                           ? "font-semibold"
-                          : "font-normal text-gray-400"
+                          : "font-normal text-zinc-500"
                       }`}
                     >
                       Compact
@@ -238,7 +238,7 @@ export const ProfileMenu = () => {
                       className={`text-sm transition duration-200 ease-in-out hover:text-black dark:hover:text-white ${
                         viewStyle === "expanded"
                           ? "font-semibold"
-                          : "font-normal text-gray-400"
+                          : "font-normal text-zinc-500"
                       }`}
                     >
                       Expanded
@@ -247,7 +247,7 @@ export const ProfileMenu = () => {
                 </ToggleGroup.Root>
               </div>
 
-              <div className="flex w-72 flex-row justify-between align-middle">
+              <div className="flex flex-row justify-between align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
                   <AnimatePresence mode="popLayout">
                     {resolvedTheme === "light" ? (
@@ -291,7 +291,7 @@ export const ProfileMenu = () => {
                       className={`text-sm transition duration-200 ease-in-out hover:text-black dark:hover:text-white ${
                         resolvedTheme === "light"
                           ? "font-semibold"
-                          : "font-normal text-gray-400"
+                          : "font-normal text-zinc-500"
                       }`}
                     >
                       Day
@@ -305,7 +305,7 @@ export const ProfileMenu = () => {
                       className={`text-sm transition duration-200 ease-in-out hover:text-black dark:hover:text-white ${
                         resolvedTheme === "dark"
                           ? "font-semibold"
-                          : "font-normal text-gray-400"
+                          : "font-normal text-zinc-500"
                       }`}
                     >
                       Night
@@ -404,7 +404,7 @@ export const ProfileMenu = () => {
                 </Checkbox.Root>
               </div>
 
-              <div className="flex items-center justify-between gap-x-2 align-middle">
+              <div className="flex items-center justify-between gap-x-2 pb-1 align-middle">
                 <div className="flex items-center gap-x-3 align-middle">
                   <ExitIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
                   <p className="text-sm font-normal">Sign out</p>
@@ -415,14 +415,31 @@ export const ProfileMenu = () => {
                   }}
                   disabled={signinOut}
                   onClick={handleSignOut}
-                  className={`flex h-6 w-8 items-center justify-center rounded-md bg-black/10 font-semibold text-black no-underline transition ease-in-out hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20  `}
+                  className={`flex h-6 w-6 items-center justify-center rounded-md bg-black/10 font-semibold text-black no-underline transition ease-in-out hover:bg-black/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20  `}
                 >
                   {signinOut ? (
                     <Spinner size="sm" />
                   ) : (
-                    <p className="text-sm font-normal ">{"->"}</p>
+                    <p className="text-xs font-normal ">{"->"}</p>
                   )}
                 </motion.button>
+              </div>
+            </div>
+            <Separator />
+            <div className="flex items-center gap-x-3 px-1 align-middle">
+              <LightningBoltIcon className="h-4 w-4 text-zinc-500 " />
+
+              <div className="flex flex-col gap-1.5">
+                <p className="text-sm font-semibold">Pro tip </p>
+                <div className="flex items-center gap-1.5 align-middle">
+                  <span className="text-sm font-normal text-zinc-500 ">
+                    Press
+                  </span>
+                  <Hotkey key1="f" />
+                  <p className="text-sm font-normal text-zinc-500">
+                    to open Folders
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>

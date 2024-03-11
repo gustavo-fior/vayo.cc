@@ -30,9 +30,10 @@ import { isValidURL } from "~/helpers/isValidURL";
 import { useDebounce } from "~/hooks/useDebounce";
 import { api } from "~/utils/api";
 
+
 export default function Bookmarks() {
   const session = useSession();
-  const utils = api.useContext();
+  const utils = api.useUtils();
 
   const [isOpen, setIsOpen] = useAtom(isOpenAtom);
 
@@ -63,46 +64,12 @@ export default function Bookmarks() {
       enabled: !!session.data?.user.id,
       onSuccess: (data) => {
         if (data && data?.length > 0) {
-          console.log(data);
-
           setFolders(data);
 
           if (!currentFolder) {
-            const currentFolderId = localStorage.getItem("currentFolderId");
-
-            if (currentFolderId) {
-              const currentFolderFromData = data.find(
-                (folder) => folder.id === currentFolderId
-              );
-
-              if (currentFolderFromData) {
-                setCurrentFolder(currentFolderFromData);
-                setBookmarks(currentFolderFromData?.bookmarks);
-              } else {
-                setCurrentFolder(data[0] ?? null);
-                setBookmarks(data[0]?.bookmarks ?? null);
-
-                localStorage.setItem("currentFolderId", data[0]?.id ?? "");
-              }
-            } else {
-              setCurrentFolder(data[0] ?? null);
-              setBookmarks(data[0]?.bookmarks ?? null);
-
-              localStorage.setItem("currentFolderId", data[0]?.id ?? "");
-            }
-          } else {
-            const currentFolderFromData = data.find(
-              (folder) => folder.id === currentFolder?.id
-            );
-
-            setBookmarks(currentFolderFromData?.bookmarks ?? null);
+            setCurrentFolder(data[0] ?? null);
+            setBookmarks(data[0]?.bookmarks ?? null);
           }
-
-          setTimeout(() => {
-            setIsOpen(true);
-          }, 10);
-
-          void fetchBookmarks.refetch();
         }
       },
     }
@@ -119,10 +86,6 @@ export default function Bookmarks() {
         if (data?.bookmarks) {
           setFilteredBookmarks(data.bookmarks);
           setTotalBookmarks(data.bookmarks.length);
-
-          setTimeout(() => {
-            setIsOpen(true);
-          }, 10);
         }
       },
     }
@@ -144,35 +107,16 @@ export default function Bookmarks() {
               );
             });
 
-            const temps = prevBookmarks?.filter(
-              (bookmark) => bookmark.id === "temp"
-            );
+            setTotalBookmarks(data.totalElements);
 
-            const prevBookmarksWithoutTemp = prevBookmarks?.filter(
-              (bookmark) => bookmark.id !== "temp"
-            );
+            setTimeout(() => {
+              setIsOpen(true);
+            }, 10);
 
-            if (
-              temps &&
-              temps.length > 0 &&
-              prevBookmarksWithoutTemp &&
-              currentPage === 1
-            ) {
-              prevBookmarksWithoutTemp.unshift(...newBookmarks);
-            } else {
-              prevBookmarksWithoutTemp?.push(...newBookmarks);
-            }
-
-            return prevBookmarksWithoutTemp
-              ? [...prevBookmarksWithoutTemp]
-              : data.bookmarks;
+            return prevBookmarks
+              ? [...prevBookmarks, ...newBookmarks]
+              : [...newBookmarks];
           });
-
-          setTotalBookmarks(data.totalElements);
-
-          setTimeout(() => {
-            setIsOpen(true);
-          }, 10);
         }
       },
     }
@@ -197,11 +141,31 @@ export default function Bookmarks() {
       bookmarks?.unshift(newBookmark);
       setTotalBookmarks((prevTotal) => (prevTotal ? prevTotal + 1 : 1));
     },
-    onSettled: async () => {
+    onSuccess: (data) => {
       const previousPage = currentPage;
 
       setCurrentPage(1);
-      await fetchBookmarks.refetch();
+
+      let bookmarkToBeUpdated;
+
+      // update the bookmarks with result
+      if (filteredBookmarks && filteredBookmarks.length > 0) {
+        bookmarkToBeUpdated = filteredBookmarks
+          .filter((bookmark) => bookmark.url === data.url)
+          .at(0);
+      } else {
+        bookmarkToBeUpdated = bookmarks
+          ?.filter((bookmark) => bookmark.url === data.url)
+          .at(0);
+      }
+
+      if (bookmarkToBeUpdated) {
+        bookmarkToBeUpdated.id = data.id;
+        bookmarkToBeUpdated.faviconUrl = data.faviconUrl;
+        bookmarkToBeUpdated.ogImageUrl = data.ogImageUrl;
+        bookmarkToBeUpdated.title = data.title;
+        bookmarkToBeUpdated.createdAt = data.createdAt;
+      }
 
       setCurrentPage(previousPage);
     },
@@ -303,7 +267,7 @@ export default function Bookmarks() {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
         if (
           bookmarks?.length !== totalBookmarks &&
-          !fetchBookmarks.isLoading &&
+          !fetchBookmarks.isFetching &&
           inputUrl.length === 0 // TODO: fix this
         ) {
           setCurrentPage((prevPage) => prevPage + 1);
@@ -317,12 +281,7 @@ export default function Bookmarks() {
       window.removeEventListener("scroll", handleScroll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    bookmarks?.length,
-    totalBookmarks,
-    fetchBookmarks.isLoading,
-    inputUrl.length,
-  ]);
+  }, []);
 
   // focus on input when ctrl/cmd + f
   useEffect(() => {
@@ -444,15 +403,22 @@ export default function Bookmarks() {
                   handleCreateBookmark(text);
                 }}
                 placeholder="https://... or ⌘F"
-                className={`w-full rounded-lg border border-black/10 bg-black/10 px-4  py-2 font-semibold text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 
+                className={`w-full rounded-lg border border-black/10 bg-black/10 px-4 py-2 font-normal text-black no-underline placeholder-zinc-600 transition duration-200 ease-in-out placeholder:font-normal hover:bg-black/20 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 
                   ${
                     isDuplicate
                       ? "animate-shake ring-2 ring-red-500 focus:outline-none focus:ring-red-500"
                       : "outline-zinc-500 focus:outline-none focus:ring-zinc-500"
                   }`}
               />
-              {addBookmark.isLoading && (
-                <motion.div className="absolute right-4 top-1/2 -translate-y-1/2 transform">
+              {(addBookmark.isLoading ||
+                !currentFolder ||
+                fetchBookmarsWithSearch.isFetching) && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.5, transition: { delay: 1 } }}
+                  exit={{ opacity: 0 }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 transform"
+                >
                   <Spinner size="md" />
                 </motion.div>
               )}
@@ -483,7 +449,7 @@ export default function Bookmarks() {
 
                 {(!folders || folders.length === 0) &&
                   fetchFolders.isFetched &&
-                  !fetchFolders.isLoading && <CreateFirstFolder />}
+                  !fetchFolders.isFetching && <CreateFirstFolder />}
 
                 {totalBookmarks === 0 &&
                   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -494,7 +460,7 @@ export default function Bookmarks() {
                   !isDuplicate &&
                   folders &&
                   folders?.length > 0 &&
-                  (!fetchBookmarsWithSearch.isLoading ||
+                  (!fetchBookmarsWithSearch.isFetching ||
                     inputUrl.length === 0) &&
                   !addBookmark.isLoading && <EmptyState />}
               </motion.ul>

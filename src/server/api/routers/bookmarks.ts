@@ -1,5 +1,7 @@
 import { z } from "zod";
+import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getBookmarkMetadata } from "~/helpers/getBookmarkMetadata";
+import { getWebsiteName } from "~/helpers/getCommonFavicons";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -41,7 +43,7 @@ export const bookmarksRouter = createTRPCRouter({
       return await ctx.prisma.bookmark.create({
         data: {
           url: input.url,
-          title: title,
+          title: title ? title : capitalizeFirstLetter(getWebsiteName(input.url)),
           faviconUrl: faviconUrl,
           ogImageUrl: ogImageUrl,
           description: description,

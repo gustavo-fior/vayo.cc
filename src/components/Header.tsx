@@ -138,7 +138,6 @@ export const Header = ({
             setCurrentPage(1);
             setSelectOpen(false);
             setCurrentFolder(folder ?? null);
-            localStorage.setItem("currentFolderId", folder?.id ?? "");
           }
         }}
       >
@@ -217,7 +216,7 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                    <motion.div className="z-[999] mt-1 cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
+                  <motion.div className="z-[999] mt-1 cursor-pointer rounded-md pr-3 pl-[0.57rem] py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
                       <div
                         onClick={() => setIsNewFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
@@ -232,7 +231,7 @@ export const Header = ({
                   </Dialog.Trigger>
                   <Dialog.Portal>
                     <Dialog.Overlay className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-md data-[state=open]:animate-overlayShow" />
-                    <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] w-[20vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
+                    <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] md:w-[30vw] lg:w-[25vw] sm:w-[50vw] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
                       <CreateFolderForm />
                     </Dialog.Content>
                   </Dialog.Portal>
@@ -247,7 +246,7 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                    <motion.div className="z-[999] mt-1 cursor-pointer rounded-md px-3 py-2 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
+                  <motion.div className="z-[999] mt-1 cursor-pointer rounded-md pr-3 pl-[0.57rem] py-2 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
                       <div
                         onClick={() => setIsDeleteFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
@@ -262,7 +261,7 @@ export const Header = ({
                   </Dialog.Trigger>
                   <Dialog.Portal>
                     <Dialog.Overlay className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-md data-[state=open]:animate-overlayShow" />
-                    <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] w-[20vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
+                    <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] md:w-[30vw] lg:w-[25vw] sm:w-[50vw] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
                       <DeleteFolderForm />
                     </Dialog.Content>
                   </Dialog.Portal>

@@ -7,9 +7,10 @@
 - [x] fix loading while is fetching search
 - [x] fix last pages bug in big lists
 - [x] fix first folder creation
-- [ ] fix currentFolderId bug
+- [x] fix currentFolderId bug
+- [ ] test supabase rest
 - [ ] buy new domain
 - [ ] create new logo
 - [ ] fix emoji picker (https://github.com/missive/emoji-mart?tab=readme-ov-file)
 - [ ] add rename bookmark feature
-- [ ] test supabase rest
+- [ ] make it navigable with keyboard
