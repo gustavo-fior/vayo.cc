@@ -83,7 +83,7 @@ export const DeleteFolderForm = () => {
         </Dialog.Close>
       </div>
       <Separator />
-      <p className="px-1 mt-1 text-sm font-normal text-gray-800 dark:text-gray-400">
+      <p className="px-1 mt-1 text-sm font-normal text-zinc-500">
         Are you sure? All{" "}
         <b className="text-black dark:text-white">{totalBookmarks}</b> bookmarks
         in this folder will be deleted...

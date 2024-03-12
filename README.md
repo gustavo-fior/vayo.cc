@@ -8,9 +8,9 @@
 - [x] fix last pages bug in big lists
 - [x] fix first folder creation
 - [x] fix currentFolderId bug
+- [x] fix emoji picker (https://github.com/missive/emoji-mart?tab=readme-ov-file)
 - [ ] test supabase rest
 - [ ] buy new domain
 - [ ] create new logo
-- [ ] fix emoji picker (https://github.com/missive/emoji-mart?tab=readme-ov-file)
 - [ ] add rename bookmark feature
 - [ ] make it navigable with keyboard

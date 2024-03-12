@@ -101,15 +101,15 @@ export const CreateFolderForm = () => {
           </p>
           <Hotkey key1="n" />
         </div>
-        <Dialog.Close asChild className=" cursor-pointer">
+        <Dialog.Close asChild className="cursor-pointer">
           <Cross1Icon className="h-4 w-4 text-zinc-500 transition duration-200 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300" />
         </Dialog.Close>
       </div>
       <Separator />
-      <div className="flex flex-row mt-2 items-center gap-2 px-1 align-middle">
+      <div className="flex flex-row mt-2 items-center gap-3 align-middle">
         <div className="flex flex-col">
           <label className="text-sm font-normal text-zinc-500">Icon</label>
-          <div className="mt-1 flex flex-row items-center gap-2 align-middle  ">
+          <div className="mt-1 flex flex-row items-center gap-2 align-middle">
             <Popover.Root
               onOpenChange={(open) => {
                 setEmojiPickerOpen(open);
@@ -178,7 +178,7 @@ export const CreateFolderForm = () => {
         </div>
 
         <div className="flex flex-col pl-2">
-          <label className=" text-sm font-normal text-zinc-500">Name</label>
+          <label className=" text-sm font-normal text-zinc-500">Name*</label>
           <input
             type="text"
             className="mt-1 w-full rounded-md bg-black/10 px-3 py-2 text-sm font-normal text-black placeholder-zinc-600 dark:bg-white/10 dark:text-white"
@@ -199,7 +199,7 @@ export const CreateFolderForm = () => {
           name.length > 0
             ? "bg-black/10 text-black dark:bg-white/10 dark:text-white"
             : "bg-black/5 text-zinc-500 dark:bg-white/5 dark:text-zinc-600"
-        } mt-2 rounded-md px-4 py-2 text-center align-middle font-semibold no-underline transition duration-200 hover:cursor-pointer`}
+        } mt-4 rounded-md px-4 py-2 text-center align-middle font-semibold no-underline transition duration-200 hover:cursor-pointer`}
       >
         <p>Create</p>
       </motion.button>
