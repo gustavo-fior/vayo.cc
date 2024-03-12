@@ -88,7 +88,7 @@ export const CreateFolderForm = () => {
 
   return (
     <motion.form
-      className="flex flex-col gap-3 rounded-md bg-white/60 p-6 align-middle font-semibold text-black no-underline backdrop-blur-xl dark:bg-white/5 dark:text-white border-2 border-black/20 dark:border-white/10"
+      className="flex flex-col gap-3 rounded-md border-2 border-black/20 bg-white/60 p-6 align-middle font-semibold text-black no-underline backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:text-white"
       onSubmit={(e) => {
         setIsNewFolderModalOpen(false);
         void handleCreateFolder(e);
@@ -106,7 +106,7 @@ export const CreateFolderForm = () => {
         </Dialog.Close>
       </div>
       <Separator />
-      <div className="flex flex-row mt-2 items-center gap-3 align-middle">
+      <div className="mt-2 flex flex-row items-center gap-3 align-middle">
         <div className="flex flex-col">
           <label className="text-sm font-normal text-zinc-500">Icon</label>
           <div className="mt-1 flex flex-row items-center gap-2 align-middle">
@@ -129,24 +129,38 @@ export const CreateFolderForm = () => {
                 />
               </Popover.Trigger>
               <Popover.Portal>
-                <Popover.Content 
-                
-                sideOffset={35} side="left" align="end"
-                className="z-[10001] mt-2 rounded-md font-semibold text-white no-underline h-[10rem] w-[300px] outline-none focus:outline-none">
-                  <Picker
-                    theme={theme === "dark" ? "dark" : "light"}
-                    onEmojiSelect={(emojiData: { native: SetStateAction<string>; }) => {
-                      setIcon(emojiData.native);
-                      setEmojiPickerOpen(false);
+                <Popover.Content
+                  sideOffset={50}
+                  alignOffset={-260}
+                  side="left"
+                  align="end"
+                  className="z-[10001] w-[300px] rounded-md font-semibold text-white no-underline outline-none focus:outline-none"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, translateX: 3 }}
+                    animate={{ opacity: 1, translateX: 0 }}
+                    exit={{ opacity: 0, translateX: -3 }}
+                    whileTap={{
+                      scale: 0.98,
                     }}
-                    navPosition="none"
-                    skinTonePosition="none"
-                    searchPosition="none"
-                    previewPosition="none"
-                    autoFocus
-                    data={data}
-                    perLine={8}
-                  />
+                  >
+                    <Picker
+                      theme={theme === "dark" ? "dark" : "light"}
+                      onEmojiSelect={(emojiData: {
+                        native: SetStateAction<string>;
+                      }) => {
+                        setIcon(emojiData.native);
+                        setEmojiPickerOpen(false);
+                      }}
+                      navPosition="none"
+                      skinTonePosition="none"
+                      searchPosition="top"
+                      previewPosition="none"
+                      autoFocus
+                      data={data}
+                      perLine={8}
+                    />
+                  </motion.div>
                 </Popover.Content>
               </Popover.Portal>
             </Popover.Root>
