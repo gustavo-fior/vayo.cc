@@ -36,14 +36,15 @@ export const bookmarksRouter = createTRPCRouter({
         }
       }
 
-      const { title, faviconUrl, ogImageUrl, description } = await getBookmarkMetadata(
-        input.url
-      );
+      const { title, faviconUrl, ogImageUrl, description } =
+        await getBookmarkMetadata(input.url);
 
       return await ctx.prisma.bookmark.create({
         data: {
           url: input.url,
-          title: title ? title : capitalizeFirstLetter(getWebsiteName(input.url)),
+          title: title
+            ? title
+            : capitalizeFirstLetter(getWebsiteName(input.url)),
           faviconUrl: faviconUrl,
           ogImageUrl: ogImageUrl,
           description: description,
@@ -61,59 +62,61 @@ export const bookmarksRouter = createTRPCRouter({
     )
     .query(async ({ input, ctx }) => {
       if (input.folderId) {
-        const bookmarks = input.page ? await ctx.prisma.bookmark.findMany({
-          where: {
-            folderId: input.folderId,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-          select: {
-            id: true,
-            url: true,
-            title: true,
-            faviconUrl: true,
-            ogImageUrl: true,
-            createdAt: true,
-          },
-          skip: input.page ? (input.page - 1) * 35 : 0,
-          take: 35,
-        }) : await ctx.prisma.bookmark.findMany({
-          where: {
-            folderId: input.folderId,
-            OR: [
-              {
-                title: {
-                  contains: input.search,
-                  mode: "insensitive",
-                },
+        const bookmarks = input.page
+          ? await ctx.prisma.bookmark.findMany({
+              where: {
+                folderId: input.folderId,
               },
-              {
-                url: {
-                  contains: input.search,
-                  mode: "insensitive",
-                },
+              orderBy: {
+                createdAt: "desc",
               },
-              {
-                description: {
-                  contains: input.search,
-                  mode: "insensitive",
-                },
-              }
-            ],
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-          select: {
-            id: true,
-            url: true,
-            title: true,
-            faviconUrl: true,
-            ogImageUrl: true,
-            createdAt: true,
-          },
-        });
+              select: {
+                id: true,
+                url: true,
+                title: true,
+                faviconUrl: true,
+                ogImageUrl: true,
+                createdAt: true,
+              },
+              skip: input.page ? (input.page - 1) * 35 : 0,
+              take: 35,
+            })
+          : await ctx.prisma.bookmark.findMany({
+              where: {
+                folderId: input.folderId,
+                OR: [
+                  {
+                    title: {
+                      contains: input.search,
+                      mode: "insensitive",
+                    },
+                  },
+                  {
+                    url: {
+                      contains: input.search,
+                      mode: "insensitive",
+                    },
+                  },
+                  {
+                    description: {
+                      contains: input.search,
+                      mode: "insensitive",
+                    },
+                  },
+                ],
+              },
+              orderBy: {
+                createdAt: "desc",
+              },
+              select: {
+                id: true,
+                url: true,
+                title: true,
+                faviconUrl: true,
+                ogImageUrl: true,
+                createdAt: true,
+              },
+            });
 
         const totalElements = await ctx.prisma.bookmark.count({
           where: {
@@ -155,6 +158,23 @@ export const bookmarksRouter = createTRPCRouter({
         },
         data: {
           folderId: input.folderId,
+        },
+      });
+    }),
+  rename: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.bookmark.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          title: input.title,
         },
       });
     }),

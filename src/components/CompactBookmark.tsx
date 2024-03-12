@@ -1,14 +1,13 @@
 import { type Bookmark } from "@prisma/client";
 import * as ContextMenu from "@radix-ui/react-context-menu";
-import {
-  Cross1Icon
-} from "@radix-ui/react-icons";
+import { Cross1Icon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { itemVariants } from "../helpers/animationVariants";
 import { ContextMenuContent } from "./ContextMenuContent";
 import { Spinner } from "./Spinner";
+import { api } from "~/utils/api";
 
 export const CompactBookmark = ({
   bookmark,
@@ -26,8 +25,46 @@ export const CompactBookmark = ({
   };
   onRemove?: (id: string) => void;
 }) => {
+  const utils = api.useUtils();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const [isHovering, setIsHovering] = useState("");
   const [faviconError, setFaviconError] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(bookmark.title);
+
+  const renameBookmark = api.bookmarks.rename.useMutation({
+    onMutate: () => {
+      setIsEditing(false);
+
+      return bookmark.title;
+    },
+    onError: async () => {
+      await utils.bookmarks.findByFolderId.refetch();
+    },
+  });
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isEditing && e.target === document.body) {
+        const inputElement = inputRef.current;
+        if (inputElement) {
+          inputElement.focus();
+          const { value } = inputElement;
+          inputElement.value = "";
+          inputElement.value = value;
+        }
+      }
+    };
+  
+    if (isEditing) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+  
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isEditing]);
 
   return (
     <ContextMenu.Root>
@@ -43,6 +80,8 @@ export const CompactBookmark = ({
           }}
           className="hover:cursor-pointer"
           onClick={() => {
+            if (isEditing) return;
+
             if (bookmark.onClick) {
               bookmark.onClick();
               return;
@@ -51,10 +90,7 @@ export const CompactBookmark = ({
             window.open(bookmark.url, "_blank");
           }}
         >
-          <motion.div
-            whileTap={{ scale: 0.98 }}
-            className="mb-1 flex rounded-2xl p-3 align-middle transition duration-200 ease-out hover:bg-black/5 hover:dark:bg-white/5"
-          >
+          <motion.div className="mb-1 flex rounded-2xl p-3 align-middle transition duration-200 ease-out hover:bg-black/5 hover:dark:bg-white/5">
             <div className="flex w-full items-center justify-between align-middle">
               <div className="flex flex-row items-center gap-3 align-middle">
                 {bookmark.loading ? (
@@ -87,14 +123,53 @@ export const CompactBookmark = ({
                     style={{ height: "1.9rem", width: "1.9rem" }}
                   />
                 )}
-                <motion.p
-                  animate={{ opacity: 1 }}
-                  initial={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className={`max-w-[13rem] truncate font-semibold text-black dark:text-white sm:max-w-[22rem] md:max-w-[22rem] lg:max-w-[24rem]`}
-                >
-                  {bookmark.title}
-                </motion.p>
+                {isEditing ? (
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+
+                      if (title.length === 0) {
+                        return;
+                      }
+
+                      renameBookmark.mutate({
+                        id: bookmark.id,
+                        title,
+                      });
+                    }}
+                    className="flex"
+                  >
+                    <motion.input
+                      autoFocus
+                      ref={inputRef}
+                      type="text"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                      value={title}
+                      onChange={(e) => {
+                          setTitle(e.target.value);
+                      }}
+                      onBlur={() => {
+                        setIsEditing(false);
+
+                        if (title.length === 0) {
+                          setTitle(bookmark.title);
+                        }
+                      }}
+                      className="bg-transparent font-semibold text-black dark:text-white focus:outline-none w-fit truncate"
+                      />
+                  </form>
+                ) : (
+                  <motion.p
+                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className={`max-w-[13rem] truncate font-semibold text-black dark:text-white sm:max-w-[22rem] md:max-w-[22rem] lg:max-w-[24rem]`}
+                  >
+                    {title}
+                  </motion.p>
+                )}
                 <p className="hidden truncate text-sm text-zinc-500 md:block md:max-w-[10rem] lg:max-w-[18rem]">
                   {bookmark.url}
                 </p>
@@ -124,7 +199,10 @@ export const CompactBookmark = ({
         </motion.li>
       </ContextMenu.Trigger>
       <ContextMenu.Portal>
-        <ContextMenuContent bookmark={bookmark as Bookmark} />
+        <ContextMenuContent
+          bookmark={bookmark as Bookmark}
+          setIsEditing={setIsEditing}
+        />
       </ContextMenu.Portal>
     </ContextMenu.Root>
   );
