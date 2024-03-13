@@ -70,7 +70,7 @@ export const DeleteFolderForm = () => {
   };
 
   return (
-    <motion.div className="flex flex-col gap-3 rounded-md bg-white/60 p-6 align-middle font-semibold text-black no-underline backdrop-blur-xl dark:bg-white/5 dark:text-white border-2 border-black/20 dark:border-white/10">
+    <motion.div className="flex flex-col gap-3 rounded-md border-2 border-black/20 bg-white/60 p-6 align-middle font-semibold text-black no-underline backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:text-white">
       <div className="flex flex-row items-center justify-between px-1 align-middle">
         <div className="flex flex-row items-center gap-2">
           <p className="text-lg font-semibold text-black dark:text-white">
@@ -79,22 +79,24 @@ export const DeleteFolderForm = () => {
           <Hotkey key1="x" />
         </div>
         <Dialog.Close asChild className=" cursor-pointer">
-          <Cross1Icon className="h-4 w-4 text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition duration-200" />
+          <div className="rounded-md p-1.5 text-zinc-500 transition duration-200 hover:bg-black/10 hover:text-zinc-600 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-zinc-300">
+            <Cross1Icon className="h-4 w-4"/>
+          </div>
         </Dialog.Close>
       </div>
       <Separator />
-      <p className="px-1 mt-1 text-sm font-normal text-zinc-500">
+      <p className="mt-1 px-1 text-sm font-normal text-zinc-500">
         Are you sure? All{" "}
         <b className="text-black dark:text-white">{totalBookmarks}</b> bookmarks
         in this folder will be deleted...
       </p>
-      <div className="flex w-full gap-2 mt-4">
+      <div className="mt-4 flex w-full gap-2">
         <motion.button
           whileTap={{
             scale: 0.95,
           }}
           type="button"
-          className="w-full rounded-md bg-black/10 px-4 py-2 align-middle text-md font-semibold no-underline transition duration-200 hover:cursor-pointer hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 outline-none focus:outline-none"
+          className="text-md w-full rounded-md bg-black/10 px-4 py-2 align-middle font-semibold no-underline outline-none transition duration-200 hover:cursor-pointer hover:bg-black/20 focus:outline-none dark:bg-white/10 dark:hover:bg-white/20"
           onClick={() => {
             setIsDeleteFolderModalOpen(false);
           }}
@@ -106,7 +108,7 @@ export const DeleteFolderForm = () => {
             scale: 0.95,
           }}
           type="button"
-          className="w-full rounded-md bg-red-500 px-4 py-2 align-middle text-md font-normal no-underline transition duration-200 hover:cursor-pointer hover:bg-red-600"
+          className="text-md w-full rounded-md bg-red-500 px-4 py-2 align-middle font-normal no-underline transition duration-200 hover:cursor-pointer hover:bg-red-600"
           onClick={() => {
             setIsDeleteFolderModalOpen(false);
             void handleDelete();
