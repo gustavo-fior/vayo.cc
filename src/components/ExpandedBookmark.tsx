@@ -165,7 +165,9 @@ export const ExpandedBookmark = ({
         </AnimatePresence>
       </ContextMenu.Trigger>
       <ContextMenu.Portal>
-        <ContextMenuContent bookmark={bookmark as Bookmark} />
+        <ContextMenuContent bookmark={bookmark as Bookmark} setIsEditing={() => {
+          return;
+        }} />
       </ContextMenu.Portal>
     </ContextMenu.Root>
   );

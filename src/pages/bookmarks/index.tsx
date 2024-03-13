@@ -261,27 +261,10 @@ export default function Bookmarks() {
     [deleteBookmark]
   );
 
-  // log every change to current page
-  useEffect(() => {
-    console.log("currentPage", currentPage);
-  }, [currentPage]);
-
-  useEffect(() => {
-    console.log("isFetching", fetchBookmarks.isFetching);
-  }, [fetchBookmarks.isFetching]);
-
-  useEffect(() => {
-    console.log("bookmarks?.length !== totalBookmarks", bookmarks?.length !== totalBookmarks);
-  }, [bookmarks?.length, totalBookmarks]);
-
-  // update page when scroll to bottom
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
         if (bookmarks?.length !== totalBookmarks && !fetchBookmarks.isFetching) {
-          console.log("length", bookmarks?.length);
-          console.log("totalBookmarks", totalBookmarks);
-
           setCurrentPage((prevPage) => prevPage + 1);
         }
       }
