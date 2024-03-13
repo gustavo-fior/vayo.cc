@@ -102,7 +102,9 @@ export const CreateFolderForm = () => {
           <Hotkey key1="n" />
         </div>
         <Dialog.Close asChild className="cursor-pointer">
-          <Cross1Icon className="h-4 w-4 text-zinc-500 transition duration-200 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300" />
+          <div className="rounded-md p-1.5 text-zinc-500 transition duration-200 hover:bg-black/10 hover:text-zinc-600 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-zinc-300">
+            <Cross1Icon className="h-4 w-4 " />
+          </div>
         </Dialog.Close>
       </div>
       <Separator />
