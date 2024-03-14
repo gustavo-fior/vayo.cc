@@ -175,7 +175,7 @@ export const Header = ({
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-lg border border-black/10 bg-black/5 p-1 align-middle text-black no-underline backdrop-blur-lg dark:border-white/10 dark:bg-white/5 dark:text-white"
+              className="rounded-lg border text-sm border-black/10 bg-black/5 p-1 align-middle text-black no-underline backdrop-blur-lg dark:border-white/10 dark:bg-white/5 dark:text-white"
             >
               <Select.Viewport className="flex flex-col">
                 {folders?.map((folder, index) => (
@@ -216,12 +216,12 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                  <motion.div className="z-[999] mt-1 cursor-pointer rounded-md pr-3 pl-[0.57rem] py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
+                  <motion.div className="z-[999] mt-1 cursor-pointer rounded-md pr-3 pl-[0.59rem] py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
                       <div
                         onClick={() => setIsNewFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
                       >
-                        <div className="flex items-center">
+                        <div className="flex items-center font-medium">
                           <PlusIcon className="ml-0.5 h-4 w-4" />
                           <span className="ml-2.5">New folder</span>
                         </div>
@@ -247,12 +247,12 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                  <motion.div className="z-[999] mt-1 cursor-pointer rounded-md pr-3 pl-[0.57rem] py-2 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
+                  <motion.div className="z-[999] mt-1 cursor-pointer rounded-md pr-3 pl-[0.59rem] py-2 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
                       <div
                         onClick={() => setIsDeleteFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
                       >
-                        <div className="flex items-center ">
+                        <div className="flex items-center font-medium">
                           <Cross2Icon className="ml-0.5 h-4 w-4 text-red-500" />
                           <span className="ml-2.5 text-red-500">Delete</span>
                         </div>
