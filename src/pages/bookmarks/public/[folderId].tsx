@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -130,9 +130,8 @@ export default function Bookmarks() {
       <main className="flex min-h-screen w-full flex-col items-center bg-[#e0e0e0] dark:bg-[#111111]">
         <ScrollToTopButton />
 
-        <div className="w-[20rem] py-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-          <AnimatePresence mode="wait">
-            <div className="flex flex-col items-center justify-between gap-8 px-2 align-middle font-semibold text-black dark:text-white md:flex-row md:gap-0">
+        <div className="w-[20rem] pt-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
+            <div className="flex flex-col items-center justify-between gap-8 px-4 align-middle font-semibold text-black dark:text-white md:flex-row md:gap-0">
               {folder?.isLoading ? (
                 <motion.div
                   key="folderNameLoading"
@@ -152,7 +151,7 @@ export default function Bookmarks() {
                 >
                   {folder?.data?.isShared ? (
                     <div className="flex items-center gap-3 align-middle">
-                      <p className="text-3xl">{folder?.data?.icon}</p>
+                      <p className="text-3xl mb-1">{folder?.data?.icon}</p>
                       <p className="text-3xl">{folder?.data?.name}</p>
                     </div>
                   ) : (
@@ -195,9 +194,8 @@ export default function Bookmarks() {
                 </div>
               )}
             </div>
-          </AnimatePresence>
 
-          <div className={`mx-2 mt-6`}>
+          <div className={`mx-3 mt-4`}>
             <Separator />
           </div>
 

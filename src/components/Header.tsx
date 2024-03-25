@@ -149,7 +149,7 @@ export const Header = ({
               exit={{ opacity: 0 }}
               className="flex items-center gap-3 align-middle"
             >
-              <div className="mb-0.5">{currentFolder?.icon}</div>
+              <div>{currentFolder?.icon}</div>
               <span className="font-medium">{currentFolder?.name}</span>
             </motion.div>
           </Select.Value>
@@ -175,7 +175,7 @@ export const Header = ({
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-lg border text-sm border-black/10 bg-black/5 p-1 align-middle text-black no-underline backdrop-blur-lg dark:border-white/10 dark:bg-white/5 dark:text-white"
+              className="rounded-lg border border-black/10 bg-black/5 p-1 align-middle text-sm text-black no-underline backdrop-blur-lg dark:border-white/10 dark:bg-white/5 dark:text-white"
             >
               <Select.Viewport className="flex flex-col">
                 {folders?.map((folder, index) => (
@@ -190,11 +190,9 @@ export const Header = ({
                   >
                     <Select.ItemText>
                       <motion.div className="flex items-center justify-between gap-4">
-                        <motion.div className="flex items-center gap-2 align-middle">
-                          <div className="mb-0.5">{folder?.icon}</div>
-                          <span className="font-medium">
-                            {folder?.name}
-                          </span>
+                        <motion.div className="flex items-center gap-2.5 align-middle">
+                          <div className="">{folder?.icon}</div>
+                          <span className="font-medium">{folder?.name}</span>
                         </motion.div>
                         {folder.id === currentFolder?.id ? (
                           <CheckIcon className="mr-0.5 h-4 w-4" />
@@ -205,7 +203,10 @@ export const Header = ({
                     </Select.ItemText>
                   </Select.Item>
                 ))}
+
+                <div className="mx-1">
                   <Separator />
+                </div>
 
                 {/*CREATE FOLDER MODAL*/}
                 <Dialog.Root
@@ -216,13 +217,13 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                  <motion.div className="z-[999] mt-1 cursor-pointer rounded-md pr-3 pl-[0.59rem] py-2 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
+                    <motion.div className="z-[999] mt-1 cursor-pointer rounded-md py-2 pl-[0.59rem] pr-3 align-middle outline-none transition hover:bg-black/20 dark:hover:bg-white/20">
                       <div
                         onClick={() => setIsNewFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
                       >
                         <div className="flex items-center font-medium">
-                          <PlusIcon className="ml-0.5 h-4 w-4" />
+                          <PlusIcon className="ml-[0.1rem] h-4 w-4" />
                           <span className="ml-2.5">New folder</span>
                         </div>
                         <Hotkey key1="n" />
@@ -230,10 +231,10 @@ export const Header = ({
                     </motion.div>
                   </Dialog.Trigger>
                   <Dialog.Portal>
-                    <motion.div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-md data-[state=open]:animate-overlayShow" >
-                    <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] md:w-[30vw] lg:w-[25vw] sm:w-[50vw] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
-                      <CreateFolderForm />
-                    </Dialog.Content>
+                    <motion.div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-md data-[state=open]:animate-overlayShow">
+                      <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow sm:w-[50vw] md:w-[30vw] lg:w-[25vw]">
+                        <CreateFolderForm />
+                      </Dialog.Content>
                     </motion.div>
                   </Dialog.Portal>
                 </Dialog.Root>
@@ -247,13 +248,13 @@ export const Header = ({
                   }}
                 >
                   <Dialog.Trigger asChild>
-                  <motion.div className="z-[999] mt-1 cursor-pointer rounded-md pr-3 pl-[0.59rem] py-2 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
+                    <motion.div className="z-[999] mt-1 cursor-pointer rounded-md py-2 pl-[0.59rem] pr-3 align-middle outline-none transition hover:bg-red-500/20 dark:hover:bg-red-500/20">
                       <div
                         onClick={() => setIsDeleteFolderModalOpen(true)}
                         className="flex items-center justify-between gap-5"
                       >
                         <div className="flex items-center font-medium">
-                          <Cross2Icon className="ml-0.5 h-4 w-4 text-red-500" />
+                          <Cross2Icon className="ml-[0.1rem] h-4 w-4 text-red-500" />
                           <span className="ml-2.5 text-red-500">Delete</span>
                         </div>
                         <Hotkey red key1="x" />
@@ -262,7 +263,7 @@ export const Header = ({
                   </Dialog.Trigger>
                   <Dialog.Portal>
                     <Dialog.Overlay className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-md data-[state=open]:animate-overlayShow" />
-                    <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] md:w-[30vw] lg:w-[25vw] sm:w-[50vw] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
+                    <Dialog.Content className="fixed left-[50%] top-[50%] z-[10000] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow sm:w-[50vw] md:w-[30vw] lg:w-[25vw]">
                       <DeleteFolderForm />
                     </Dialog.Content>
                   </Dialog.Portal>

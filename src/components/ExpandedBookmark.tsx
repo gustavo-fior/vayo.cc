@@ -95,6 +95,8 @@ export const ExpandedBookmark = ({
                   animate={{ opacity: 1 }}
                   initial={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
+                  className="hidden md:block"
+
                 >
                   <Image
                     priority
@@ -102,7 +104,7 @@ export const ExpandedBookmark = ({
                     alt={bookmark.title}
                     width={320}
                     height={180}
-                    className="hidden rounded-md md:block"
+                    className="rounded-md"
                     style={{
                       height: "4rem",
                       width: "12rem",

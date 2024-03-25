@@ -185,7 +185,7 @@ export const CompactBookmark = ({
                 </motion.p>
               )}
               {!isEditing && (
-                <p className="hidden truncate text-sm text-zinc-500 md:block md:max-w-[10rem] lg:max-w-[18rem]">
+                <p className="hidden truncate text-sm text-zinc-500 sm:block sm:max-w-[10rem] md:max-w-[10rem] lg:max-w-[18rem]">
                   {bookmark.url}
                 </p>
               )}
