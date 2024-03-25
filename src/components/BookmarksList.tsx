@@ -7,6 +7,7 @@ export const BookmarksList = ({
   showMonths,
   viewStyle,
   handleDeleteBookmark,
+  isPrivatePage,
 }: {
   bookmarks: {
     createdAt: Date;
@@ -21,6 +22,7 @@ export const BookmarksList = ({
   showMonths: boolean;
   viewStyle: "expanded" | "compact";
   handleDeleteBookmark?: (id: string) => void;
+  isPrivatePage: boolean;
 }) => {
   let groupedBookmarks: Record<
     string,
@@ -66,31 +68,16 @@ export const BookmarksList = ({
       <>
         {Object.keys(groupedBookmarks).map((month) => (
           <motion.div key={month}>
-            <motion.div>
-              {viewStyle === "compact" ? (
-                <motion.h3
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                  className="pb-2 pl-2 pt-4 text-2xl font-bold text-black dark:text-white"
-                >
-                  {month}
-                </motion.h3>
-              ) : (
-                <motion.h2
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                  className="pb-2 pl-2 pt-4 text-2xl font-bold text-black dark:text-white"
-                >
-                  {month}
-                </motion.h2>
-              )}
-            </motion.div>
+            <motion.h3
+              initial={{
+                opacity: 0,
+              }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.1 }}
+              className="pb-2 pl-3 pt-4 text-2xl font-bold text-black dark:text-white"
+            >
+              {month}
+            </motion.h3>
             {groupedBookmarks[month]?.map((bookmark) => (
               <motion.div
                 key={bookmark.id}
@@ -100,17 +87,19 @@ export const BookmarksList = ({
                   y: bookmark.id === "temp" ? -10 : 0,
                 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.1 }}
               >
                 {viewStyle === "compact" ? (
                   <CompactBookmark
                     onRemove={handleDeleteBookmark}
                     bookmark={bookmark}
+                    isPrivatePage={isPrivatePage}
                   />
                 ) : (
                   <ExpandedBookmark
                     onRemove={handleDeleteBookmark}
                     bookmark={bookmark}
+                    isPrivatePage={isPrivatePage}
                   />
                 )}
               </motion.div>
@@ -136,11 +125,13 @@ export const BookmarksList = ({
             <CompactBookmark
               onRemove={handleDeleteBookmark}
               bookmark={bookmark}
+              isPrivatePage={isPrivatePage}
             />
           ) : (
             <ExpandedBookmark
               onRemove={handleDeleteBookmark}
               bookmark={bookmark}
+              isPrivatePage={isPrivatePage}
             />
           )}
         </motion.div>

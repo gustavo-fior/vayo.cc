@@ -18,7 +18,6 @@ import {
   currentFolderAtom,
   currentPageAtom,
   foldersAtom,
-  isOpenAtom,
   showMonthsAtom,
   totalBookmarksAtom,
   viewStyleAtom,
@@ -30,12 +29,9 @@ import { isValidURL } from "~/helpers/isValidURL";
 import { useDebounce } from "~/hooks/useDebounce";
 import { api } from "~/utils/api";
 
-
 export default function Bookmarks() {
   const session = useSession();
   const utils = api.useUtils();
-
-  const [isOpen, setIsOpen] = useAtom(isOpenAtom);
 
   const [inputUrl, setInputUrl] = useState("");
   const [isDuplicate, setIsDuplicate] = useState(false);
@@ -108,10 +104,6 @@ export default function Bookmarks() {
             });
 
             setTotalBookmarks(data.totalElements);
-
-            setTimeout(() => {
-              setIsOpen(true);
-            }, 10);
 
             return prevBookmarks
               ? [...prevBookmarks, ...newBookmarks]
@@ -208,21 +200,6 @@ export default function Bookmarks() {
         setBookmarks(listWithoutDeletedBookmark);
         setTotalBookmarks((prevTotal) => (prevTotal ? prevTotal - 1 : 0));
       }
-
-      // didn't like it
-      //
-      // toast("Bookmark deleted", {
-      //   position: "top-center",
-      //   duration: 1500,
-      //   style: {
-      //     borderRadius: "16px",
-      //     color: resolvedTheme === "dark" ? "white" : "black",
-      //     border: resolvedTheme === "dark" ? "1px solid #262626" : "1px solid #a3a3a3",
-      //     backgroundColor: resolvedTheme === "dark" ? "#171717" : "#d4d4d4",
-      //     fontFamily: "Inter",
-      //     fontWeight: "500",
-      //   },
-      // });
     },
     onError: (context) => {
       const previousBookmarks =
@@ -264,7 +241,10 @@ export default function Bookmarks() {
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        if (bookmarks?.length !== totalBookmarks && !fetchBookmarks.isFetching) {
+        if (
+          bookmarks?.length !== totalBookmarks &&
+          !fetchBookmarks.isFetching
+        ) {
           setCurrentPage((prevPage) => prevPage + 1);
         }
       }
@@ -275,7 +255,7 @@ export default function Bookmarks() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookmarks?.length, totalBookmarks, fetchBookmarks.isFetching]);
 
   // focus on input when ctrl/cmd + f
@@ -419,47 +399,42 @@ export default function Bookmarks() {
               )}
             </motion.form>
 
-            <div className={`mx-2 mt-6`}>
+            <div className={`mx-3 mt-6`}>
               <Separator />
             </div>
 
-            <motion.div
-              initial={false}
-              animate={isOpen ? "open" : "closed"}
-              className="flex flex-col gap-8"
-            >
-              <motion.ul className={`flex flex-col`}>
-                {!bookmarks && fetchBookmarks.isFetching && (
-                  <SkeletonList viewStyle={viewStyle} />
-                )}
+            <motion.ul>
+              {!bookmarks && fetchBookmarks.isFetching && (
+                <SkeletonList viewStyle={viewStyle} />
+              )}
 
-                {bookmarks && bookmarks?.length > 0 && (
-                  <BookmarksList
-                    showMonths={showMonths}
-                    viewStyle={viewStyle}
-                    bookmarks={filteredBookmarks ?? bookmarks}
-                    handleDeleteBookmark={handleDeleteBookmark}
-                  />
-                )}
+              {bookmarks && bookmarks?.length > 0 && (
+                <BookmarksList
+                  showMonths={showMonths}
+                  viewStyle={viewStyle}
+                  bookmarks={filteredBookmarks ?? bookmarks}
+                  handleDeleteBookmark={handleDeleteBookmark}
+                  isPrivatePage
+                />
+              )}
 
-                {(!folders || folders.length === 0) &&
-                  fetchFolders.isFetched &&
-                  !fetchFolders.isFetching && <CreateFirstFolder />}
+              {(!folders || folders.length === 0) &&
+                fetchFolders.isFetched &&
+                !fetchFolders.isFetching && <CreateFirstFolder />}
 
-                {totalBookmarks === 0 &&
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                  ((bookmarks && bookmarks.length === 0) ||
-                    (filteredBookmarks && filteredBookmarks.length === 0)) &&
-                  fetchBookmarks.isFetched &&
-                  fetchFolders.isFetched &&
-                  !isDuplicate &&
-                  folders &&
-                  folders?.length > 0 &&
-                  (!fetchBookmarsWithSearch.isFetching ||
-                    inputUrl.length === 0) &&
-                  !addBookmark.isLoading && <EmptyState />}
-              </motion.ul>
-            </motion.div>
+              {totalBookmarks === 0 &&
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                ((bookmarks && bookmarks.length === 0) ||
+                  (filteredBookmarks && filteredBookmarks.length === 0)) &&
+                fetchBookmarks.isFetched &&
+                fetchFolders.isFetched &&
+                !isDuplicate &&
+                folders &&
+                folders?.length > 0 &&
+                (!fetchBookmarsWithSearch.isFetching ||
+                  inputUrl.length === 0) &&
+                !addBookmark.isLoading && <EmptyState />}
+            </motion.ul>
             <div className="flex justify-center pt-10 align-middle">
               {fetchBookmarks.isFetching &&
                 bookmarks &&

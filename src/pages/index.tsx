@@ -127,6 +127,7 @@ export default function Home() {
                 showMonths={false}
                 viewStyle="compact"
                 bookmarks={bookmarks}
+                isPrivatePage={false}
               />
             </motion.ul>
           </motion.div>

@@ -1,5 +1,4 @@
-import { AnimatePresence } from "framer-motion";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -10,7 +9,6 @@ import { RectangleSkeleton } from "~/components/RectangleSkeleton";
 import { ScrollToTopButton } from "~/components/ScrollToTopButton";
 import { Separator } from "~/components/Separator";
 import { ShareLinkButton } from "~/components/ShareLinkButton";
-import { ShowMonthsButton } from "~/components/ShowMonthsButton";
 import { SkeletonList } from "~/components/SkeletonList";
 import { Spinner } from "~/components/Spinner";
 import { ThemeButton } from "~/components/ThemeButton";
@@ -32,7 +30,6 @@ export default function Bookmarks() {
   const { folderId } = router.query;
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const [showMonths, setShowMonths] = useState(true);
   const [bookmarks, setBookmarks] = useState<SmallBookmark[] | null>(null);
   const [viewStyle, setViewStyle] = useState<"expanded" | "compact">("compact");
   const [currentPage, setCurrentPage] = useState(1);
@@ -91,16 +88,6 @@ export default function Bookmarks() {
 
   const handleChangeTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
-  };
-
-  const handleShowMonths = () => {
-    setIsOpen(false);
-
-    setTimeout(() => {
-      setIsOpen(true);
-    }, 10);
-
-    setShowMonths(!showMonths);
   };
 
   // update page when scroll to bottom
@@ -198,17 +185,6 @@ export default function Bookmarks() {
                     />
                   </motion.div>
                   <motion.div
-                    key="showMonthsButtonLoaded"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <ShowMonthsButton
-                      showMonths={showMonths}
-                      handleShowMonths={handleShowMonths}
-                    />
-                  </motion.div>
-                  <motion.div
                     key="shareLinkButtonLoaded"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -230,12 +206,13 @@ export default function Bookmarks() {
           )}
           {folder?.data?.isShared && (
             <motion.div initial={false} animate={isOpen ? "open" : "closed"}>
-              <motion.ul className={`flex flex-col`}>
+              <motion.ul>
                 {bookmarks && bookmarks.length > 0 && (
                   <BookmarksList
                     bookmarks={bookmarks}
-                    showMonths={showMonths}
+                    showMonths={false}
                     viewStyle={viewStyle}
+                    isPrivatePage={false}
                   />
                 )}
                 {bookmarks &&

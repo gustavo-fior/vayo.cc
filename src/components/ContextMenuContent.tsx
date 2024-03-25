@@ -18,9 +18,11 @@ import { api } from "~/utils/api";
 export const ContextMenuContent = ({
   bookmark,
   setIsEditing,
+  isPrivatePage,
 }: {
   bookmark: Bookmark;
   setIsEditing: (value: boolean) => void;
+  isPrivatePage: boolean;
 }) => {
   const utils = api.useUtils();
   const [folders] = useAtom(foldersAtom);
@@ -82,19 +84,21 @@ export const ContextMenuContent = ({
           <p>Copy link</p>
         </div>
       </ContextMenu.Item>
-      <ContextMenu.Item
-        className="rounded-md px-3 py-2 text-black outline-none transition duration-200 ease-in-out hover:cursor-pointer hover:bg-black/20 focus:outline-none dark:text-white  dark:hover:bg-white/20"
-        onClick={() => {
-          setIsEditing(true);
-        }}
-      >
-        <div className="flex items-center gap-3 align-middle">
-          <Pencil1Icon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
-          <p>Rename</p>
-        </div>
-      </ContextMenu.Item>
+      {isPrivatePage && (
+        <ContextMenu.Item
+          className="rounded-md px-3 py-2 text-black outline-none transition duration-200 ease-in-out hover:cursor-pointer hover:bg-black/20 focus:outline-none dark:text-white  dark:hover:bg-white/20"
+          onClick={() => {
+            setIsEditing(true);
+          }}
+        >
+          <div className="flex items-center gap-3 align-middle">
+            <Pencil1Icon className="h-4 w-4 text-gray-800 dark:text-gray-400" />
+            <p>Rename</p>
+          </div>
+        </ContextMenu.Item>
+      )}
 
-      {otherFolders && otherFolders.length > 0 && (
+      {otherFolders && otherFolders.length > 0 && isPrivatePage && (
         <ContextMenu.Sub>
           <ContextMenu.SubTrigger className="flex items-center gap-3 rounded-md px-3 py-2 align-middle text-black outline-none transition duration-200 ease-in-out hover:cursor-pointer hover:bg-black/20 focus:outline-none dark:text-white dark:hover:bg-white/20">
             <DoubleArrowRightIcon className="h-4 w-4 text-gray-800 dark:text-gray-400" />

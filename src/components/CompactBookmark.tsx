@@ -4,14 +4,15 @@ import { Cross1Icon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { api } from "~/utils/api";
 import { itemVariants } from "../helpers/animationVariants";
 import { ContextMenuContent } from "./ContextMenuContent";
 import { Spinner } from "./Spinner";
-import { api } from "~/utils/api";
 
 export const CompactBookmark = ({
   bookmark,
   onRemove,
+  isPrivatePage,
 }: {
   bookmark: {
     createdAt: Date;
@@ -24,6 +25,7 @@ export const CompactBookmark = ({
     onClick?: () => void;
   };
   onRemove?: (id: string) => void;
+  isPrivatePage: boolean;
 }) => {
   const utils = api.useUtils();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -45,25 +47,16 @@ export const CompactBookmark = ({
   });
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isEditing && e.target === document.body) {
-        const inputElement = inputRef.current;
-        if (inputElement) {
-          inputElement.focus();
-          const { value } = inputElement;
-          inputElement.value = "";
-          inputElement.value = value;
-        }
-      }
-    };
-  
+    console.log("isEditing changed to", isEditing);
+
     if (isEditing) {
-      document.addEventListener("keydown", handleKeyDown);
+      const inputElement = inputRef.current;
+      if (inputElement) {
+        setTimeout(() => {
+          inputElement.focus();
+        }, 0);
+      }
     }
-  
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
   }, [isEditing]);
 
   return (
@@ -90,111 +83,132 @@ export const CompactBookmark = ({
             window.open(bookmark.url, "_blank");
           }}
         >
-          <motion.div className="mb-1 flex rounded-2xl p-3 align-middle transition duration-200 ease-out hover:bg-black/5 hover:dark:bg-white/5">
-            <div className="flex w-full items-center justify-between align-middle">
-              <div className="flex flex-row items-center gap-3 align-middle">
-                {bookmark.loading ? (
-                  <motion.div className="flex min-h-[1.9rem] min-w-[1.9rem] items-center justify-center rounded-lg bg-black/10 p-2 dark:bg-white/10">
-                    <Spinner size="sm" />
-                  </motion.div>
-                ) : bookmark.faviconUrl ? (
-                  <motion.div className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10">
-                    <Image
-                      src={
-                        faviconError ? "/images/logo.png" : bookmark.faviconUrl
-                      }
-                      alt={bookmark.title}
-                      width={12}
-                      height={12}
-                      sizes="24px"
-                      style={{
-                        height: "0.9rem",
-                        width: "0.9rem",
-                        borderRadius: "0.2rem",
-                      }}
-                      onError={() => {
-                        setFaviconError(true);
-                      }}
-                    />
-                  </motion.div>
-                ) : (
-                  <div
-                    className="rounded-lg bg-gradient-to-br from-[#d2d1d1] to-[#dad7d7] dark:from-[#1a1a1a] dark:to-[#2d2c2c]"
-                    style={{ height: "1.9rem", width: "1.9rem" }}
-                  />
-                )}
-                {isEditing ? (
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-
-                      if (title.length === 0) {
-                        return;
-                      }
-
-                      renameBookmark.mutate({
-                        id: bookmark.id,
-                        title,
-                      });
+          <motion.div className="flex items-center justify-between rounded-2xl p-3 align-middle transition duration-200 ease-out hover:bg-black/5 hover:dark:bg-white/5">
+            <div className="flex w-full flex-row items-center gap-3 align-middle">
+              {bookmark.loading ? (
+                <motion.div className="flex min-h-[1.9rem] min-w-[1.9rem] items-center justify-center rounded-lg bg-black/10 p-2 dark:bg-white/10">
+                  <Spinner size="sm" />
+                </motion.div>
+              ) : bookmark.faviconUrl ? (
+                <motion.div
+                  className="min-h-[1.9rem] min-w-[1.9rem] rounded-lg bg-black/10 p-2 dark:bg-white/10"
+                  initial={{ opacity: 0 }}
+                  transition={{ duration: 0.1 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <Image
+                    src={
+                      faviconError ? "/images/logo.png" : bookmark.faviconUrl
+                    }
+                    alt={bookmark.title}
+                    width={12}
+                    height={12}
+                    sizes="24px"
+                    style={{
+                      height: "0.9rem",
+                      width: "0.9rem",
+                      borderRadius: "0.2rem",
                     }}
-                    className="flex"
+                    onError={() => {
+                      setFaviconError(true);
+                    }}
+                  />
+                </motion.div>
+              ) : (
+                <div
+                  className="rounded-lg bg-gradient-to-br from-[#d2d1d1] to-[#dad7d7] dark:from-[#1a1a1a] dark:to-[#2d2c2c]"
+                  style={{ height: "1.9rem", width: "1.9rem" }}
+                >
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    transition={{ duration: 0.1 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex h-full w-full items-center justify-center text-xs font-semibold text-black dark:text-white"
                   >
-                    <motion.input
-                      autoFocus
-                      ref={inputRef}
-                      type="text"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                      value={title}
-                      onChange={(e) => {
-                          setTitle(e.target.value);
-                      }}
-                      onBlur={() => {
-                        setIsEditing(false);
+                    {bookmark.title.charAt(0).toUpperCase()}
+                  </motion.p>
+                </div>
+              )}
+              {isEditing ? (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+
+                    if (title.length === 0) {
+                      return;
+                    }
+
+                    renameBookmark.mutate({
+                      id: bookmark.id,
+                      title,
+                    });
+                  }}
+                  className="w-full"
+                >
+                  <motion.input
+                    type="text"
+                    ref={inputRef}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                    value={title}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                    }}
+                    onBlur={() => {
+                      setIsEditing(false);
 
                         if (title.length === 0) {
                           setTitle(bookmark.title);
+
+                          return;
                         }
-                      }}
-                      className="bg-transparent font-semibold text-black dark:text-white focus:outline-none w-fit truncate"
-                      />
-                  </form>
-                ) : (
-                  <motion.p
-                    animate={{ opacity: 1 }}
-                    initial={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className={`max-w-[13rem] truncate font-semibold text-black dark:text-white sm:max-w-[22rem] md:max-w-[22rem] lg:max-w-[24rem]`}
-                  >
-                    {title}
-                  </motion.p>
-                )}
+
+                        renameBookmark.mutate({
+                          id: bookmark.id,
+                          title,
+                        });
+                    }}
+                    className="w-full bg-transparent font-semibold text-black focus:outline-none dark:text-white"
+                  />
+                </form>
+              ) : (
+                <motion.p
+                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className={`max-w-[13rem] truncate font-semibold text-black dark:text-white sm:max-w-[22rem] md:max-w-[22rem] lg:max-w-[24rem]`}
+                >
+                  {title}
+                </motion.p>
+              )}
+              {!isEditing && (
                 <p className="hidden truncate text-sm text-zinc-500 md:block md:max-w-[10rem] lg:max-w-[18rem]">
                   {bookmark.url}
                 </p>
-              </div>
+              )}
             </div>
-            {onRemove && bookmark.id !== "temp" && (
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                initial={{ opacity: 0 }}
-                transition={{ duration: 0.1 }}
-                animate={
-                  isHovering
-                    ? { opacity: 1, transition: { delay: 0.2 } }
-                    : { opacity: 0 }
-                }
-                exit={{ opacity: 0 }}
-                className="z-50 pr-2 font-bold text-zinc-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRemove ? onRemove(bookmark.id) : null;
-                }}
-              >
-                <Cross1Icon className="h-4 w-4" />
-              </motion.button>
-            )}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              initial={{ opacity: 0 }}
+              transition={{ duration: 0.1 }}
+              animate={{
+                opacity:
+                  isHovering && onRemove && bookmark.id !== "temp" && !isEditing
+                    ? 1
+                    : 0,
+              }}
+              exit={{ opacity: 0 }}
+              className="z-50 pr-2 font-bold text-zinc-500 duration-300 ease-in-out hover:text-black dark:hover:text-white"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove ? onRemove(bookmark.id) : null;
+              }}
+            >
+              <Cross1Icon className="h-4 w-4" />
+            </motion.button>
           </motion.div>
         </motion.li>
       </ContextMenu.Trigger>
@@ -202,6 +216,7 @@ export const CompactBookmark = ({
         <ContextMenuContent
           bookmark={bookmark as Bookmark}
           setIsEditing={setIsEditing}
+          isPrivatePage={isPrivatePage}
         />
       </ContextMenu.Portal>
     </ContextMenu.Root>
