@@ -14,3 +14,8 @@
 - [ ] buy new domain
 - [ ] create new logo
 - [ ] make it navigable with keyboard
+
+### Bugs
+- [ ] new folder modal margin top
+- [ ] fix folder name when it has no icon
+- [ ] when deleting a folder, the bookmarks of the redirect one are shown in every other folder
