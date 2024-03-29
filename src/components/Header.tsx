@@ -147,9 +147,9 @@ export const Header = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-3 align-middle"
+              className="flex items-center gap-2 align-middle"
             >
-              <div>{currentFolder?.icon}</div>
+              {currentFolder?.icon && <div>{currentFolder?.icon}</div>}
               <span className="font-medium">{currentFolder?.name}</span>
             </motion.div>
           </Select.Value>
@@ -191,7 +191,9 @@ export const Header = ({
                     <Select.ItemText>
                       <motion.div className="flex items-center justify-between gap-4">
                         <motion.div className="flex items-center gap-2.5 align-middle">
-                          <div className="">{folder?.icon}</div>
+                          {folder?.icon && (
+                            <div className="">{folder?.icon}</div>
+                          )}
                           <span className="font-medium">{folder?.name}</span>
                         </motion.div>
                         {folder.id === currentFolder?.id ? (

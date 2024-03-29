@@ -88,7 +88,7 @@ export const CreateFirstFolder = () => {
 
   return (
     <AnimatePresence>
-      <div className="flex w-full flex-row items-center justify-center align-middle">
+      <div className="flex w-full flex-row items-center justify-center align-middle mt-12">
         <motion.form
           className="mt-6 flex w-72 flex-col gap-3 rounded-md border border-black/20 bg-white/50 p-6 align-middle font-semibold text-black no-underline backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:text-white md:w-96"
           initial={{ opacity: 0 }}
