@@ -387,7 +387,7 @@ export default function Bookmarks() {
               />
               {(addBookmark.isLoading ||
                 !currentFolder ||
-                fetchBookmarsWithSearch.isFetching) && (
+                fetchBookmarsWithSearch.isFetching) && folders && folders?.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 0.5, transition: { delay: 1 } }}

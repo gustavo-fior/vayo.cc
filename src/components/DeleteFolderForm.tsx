@@ -1,13 +1,13 @@
-import { Cross1Icon } from "@radix-ui/react-icons";
 import * as Dialog from "@radix-ui/react-dialog";
+import { Cross1Icon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import {
   currentFolderAtom,
   foldersAtom,
-  totalBookmarksAtom,
   isDeleteFolderModalOpenAtom,
+  totalBookmarksAtom,
 } from "~/helpers/atoms";
 import { api } from "~/utils/api";
 import { Hotkey } from "./Hotkey";
@@ -42,7 +42,7 @@ export const DeleteFolderForm = () => {
     },
   });
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     const otherFolder = folders?.find(
       (folder) => folder.id !== currentFolder?.id
     );
@@ -53,14 +53,6 @@ export const DeleteFolderForm = () => {
     });
 
     setCurrentFolder(otherFolder ?? null);
-
-    if (otherFolder) {
-      localStorage.setItem("currentFolderId", otherFolder.id);
-
-      await utils.bookmarks.findByFolderId.refetch({
-        folderId: otherFolder?.id,
-      });
-    }
 
     deleteFolder({
       id: String(currentFolder?.id),

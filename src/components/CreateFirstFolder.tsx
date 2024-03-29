@@ -133,30 +133,40 @@ export const CreateFirstFolder = () => {
                     />
                   </Popover.Trigger>
                   <Popover.Portal>
-                    <Popover.Content
-                      sideOffset={35}
-                      side="left"
-                      align="end"
-                      className="z-[10001] mt-2 h-[10rem] w-[300px] rounded-md font-semibold text-white no-underline outline-none focus:outline-none"
-                    >
-                      <Picker
-                        theme={theme === "dark" ? "dark" : "light"}
-                        onEmojiSelect={(emojiData: {
-                          native: SetStateAction<string>;
-                        }) => {
-                          setIcon(emojiData.native);
-                          setEmojiPickerOpen(false);
-                        }}
-                        navPosition="none"
-                        skinTonePosition="none"
-                        searchPosition="top"
-                        previewPosition="none"
-                        autoFocus
-                        data={data}
-                        perLine={8}
-                      />
-                    </Popover.Content>
-                  </Popover.Portal>
+                <Popover.Content
+                  sideOffset={50}
+                  alignOffset={-260}
+                  side="left"
+                  align="end"
+                  className="z-[10001] w-[300px] rounded-md font-semibold text-white no-underline outline-none focus:outline-none"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, translateX: 3 }}
+                    animate={{ opacity: 1, translateX: 0 }}
+                    exit={{ opacity: 0, translateX: -3 }}
+                    whileTap={{
+                      scale: 0.98,
+                    }}
+                  >
+                    <Picker
+                      theme={theme === "dark" ? "dark" : "light"}
+                      onEmojiSelect={(emojiData: {
+                        native: SetStateAction<string>;
+                      }) => {
+                        setIcon(emojiData.native);
+                        setEmojiPickerOpen(false);
+                      }}
+                      navPosition="none"
+                      skinTonePosition="none"
+                      searchPosition="top"
+                      previewPosition="none"
+                      autoFocus
+                      data={data}
+                      perLine={8}
+                    />
+                  </motion.div>
+                </Popover.Content>
+              </Popover.Portal>
                 </Popover.Root>
                 <motion.button
                   initial={{ opacity: 0 }}

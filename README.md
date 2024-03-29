@@ -18,4 +18,4 @@
 ### Bugs
 - [x] new folder modal margin top
 - [x] fix folder name when it has no icon
-- [ ] when deleting a folder, the bookmarks of the redirect one are shown in every other folder
+- [x] when deleting a folder, the bookmarks of the redirect one are shown in every other folder

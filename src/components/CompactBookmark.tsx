@@ -47,8 +47,6 @@ export const CompactBookmark = ({
   });
 
   useEffect(() => {
-    console.log("isEditing changed to", isEditing);
-
     if (isEditing) {
       const inputElement = inputRef.current;
       if (inputElement) {
