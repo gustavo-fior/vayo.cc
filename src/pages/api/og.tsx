@@ -47,7 +47,7 @@ export default async function handler() {
             }}
           >
             <img
-              src="https://bookmarks.gustavofior.com/images/logo.png"
+              src="https://vayo.cc.com/images/logo.png"
               alt="logo"
               width={192}
               height={192}

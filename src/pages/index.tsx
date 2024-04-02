@@ -98,7 +98,7 @@ export default function Home() {
         <meta property="og:type" content="website" />
         <meta
           property="og:image"
-          content={`https://bookmarks.gustavofior.com/api/og`}
+          content={`https://vayo.cc.com/api/og`}
         />
       </Head>
       <motion.main
