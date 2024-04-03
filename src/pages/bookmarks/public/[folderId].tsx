@@ -107,8 +107,6 @@ export default function Bookmarks() {
     };
   }, [bookmarks?.length, totalBookmarks, bookmarksQuery.isLoading]);
 
-// tes
-
   return (
     <>
       <Head>

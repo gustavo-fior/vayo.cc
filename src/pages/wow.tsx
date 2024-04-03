@@ -1,11 +1,11 @@
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { type GetServerSideProps } from "next";
 import { getSession, signIn } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
-import { BookmarksList } from "~/components/BookmarksList";
-import { Separator } from "~/components/Separator";
+import { Spinner } from "~/components/Spinner";
 import ThreeDodecahedron from "~/components/ThreeDodecahedron";
 
 export default function Home() {
@@ -15,71 +15,6 @@ export default function Home() {
   const handleSignIn = (provider: string) => {
     signIn(provider).catch((err) => console.error(err));
   };
-
-  type Bookmarks = {
-    createdAt: Date;
-    id: string;
-    title: string;
-    url: string;
-    faviconUrl: string | null;
-    ogImageUrl: string | null;
-    loading?: boolean;
-    onClick?: () => void;
-  };
-
-  const bookmarks: Bookmarks[] = [
-    {
-      createdAt: new Date(),
-      id: "1",
-      title: "Sign in with GitHub",
-      url: "https://github.com/sign-in",
-      faviconUrl: "/favicons/github-white.svg",
-      ogImageUrl: null,
-      loading: signingInGithub,
-      onClick: () => {
-        setSigningInGithub(true);
-        handleSignIn("github");
-      },
-    },
-    {
-      createdAt: new Date(),
-      id: "2",
-      title: "Sign in with Google",
-      url: "https://google.com/sign-in",
-      faviconUrl: "/favicons/google.ico",
-      ogImageUrl: null,
-      loading: signingInGoogle,
-      onClick: () => {
-        setSigningInGoogle(true);
-        handleSignIn("google");
-      },
-    },
-    {
-      createdAt: new Date(),
-      id: "3",
-      title: "Chrome Extension",
-      url: "https://chromewebstore.google.com/detail/jaloallboddnknljngplmccchmncogeb?hl=pt-BR",
-      faviconUrl:
-        "https://www.google.com/chrome/static/images/favicons/apple-icon-180x180.png",
-      ogImageUrl: null,
-    },
-    {
-      createdAt: new Date(),
-      id: "4",
-      title: "GitHub Repo",
-      url: "https://github.com/gustavo-fior/bookmarks",
-      faviconUrl: "/favicons/github-white.svg",
-      ogImageUrl: null,
-    },
-    {
-      createdAt: new Date(),
-      id: "5",
-      title: "Creator",
-      url: "https://gustavofior.com",
-      faviconUrl: "https://www.gustavofior.com/favicon.ico",
-      ogImageUrl: null,
-    },
-  ];
 
   return (
     <>
@@ -99,15 +34,89 @@ export default function Home() {
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`https://vayo.cc/api/og`} />
       </Head>
-      <motion.main
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="flex flex-col min-h-screen items-center justify-center bg-[#111111] align-middle"
-      >
-          <ThreeDodecahedron />
-          <h1 className="text-4xl font-bold text-white mt-4">Vayo</h1>
-          <p className="text-zinc-500">Keep your bookmarks safe</p>
+      <motion.main className="flex min-h-screen flex-col items-center justify-center bg-[#111111] align-middle">
+      <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { delay: 0.1 } }}
+          exit={{ opacity: 0 }}
+        >
+        <ThreeDodecahedron />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { delay: 0.3 } }}
+          exit={{ opacity: 0 }}
+        >
+          <h1 className="mt-4 text-4xl font-bold text-white">Vayo</h1>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { delay: 0.5 } }}
+          exit={{ opacity: 0 }}
+        >
+          <p className="pt-4 italic text-zinc-500">
+            A home for your most amazing links
+          </p>
+        </motion.div>
+
+        <motion.div
+          className=" flex items-center gap-2 pt-6 transition duration-200"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { delay: 0.7 } }}
+          exit={{ opacity: 0 }}
+        >
+          <div className="flex flex-col gap-4 md:flex-row">
+            <motion.button
+              whileTap={{
+                scale: 0.95,
+              }}
+              className="flex items-center gap-2 rounded-full bg-white/10 px-6 py-3 font-semibold text-white no-underline transition duration-300 hover:bg-white/20"
+              disabled={signingInGoogle || signingInGithub}
+              onClick={() => {
+                setSigningInGoogle(true);
+                handleSignIn("google");
+              }}
+            >
+              {signingInGoogle ? (
+                <div className="px-12">
+                  <Spinner size="md" />
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <p>Sign in with</p>
+                  <Image
+                    src="/favicons/google.ico"
+                    alt="Google logo"
+                    width={16}
+                    height={16}
+                  />
+                </div>
+              )}
+            </motion.button>
+            <motion.button
+              whileTap={{
+                scale: 0.95,
+              }}
+              className=" rounded-full bg-white/10 px-6 py-3 font-semibold text-white no-underline transition duration-300 hover:bg-white/20"
+              disabled={signingInGoogle || signingInGithub}
+              onClick={() => {
+                setSigningInGithub(true);
+                handleSignIn("github");
+              }}
+            >
+              {signingInGithub ? (
+                <div className="px-12">
+                  <Spinner size="md" />
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <p>Sign in with</p>
+                  <GitHubLogoIcon />
+                </div>
+              )}
+            </motion.button>
+          </div>
+        </motion.div>
       </motion.main>
     </>
   );
