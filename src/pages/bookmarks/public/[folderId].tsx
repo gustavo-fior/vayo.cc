@@ -161,7 +161,7 @@ export default function Bookmarks() {
                 </motion.div>
               )}
               {folder?.data?.isShared && (
-                <div className="flex items-center gap-6 align-middle md:gap-2">
+                <div className="items-center gap-6 align-middle md:gap-2 hidden sm:flex">
                   <motion.div
                     key="viewButtonLoaded"
                     initial={{ opacity: 0 }}

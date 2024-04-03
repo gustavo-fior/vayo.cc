@@ -108,12 +108,10 @@ export default function Home() {
         className="flex min-h-screen flex-col items-center justify-center bg-[#111111]"
       >
         <div className="w-[20rem] sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-        {/* <ThreeDodecahedron /> */}
-
           <div className="flex items-center gap-3 px-2 align-middle font-semibold">
             <Image src="/images/logo.png" alt="logo" width={36} height={36} />
             <p className="text-3xl">Vayo</p>
-            <span className="text-zinc-500 text-xl font-normal italic mt-1.5">- a simple place for your links</span>
+            <span className="text-zinc-500 text-xl font-normal italic mt-1.5 hidden sm:block">- a simple place for your links</span>
           </div>
           <div className={`mx-2 mt-6`}>
             <Separator />
