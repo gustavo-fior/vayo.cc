@@ -299,7 +299,7 @@ export default function Bookmarks() {
   return (
     <>
       <Head>
-        <title>{currentFolder?.name ?? "Bookmarks"}</title>
+        <title>{currentFolder?.name ?? "Vayo"}</title>
         <link rel="icon" href={getFaviconForFolder(currentFolder)} />
       </Head>
       <main className="relative min-h-screen w-full bg-[#e0e0e0] pt-8 dark:bg-[#111111]">

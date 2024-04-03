@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { BookmarksList } from "~/components/BookmarksList";
 import { Separator } from "~/components/Separator";
+import ThreeDodecahedron from "~/components/ThreeDodecahedron";
 
 export default function Home() {
   const [signingInGithub, setSigningInGithub] = useState(false);
@@ -96,43 +97,17 @@ export default function Home() {
           content="Looking for cool bookmarks? Check out this folder!"
         />
         <meta property="og:type" content="website" />
-        <meta
-          property="og:image"
-          content={`https://vayo.cc/api/og`}
-        />
+        <meta property="og:image" content={`https://vayo.cc/api/og`} />
       </Head>
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="flex min-h-screen flex-col items-center justify-center bg-[#111111]"
+        className="flex flex-col min-h-screen items-center justify-center bg-[#111111] align-middle"
       >
-        <div className="w-[20rem] sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-        {/* <ThreeDodecahedron /> */}
-
-          <div className="flex items-center gap-3 px-2 align-middle font-semibold">
-            <Image src="/images/logo.png" alt="logo" width={36} height={36} />
-            <p className="text-3xl">Vayo</p>
-            <span className="text-zinc-500 text-xl font-normal italic mt-1.5">- a simple place for your links</span>
-          </div>
-          <div className={`mx-2 mt-6`}>
-            <Separator />
-          </div>
-          <motion.div
-            initial={false}
-            animate={"open"}
-            className="flex flex-col gap-8"
-          >
-            <motion.ul className={`flex flex-col`}>
-              <BookmarksList
-                showMonths={false}
-                viewStyle="compact"
-                bookmarks={bookmarks}
-                isPrivatePage={false}
-              />
-            </motion.ul>
-          </motion.div>
-        </div>
+          <ThreeDodecahedron />
+          <h1 className="text-4xl font-bold text-white mt-4">Vayo</h1>
+          <p className="text-zinc-500">Keep your bookmarks safe</p>
       </motion.main>
     </>
   );

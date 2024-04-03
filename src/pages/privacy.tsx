@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Bookmarks</title>
+        <title>Vayo</title>
         <meta name="description" content="Keeping bookmarks" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

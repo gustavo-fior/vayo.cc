@@ -20,16 +20,16 @@ const ThreeDodecahedron = () => {
 
     const init = () => {
       camera = new THREE.PerspectiveCamera(
-        60,
+        120,
         window.innerWidth / window.innerHeight,
-        0.05,
-        100
+        0.01,
+        80
       );
-      camera.position.z = 2;
+      camera.position.z = 6;
 
       scene = new THREE.Scene();
 
-      geometry = new THREE.DodecahedronGeometry(1.2, 1);
+      geometry = new THREE.DodecahedronGeometry(2.0, 5);
 
       const pos = geometry.attributes.position?.array;
       const col = [];
@@ -58,7 +58,7 @@ const ThreeDodecahedron = () => {
       const line = new THREE.LineSegments(wireframe);
 
       line.material.depthTest = false;
-      line.material.opacity = 0.75;
+      line.material.opacity = 1;
       line.material.transparent = true;
       line.material.color = new THREE.Color('white');
 
@@ -72,8 +72,8 @@ const ThreeDodecahedron = () => {
         antialias: true,
         canvas: canvasRef.current,
       });
-      renderer.setSize(window.innerWidth/10, window.innerHeight/10);
-      renderer.setClearColor(0x000000, 0); // Set background color to transparent
+      renderer.setSize(window.innerWidth/5, window.innerHeight/5);
+      renderer.setClearColor(0x000000, 0);  
 
       animate();
     };
@@ -92,9 +92,6 @@ const ThreeDodecahedron = () => {
 
       camera.position.set(rx, ry, rz).normalize().multiplyScalar(2.5);
       camera.lookAt(scene.position);
-
-      const scale = Math.sin(time) * 0.4 + 0.7;
-      mesh.scale.set(scale, scale, scale);
 
       renderer.render(scene, camera);
     };

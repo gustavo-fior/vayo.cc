@@ -18,7 +18,7 @@ import { Separator } from "./Separator";
 export const ShareButton = () => {
   const [currentFolder, setCurrentFolder] = useAtom(currentFolderAtom);
   const [copied, setCopied] = useState(false);
-  const utils = api.useContext();
+  const utils = api.useUtils();
 
   const updateFolder = api.folders.update.useMutation({
     onSuccess: () => {
