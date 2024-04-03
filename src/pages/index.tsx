@@ -90,7 +90,7 @@ export default function Home() {
           name="description"
           content="Looking for cool bookmarks? Check out this folder!"
         />
-        <meta property="og:title" content={"Bookmarks"} />
+        <meta property="og:title" content={"Vayo"} />
         <meta
           property="og:description"
           content="Looking for cool bookmarks? Check out this folder!"

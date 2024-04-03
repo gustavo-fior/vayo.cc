@@ -116,7 +116,7 @@ export default function Bookmarks() {
           name="description"
           content="Looking for cool bookmarks? Check out this folder!"
         />
-        <meta property="og:title" content={folder?.data?.name ?? "Bookmarks"} />
+        <meta property="og:title" content={folder?.data?.name ?? "Vayo"} />
         <meta
           property="og:description"
           content="Looking for cool bookmarks? Check out this folder!"
