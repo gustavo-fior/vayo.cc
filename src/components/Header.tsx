@@ -127,7 +127,7 @@ export const Header = ({
       className="flex w-full flex-row items-center justify-between px-12"
     >
       <Select.Root
-        open={!selectOpen}
+        open={selectOpen}
         onOpenChange={setSelectOpen}
         onValueChange={(value) => {
           const folder = folders?.find((folder) => folder.id === value);
