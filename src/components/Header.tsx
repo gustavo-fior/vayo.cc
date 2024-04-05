@@ -127,7 +127,7 @@ export const Header = ({
       className="flex w-full flex-row items-center justify-between px-12"
     >
       <Select.Root
-        open={selectOpen}
+        open={!selectOpen}
         onOpenChange={setSelectOpen}
         onValueChange={(value) => {
           const folder = folders?.find((folder) => folder.id === value);
@@ -226,7 +226,7 @@ export const Header = ({
                       >
                         <div className="flex items-center font-medium">
                           <PlusIcon className="ml-[0.1rem] h-4 w-4" />
-                          <span className="ml-2.5">New folder</span>
+                          <span className="ml-3">New folder</span>
                         </div>
                         <Hotkey key1="n" />
                       </div>
@@ -257,7 +257,7 @@ export const Header = ({
                       >
                         <div className="flex items-center font-medium">
                           <Cross2Icon className="ml-[0.1rem] h-4 w-4 text-red-500" />
-                          <span className="ml-2.5 text-red-500">Delete</span>
+                          <span className="ml-3 text-red-500">Delete</span>
                         </div>
                         <Hotkey red key1="x" />
                       </div>
