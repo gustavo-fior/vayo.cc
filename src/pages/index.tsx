@@ -42,7 +42,7 @@ export default function Home() {
       </Head>
       <motion.main className="flex min-h-screen flex-col items-center justify-between bg-[#111111]">
         <div className="h-[30vh]" />
-        <div className="z-10 flex h-[20vh] w-96 flex-col justify-center">
+        <div className="z-10 flex h-[20vh] md:w-96 w-72 flex-col justify-center">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.2 } }}
@@ -107,17 +107,17 @@ export default function Home() {
           </motion.p>
 
           <motion.div
-            className=" flex items-center gap-2 pt-8 transition duration-200"
+            className=" flex items-center gap-2 md:pt-8 pt-16 transition duration-200"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { delay: 0.8 } }}
             exit={{ opacity: 0 }}
           >
-            <div className="flex w-full flex-col items-center justify-between md:flex-row">
+            <div className="flex w-full items-center justify-between flex-col md:flex-row md:gap-0 gap-6">
               <motion.button
                 whileTap={{
                   scale: 0.95,
                 }}
-                className="flex items-center gap-2 rounded-lg bg-white/10 px-8 py-3 text-sm font-semibold text-white no-underline transition duration-200 hover:bg-white/20"
+                className="flex items-center justify-center gap-2 rounded-lg bg-white/10 md:w-44 w-72 md:h-10 h-16 md:text-sm text-lg font-semibold text-white no-underline transition duration-200 hover:bg-white/20"
                 disabled={signingInGoogle || signingInGithub}
                 onClick={() => {
                   setSigningInGoogle(true);
@@ -145,7 +145,7 @@ export default function Home() {
                 whileTap={{
                   scale: 0.95,
                 }}
-                className=" rounded-lg bg-white/10 px-8 py-3 text-sm font-semibold text-white no-underline transition duration-200 hover:bg-white/20"
+                className="flex items-center justify-center gap-2 rounded-lg bg-white/10 md:w-44 w-72 md:h-10 h-16 md:text-sm text-lg font-semibold text-white no-underline transition duration-200 hover:bg-white/20"
                 disabled={signingInGoogle || signingInGithub}
                 onClick={() => {
                   setSigningInGithub(true);
@@ -176,6 +176,7 @@ export default function Home() {
               scale: 1,
             }}
             exit={{ opacity: 0 }}
+            className="hidden md:flex w-full items-center justify-center"
           >
             <ThreeDodecahedron />
           </motion.div>
