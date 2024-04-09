@@ -29,7 +29,7 @@ const ThreeDodecahedron = () => {
 
       scene = new THREE.Scene();
 
-      geometry = new THREE.DodecahedronGeometry(2.0, 5);
+      geometry = new THREE.DodecahedronGeometry(1.8, 10);
 
       const pos = geometry.attributes.position?.array;
       const col = [];
@@ -72,7 +72,7 @@ const ThreeDodecahedron = () => {
         antialias: true,
         canvas: canvasRef.current,
       });
-      renderer.setSize(window.innerWidth/5, window.innerHeight/5);
+      renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setClearColor(0x000000, 0);  
 
       animate();
@@ -80,19 +80,21 @@ const ThreeDodecahedron = () => {
 
     const animate = () => {
       requestRef.current = requestAnimationFrame(animate);
-
-      mesh.rotation.x += 0.005;
-      mesh.rotation.y += 0.01;
-
+    
+      // Constant rotation speed
+      const rotationSpeed = 0.01;
+    
+      mesh.rotation.x += rotationSpeed;
+      mesh.rotation.y += rotationSpeed;
+    
       const time = Date.now() * 0.00023;
-
       const rx = Math.sin(time * 0.7) * 10.5;
       const ry = Math.cos(time * 0.5) * 10.5;
       const rz = Math.sin(time * 0.3) * 10.5;
-
+    
       camera.position.set(rx, ry, rz).normalize().multiplyScalar(2.5);
       camera.lookAt(scene.position);
-
+    
       renderer.render(scene, camera);
     };
 

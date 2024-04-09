@@ -7,14 +7,14 @@ export const config = {
 export default async function handler() {
   try {
     const fontData = await fetch(
-      new URL("../../../assets/Inter-Bold.ttf", import.meta.url)
+      new URL("../../../assets/Alice-Regular.ttf", import.meta.url)
     ).then((res) => res.arrayBuffer());
 
     return new ImageResponse(
       (
         <div
           style={{
-            background: "linear-gradient(to bottom right, #000000, #111111)",
+            background: "linear-gradient(to bottom right, #18181b, #09090b)",
             height: "100%",
             width: "100%",
             display: "flex",
@@ -26,7 +26,6 @@ export default async function handler() {
             position: "relative",
           }}
         >
-
           <div
             style={{
               display: "flex",
@@ -46,25 +45,18 @@ export default async function handler() {
               marginTop: 96,
             }}
           >
-            <img
-              src="https://vayo.cc/images/logo.png"
-              alt="logo"
-              width={192}
-              height={192}
-            />
             <div
               tw="font-bold"
               style={{
-                fontSize: 192,
+                fontSize: 312,
                 letterSpacing: "-0.025em",
-                fontFamily: "Inter",
+                fontFamily: "Alice",
                 color: "white",
                 lineHeight: 1.4,
                 whiteSpace: "pre-wrap",
-                marginLeft: 32,
               }}
             >
-              Bookmarks
+              VAYØ
             </div>
           </div>
         </div>
@@ -74,7 +66,7 @@ export default async function handler() {
         height: 1080,
         fonts: [
           {
-            name: "Inter",
+            name: "Alice",
             data: fontData,
             style: "normal",
           },

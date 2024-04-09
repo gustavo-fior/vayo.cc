@@ -1,11 +1,13 @@
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { type GetServerSideProps } from "next";
 import { getSession, signIn } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-import { BookmarksList } from "~/components/BookmarksList";
-import { Separator } from "~/components/Separator";
+import { Spinner } from "~/components/Spinner";
+import ThreeDodecahedron from "~/components/ThreeDodecahedron";
 
 export default function Home() {
   const [signingInGithub, setSigningInGithub] = useState(false);
@@ -15,120 +17,167 @@ export default function Home() {
     signIn(provider).catch((err) => console.error(err));
   };
 
-  type Bookmarks = {
-    createdAt: Date;
-    id: string;
-    title: string;
-    url: string;
-    faviconUrl: string | null;
-    ogImageUrl: string | null;
-    loading?: boolean;
-    onClick?: () => void;
-  };
-
-  const bookmarks: Bookmarks[] = [
-    {
-      createdAt: new Date(),
-      id: "1",
-      title: "Sign in with GitHub",
-      url: "https://github.com/sign-in",
-      faviconUrl: "/favicons/github-white.svg",
-      ogImageUrl: null,
-      loading: signingInGithub,
-      onClick: () => {
-        setSigningInGithub(true);
-        handleSignIn("github");
-      },
-    },
-    {
-      createdAt: new Date(),
-      id: "2",
-      title: "Sign in with Google",
-      url: "https://google.com/sign-in",
-      faviconUrl: "/favicons/google.ico",
-      ogImageUrl: null,
-      loading: signingInGoogle,
-      onClick: () => {
-        setSigningInGoogle(true);
-        handleSignIn("google");
-      },
-    },
-    {
-      createdAt: new Date(),
-      id: "3",
-      title: "Chrome Extension",
-      url: "https://chromewebstore.google.com/detail/jaloallboddnknljngplmccchmncogeb?hl=pt-BR",
-      faviconUrl:
-        "https://www.google.com/chrome/static/images/favicons/apple-icon-180x180.png",
-      ogImageUrl: null,
-    },
-    {
-      createdAt: new Date(),
-      id: "4",
-      title: "GitHub Repo",
-      url: "https://github.com/gustavo-fior/bookmarks",
-      faviconUrl: "/favicons/github-white.svg",
-      ogImageUrl: null,
-    },
-    {
-      createdAt: new Date(),
-      id: "5",
-      title: "Creator",
-      url: "https://gustavofior.com",
-      faviconUrl: "https://www.gustavofior.com/favicon.ico",
-      ogImageUrl: null,
-    },
-  ];
-
   return (
     <>
       <Head>
-        <title>Vayo</title>
-        <meta name="description" content="Keeping bookmarks" />
+        <title>VAYØ</title>
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
-          content="Looking for cool bookmarks? Check out this folder!"
+          content="A home for your most amazing links :)"
         />
-        <meta property="og:title" content={"Vayo"} />
+        <meta property="og:title" content={"VAYØ"} />
         <meta
           property="og:description"
-          content="Looking for cool bookmarks? Check out this folder!"
+          content="A home for your most amazing links :)"
         />
         <meta property="og:type" content="website" />
-        <meta
-          property="og:image"
-          content={`https://vayo.cc/api/og`}
+        <meta property="og:image" content={`https://vayo.cc/api/og`} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Alice&display=swap"
+          rel="stylesheet"
         />
       </Head>
-      <motion.main
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="flex min-h-screen flex-col items-center justify-center bg-[#111111]"
-      >
-        <div className="w-[20rem] sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-          <div className="flex items-center gap-3 px-2 align-middle font-semibold">
-            <Image src="/images/logo.png" alt="logo" width={36} height={36} />
-            <p className="text-3xl">Vayo</p>
-            <span className="text-zinc-500 text-xl font-normal italic mt-1.5 hidden sm:block">- a simple place for your links</span>
-          </div>
-          <div className={`mx-2 mt-6`}>
-            <Separator />
-          </div>
+      <motion.main className="flex min-h-screen flex-col items-center justify-between bg-[#111111]">
+        <div className="h-[30vh]" />
+        <div className="z-10 flex h-[20vh] w-96 flex-col justify-center">
           <motion.div
-            initial={false}
-            animate={"open"}
-            className="flex flex-col gap-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.2 } }}
+            exit={{ opacity: 0 }}
           >
-            <motion.ul className={`flex flex-col`}>
-              <BookmarksList
-                showMonths={false}
-                viewStyle="compact"
-                bookmarks={bookmarks}
-                isPrivatePage={false}
-              />
-            </motion.ul>
+            <h1
+              className="text-3xl font-bold text-white"
+              style={{
+                fontFamily: "Alice",
+              }}
+            >
+              VAYØ
+            </h1>
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.4 } }}
+            exit={{ opacity: 0 }}
+            className="pt-4  text-zinc-500"
+          >
+            A home for your most amazing links. Here you can save, organize and
+            share your bookmarks.
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.5 } }}
+            exit={{ opacity: 0 }}
+            className="pt-4  text-zinc-500"
+          >
+            Check out our{" "}
+            <Link
+              target="_blank"
+              href="https://chromewebstore.google.com/detail/vayo/jaloallboddnknljngplmccchmncogeb?hl=pt-BR"
+              className="font-semibold text-zinc-300 transition duration-200 ease-in-out hover:text-zinc-50"
+            >
+              Chrome Extension
+            </Link>
+            .
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.6 } }}
+            exit={{ opacity: 0 }}
+            className="flex items-center pt-4 text-zinc-500"
+          >
+            Created by{" "}
+            <Link
+              target="_blank"
+              href="https://gustavofior.com"
+              className="flex items-center gap-1.5 font-semibold text-zinc-300 transition duration-200 ease-in-out hover:text-zinc-50"
+            >
+              <Image
+                src="/images/eu.png"
+                alt="Gustavo Fior"
+                width={16}
+                height={16}
+                className="ml-2 rounded-full"
+              />{" "}
+              Gustavo
+            </Link>
+            .
+          </motion.p>
+
+          <motion.div
+            className=" flex items-center gap-2 pt-8 transition duration-200"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.8 } }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="flex w-full flex-col items-center justify-between md:flex-row">
+              <motion.button
+                whileTap={{
+                  scale: 0.95,
+                }}
+                className="flex items-center gap-2 rounded-lg bg-white/10 px-8 py-3 text-sm font-semibold text-white no-underline transition duration-200 hover:bg-white/20"
+                disabled={signingInGoogle || signingInGithub}
+                onClick={() => {
+                  setSigningInGoogle(true);
+                  handleSignIn("google");
+                }}
+              >
+                {signingInGoogle ? (
+                  <div className="px-12">
+                    <Spinner size="md" />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <p>Sign in with</p>
+                    <Image
+                      src="/favicons/google.ico"
+                      alt="Google logo"
+                      width={18}
+                      height={18}
+                    />
+                  </div>
+                )}
+              </motion.button>
+              <div className="hidden h-4 w-0.5 rounded-full bg-white/10 md:block" />
+              <motion.button
+                whileTap={{
+                  scale: 0.95,
+                }}
+                className=" rounded-lg bg-white/10 px-8 py-3 text-sm font-semibold text-white no-underline transition duration-200 hover:bg-white/20"
+                disabled={signingInGoogle || signingInGithub}
+                onClick={() => {
+                  setSigningInGithub(true);
+                  handleSignIn("github");
+                }}
+              >
+                {signingInGithub ? (
+                  <div className="px-12">
+                    <Spinner size="md" />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <p>Sign in with</p>
+                    <GitHubLogoIcon className="h-5 w-5" />
+                  </div>
+                )}
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+        <div className="h-[50vh] w-full overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, y: 5, scale: 0.97 }}
+            animate={{
+              opacity: 1,
+              transition: { delay: 1, duration: 0.5 },
+              y: 0,
+              scale: 1,
+            }}
+            exit={{ opacity: 0 }}
+          >
+            <ThreeDodecahedron />
           </motion.div>
         </div>
       </motion.main>
