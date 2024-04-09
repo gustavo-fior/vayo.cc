@@ -110,16 +110,16 @@ export default function Bookmarks() {
   return (
     <>
       <Head>
-        <title>{folder?.data?.name ?? "Vayo"}</title>
+        <title>{folder?.data?.name ?? "VAYØ"}</title>
         <link rel="icon" href={getFaviconForFolder(folder.data)} />
         <meta
           name="description"
-          content="Looking for cool bookmarks? Check out this folder!"
+          content="Looking for cool links? Check out this folder!"
         />
         <meta property="og:title" content={folder?.data?.name ?? "Vayo"} />
         <meta
           property="og:description"
-          content="Looking for cool bookmarks? Check out this folder!"
+          content="Looking for cool links? Check out this folder!"
         />
         <meta property="og:type" content="website" />
         <meta

@@ -6,9 +6,17 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Vayo</title>
-        <meta name="description" content="Keeping bookmarks" />
+      <title>VAYØ</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content="A home for your most amazing links :)"
+        />
+        <meta property="og:title" content={"VAYØ"} />
+        <meta
+          property="og:description"
+          content="A home for your most amazing links :)"
+        />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <motion.div
