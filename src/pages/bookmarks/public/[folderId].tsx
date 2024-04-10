@@ -128,7 +128,7 @@ export default function Bookmarks() {
         />
       </Head>
       
-      <main className="flex min-h-screen w-full flex-col items-center bg-[#e0e0e0] dark:bg-[#111111]">
+      <main className="flex min-h-screen w-full pb-32 flex-col items-center bg-[#e0e0e0] dark:bg-[#111111]">
         <ScrollToTopButton />
 
         <div className="w-[20rem] pt-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
