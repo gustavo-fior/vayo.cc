@@ -31,7 +31,7 @@ export default function Home() {
           </h2>
           <p className=" py-3  text-slate-400 transition duration-500">
             This Privacy Policy describes how Vayo collects, uses, and
-            discloses personal information when you use the Bookmarks Chrome
+            discloses personal information when you use the Vayo Chrome
             extension (the &quot;service&quot;).
           </p>
           <h2 className="pt-4 text-xl font-bold text-slate-100 transition duration-500">
