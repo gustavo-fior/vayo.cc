@@ -132,7 +132,7 @@ export default function Bookmarks() {
         <ScrollToTopButton />
 
         <div className="w-[20rem] pt-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
-            <div className="flex flex-col items-center justify-between gap-8 px-4 align-middle font-semibold text-black dark:text-white md:flex-row md:gap-0">
+            <div className="flex flex-col md:items-center md:justify-between justify-start gap-8 px-4 align-middle font-semibold text-black dark:text-white md:flex-row md:gap-0">
               {folder?.isLoading ? (
                 <motion.div
                   key="folderNameLoading"
@@ -151,9 +151,9 @@ export default function Bookmarks() {
                   exit={{ opacity: 0 }}
                 >
                   {folder?.data?.isShared ? (
-                    <div className="flex items-center gap-3 align-middle">
-                      <p className="text-3xl mb-1">{folder?.data?.icon}</p>
-                      <p className="text-3xl">{folder?.data?.name}</p>
+                    <div className="flex gap-3 align-middle">
+                      <p className="text-2xl md:text-3xl mb-1">{folder?.data?.icon}</p>
+                      <p className="text-2xl md:text-3xl">{folder?.data?.name}</p>
                     </div>
                   ) : (
                     <p className="text-3xl">🔒 This folder is private</p>
