@@ -173,7 +173,7 @@ export const ExpandedBookmark = ({
                           title,
                         });
                       }}
-                      className="w-full bg-transparent font-semibold text-black focus:outline-none dark:text-white"
+                      className="w-full bg-transparent font-bold text-black focus:outline-none text-lg dark:text-white"
                     />
                   </form>
                 ) : (
