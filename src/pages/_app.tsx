@@ -8,6 +8,7 @@ import { api } from "~/utils/api";
 import { ThemeProvider } from "next-themes";
 import { type Session } from "next-auth";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from '@vercel/analytics/react';
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -20,6 +21,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <Component {...pageProps} />
         <Toaster />
         <SpeedInsights />
+        <Analytics />
       </ThemeProvider>
     </SessionProvider>
   );
