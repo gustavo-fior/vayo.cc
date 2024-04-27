@@ -124,7 +124,7 @@ export const Header = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex w-full flex-row items-center justify-between px-12"
+      className="flex w-full flex-row items-center justify-between md:px-12 px-8"
     >
       <Select.Root
         open={selectOpen}

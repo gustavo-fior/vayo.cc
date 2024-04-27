@@ -305,12 +305,12 @@ export default function Bookmarks() {
       <main className="relative min-h-screen w-full bg-[#e0e0e0] pt-8 dark:bg-[#111111]">
         <Header inputRef={inputRef} />
         <div className="flex flex-col items-center">
-          <div className="w-[20rem] pb-32 sm:w-[40rem] md:w-[48rem] lg:w-[50rem]">
+          <div className="w-full  px-4 pb-32 sm:w-[40rem] md:w-[48rem] md:px-0 lg:w-[50rem]">
             <motion.form
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="relative mx-4 mt-8 md:mx-12"
+              className="relative mx-2.5 md:mt-8 mt-6 md:mx-12"
               onSubmit={(e) => {
                 e.preventDefault();
 
@@ -387,16 +387,18 @@ export default function Bookmarks() {
               />
               {(addBookmark.isLoading ||
                 !currentFolder ||
-                fetchBookmarsWithSearch.isFetching) && folders && folders?.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.5, transition: { delay: 1 } }}
-                  exit={{ opacity: 0 }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 transform"
-                >
-                  <Spinner size="md" />
-                </motion.div>
-              )}
+                fetchBookmarsWithSearch.isFetching) &&
+                folders &&
+                folders?.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.5, transition: { delay: 1 } }}
+                    exit={{ opacity: 0 }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 transform"
+                  >
+                    <Spinner size="md" />
+                  </motion.div>
+                )}
             </motion.form>
 
             <div className={`mx-3 mt-6`}>

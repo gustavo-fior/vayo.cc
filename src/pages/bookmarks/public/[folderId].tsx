@@ -131,7 +131,7 @@ export default function Bookmarks() {
       <main className="flex min-h-screen w-full pb-32 flex-col items-center bg-[#e0e0e0] dark:bg-[#111111]">
         <ScrollToTopButton />
 
-        <div className="w-[20rem] pt-16 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
+        <div className="w-full px-4 md:px-0 md:pt-16 pt-12 sm:w-[30rem] md:w-[40rem] lg:w-[50rem]">
             <div className="flex flex-col md:items-center md:justify-between justify-start gap-8 px-4 align-middle font-semibold text-black dark:text-white md:flex-row md:gap-0">
               {folder?.isLoading ? (
                 <motion.div
@@ -152,11 +152,11 @@ export default function Bookmarks() {
                 >
                   {folder?.data?.isShared ? (
                     <div className="flex gap-3 align-middle">
-                      <p className="text-2xl md:text-3xl mb-1">{folder?.data?.icon}</p>
-                      <p className="text-2xl md:text-3xl">{folder?.data?.name}</p>
+                      <p className="text-2xl mb-1">{folder?.data?.icon}</p>
+                      <p className="text-2xl">{folder?.data?.name}</p>
                     </div>
                   ) : (
-                    <p className="text-3xl">🔒 This folder is private</p>
+                    <p className="text-2xl">🔒 This folder is private</p>
                   )}
                 </motion.div>
               )}
@@ -196,7 +196,7 @@ export default function Bookmarks() {
               )}
             </div>
 
-          <div className={`mx-3 mt-4`}>
+          <div className={`mx-3 md:mt-4 mt-2`}>
             <Separator />
           </div>
 
