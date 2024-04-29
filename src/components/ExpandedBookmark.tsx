@@ -173,7 +173,7 @@ export const ExpandedBookmark = ({
                           title,
                         });
                       }}
-                      className="w-full bg-transparent font-bold text-black focus:outline-none text-lg dark:text-white"
+                      className="w-full bg-transparent font-medium text-black focus:outline-none text-lg dark:text-white"
                     />
                   </form>
                 ) : (
@@ -181,7 +181,7 @@ export const ExpandedBookmark = ({
                     animate={{ opacity: 1 }}
                     initial={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className={`lg:max-w-[30rem] md:max-w-[24rem] sm:max-w-[24rem] max-w-[15rem] truncate text-lg font-bold text-black dark:text-white`}
+                    className={`lg:max-w-[30rem] md:max-w-[24rem] sm:max-w-[24rem] max-w-[20rem] truncate text-lg font-medium text-black dark:text-white`}
                   >
                     {title}
                   </motion.p>

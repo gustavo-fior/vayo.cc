@@ -169,7 +169,7 @@ export const CompactBookmark = ({
                           title,
                         });
                     }}
-                    className="w-full bg-transparent font-semibold text-black focus:outline-none dark:text-white"
+                    className="w-full bg-transparent font-medium text-black focus:outline-none dark:text-white"
                   />
                 </form>
               ) : (
@@ -177,7 +177,7 @@ export const CompactBookmark = ({
                   animate={{ opacity: 1 }}
                   initial={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className={`max-w-[13rem] truncate font-semibold text-black dark:text-white sm:max-w-[22rem] md:max-w-[22rem] lg:max-w-[24rem]`}
+                  className={`max-w-full truncate font-medium text-black dark:text-white sm:max-w-[22rem] md:max-w-[22rem] lg:max-w-[24rem]`}
                 >
                   {title}
                 </motion.p>
