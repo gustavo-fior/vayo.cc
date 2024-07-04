@@ -14,6 +14,7 @@ const config = {
   },
   // allow any hosts for now
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
