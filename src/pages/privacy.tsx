@@ -17,6 +17,7 @@ export default function Home() {
           property="og:description"
           content="A home for your most amazing links :)"
         />
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="5f36385d-9b15-4127-925b-808fba9d75d3"></script>
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#1a1a1a] to-[black]">
         <motion.div

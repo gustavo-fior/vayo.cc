@@ -126,6 +126,7 @@ export default function Bookmarks() {
           property="og:image"
           content={`https://vayo.cc/api/og`}
         />
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="5f36385d-9b15-4127-925b-808fba9d75d3"></script>
       </Head>
       
       <main className="flex min-h-screen w-full pb-32 flex-col items-center bg-[#e0e0e0] dark:bg-[#111111]">

@@ -39,6 +39,7 @@ export default function Home() {
           href="https://fonts.googleapis.com/css2?family=Alice&display=swap"
           rel="stylesheet"
         />
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="5f36385d-9b15-4127-925b-808fba9d75d3"></script>
       </Head>
       <motion.main className="flex min-h-screen flex-col items-center justify-between bg-[#111111]">
         <div className="h-[30vh]" />

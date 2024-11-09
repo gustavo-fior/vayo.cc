@@ -301,6 +301,7 @@ export default function Bookmarks() {
       <Head>
         <title>{currentFolder?.name ?? "VAYØ"}</title>
         <link rel="icon" href={getFaviconForFolder(currentFolder)} />
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="5f36385d-9b15-4127-925b-808fba9d75d3"></script>
       </Head>
       <main className="relative min-h-screen w-full bg-[#e0e0e0] pt-8 dark:bg-[#111111]">
         <Header inputRef={inputRef} />
