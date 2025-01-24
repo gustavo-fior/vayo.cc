@@ -124,7 +124,7 @@ export const Header = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex w-full flex-row items-center justify-between md:px-12 px-8"
+      className="flex w-full flex-row items-center justify-between px-8 md:px-12"
     >
       <Select.Root
         open={selectOpen}
@@ -147,7 +147,7 @@ export const Header = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex items-center gap-2 align-middle"
+              className="flex items-center gap-2.5 align-middle"
             >
               {currentFolder?.icon && <div>{currentFolder?.icon}</div>}
               <span className="font-medium">{currentFolder?.name}</span>
@@ -189,12 +189,17 @@ export const Header = ({
                     }`}
                   >
                     <Select.ItemText>
-                      <motion.div className="flex items-center justify-between gap-4">
+                      <motion.div className="flex items-center justify-between gap-8">
                         <motion.div className="flex items-center gap-2.5 align-middle">
                           {folder?.icon && (
                             <div className="">{folder?.icon}</div>
                           )}
-                          <span className="font-medium">{folder?.name}</span>
+                          <span className="font-medium">
+                            {folder?.name}
+                            <span className="self-center text-xs font-normal text-gray-500 ml-2">
+                              {folder._count?.bookmarks ?? 0}
+                            </span>
+                          </span>
                         </motion.div>
                         {folder.id === currentFolder?.id ? (
                           <CheckIcon className="mr-0.5 h-4 w-4" />

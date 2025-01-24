@@ -72,6 +72,11 @@ export const foldersRouter = createTRPCRouter({
           createdAt: "asc",
         },
         include: {
+          _count: {
+            select: {
+              bookmarks: true,
+            },
+          },
           bookmarks: {
             orderBy: {
               createdAt: "desc",
