@@ -11,7 +11,7 @@ type SmallBookmark = {
 };
 
 type FolderWithCount = Folder & {
-  _count: {
+  _count?: {
     bookmarks: number;
   };
 };
