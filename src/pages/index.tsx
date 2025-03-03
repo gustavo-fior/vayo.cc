@@ -7,7 +7,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Spinner } from "~/components/Spinner";
-import ThreeDodecahedron from "~/components/ThreeDodecahedron";
+import dynamic from 'next/dynamic'
+import { alice } from "~/styles/fonts";
+
+const ThreeDodecahedron = dynamic(() => import('~/components/ThreeDodecahedron'), {
+  ssr: false,
+  loading: () => <div className="h-full w-full" />,
+})
 
 export default function Home() {
   const [signingInGithub, setSigningInGithub] = useState(false);
@@ -19,7 +25,7 @@ export default function Home() {
 
   return (
     <>
-      <Head>
+      <Head> 
         <title>VAYØ</title>
         <link rel="icon" href="/favicon.ico" />
         <meta
@@ -33,12 +39,6 @@ export default function Home() {
         />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`https://vayo.me/api/og`} />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Alice&display=swap"
-          rel="stylesheet"
-        />
         <script defer src="https://cloud.umami.is/script.js" data-website-id="5f36385d-9b15-4127-925b-808fba9d75d3"></script>
       </Head>
       <motion.main className="flex min-h-screen flex-col items-center justify-between bg-[#111111]">
@@ -50,10 +50,7 @@ export default function Home() {
             exit={{ opacity: 0 }}
           >
             <h1
-              className="text-3xl font-bold text-white"
-              style={{
-                fontFamily: "Alice",
-              }}
+              className={`${alice.className} text-3xl font-bold text-white`}
             >
               VAYØ
             </h1>
