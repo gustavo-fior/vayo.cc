@@ -32,7 +32,7 @@ export default function Home() {
           content="A home for your most amazing links :)"
         />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content={`https://vayo.cc/api/og`} />
+        <meta property="og:image" content={`https://vayo.me/api/og`} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link

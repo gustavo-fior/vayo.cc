@@ -124,7 +124,7 @@ export default function Bookmarks() {
         <meta property="og:type" content="website" />
         <meta
           property="og:image"
-          content={`https://vayo.cc/api/og`}
+          content={`https://vayo.me/api/og`}
         />
         <script defer src="https://cloud.umami.is/script.js" data-website-id="5f36385d-9b15-4127-925b-808fba9d75d3"></script>
       </Head>
