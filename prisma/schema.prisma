@@ -6,26 +6,27 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_DATABASE_URL")
 }
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? 
-    refresh_token_expires_in     Int? 
-    access_token      String? 
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? 
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id                       String  @id @default(cuid())
+    userId                   String
+    type                     String
+    provider                 String
+    providerAccountId        String
+    refresh_token            String?
+    refresh_token_expires_in Int?
+    access_token             String?
+    expires_at               Int?
+    token_type               String?
+    scope                    String?
+    id_token                 String?
+    session_state            String?
+    user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
 }
@@ -59,27 +60,27 @@ model VerificationToken {
 }
 
 model Folder {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    name      String
-    icon      String   @default("📁")
-    allowDuplicate Boolean @default(true)
-    isShared  Boolean  @default(false)
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId    String
-    bookmarks Bookmark[]
+    id             String     @id @default(cuid())
+    createdAt      DateTime   @default(now())
+    updatedAt      DateTime   @updatedAt
+    name           String
+    icon           String     @default("📁")
+    allowDuplicate Boolean    @default(true)
+    isShared       Boolean    @default(false)
+    user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId         String
+    bookmarks      Bookmark[]
 }
 
 model Bookmark {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    url       String
-    faviconUrl String?
-    ogImageUrl     String?
-    description    String?
-    title     String
-    folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
-    folderId  String
+    id          String   @id @default(cuid())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    url         String
+    faviconUrl  String?
+    ogImageUrl  String?
+    description String?
+    title       String
+    folder      Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+    folderId    String
 }
